@@ -114,9 +114,9 @@ $(function () {
 
 function goIndex(doAction) {
   if (langset == "KR" || langset == "")
-    location.href="/index.html?action=" + doAction;
+    location.href="index.html?action=" + doAction;
   else
-  	location.href="/index_en.html?action=" + doAction;
+  	location.href="index_en.html?action=" + doAction;
 }
 
 function setCurrentViewMode() {
@@ -371,10 +371,29 @@ function initPilotCenter() {
         });
         $("#record_menu").addClass("active");
     }
+    else if (page_action == "util") {
+        $("#main_contents").load("util.html", function () {
+            utilInit();
+        });
+        $("#record_menu").addClass("active");
+    }
     else {
     		showAlert(LANG_JSON_DATA[langset]['msg_error']);
     		centerPageInit();
     }
+}
+
+
+function utilInit() {
+	
+	
+		$("#latxlng").keypress(function (e) {
+        if (e.which == 13){
+                   requestAddress();  // 실행할 이벤트
+        }
+    });
+    
+		hideLoader();
 }
 
 function summaryInit() {
@@ -591,7 +610,8 @@ function flightrecordUploadInit() {
     $( "#upload_tabs" ).tabs();
 
     $('#btnForUploadFlightList').click(function () {
-        GATAGM('btnForUploadFlightList', 'CONTENT', langset);                
+        GATAGM('btnForUploadFlightList', 'CONTENT', langset);
+        
         uploadFlightList(false);        
     });
         
@@ -599,6 +619,22 @@ function flightrecordUploadInit() {
         GATAGM('btnForAddressCheck', 'CONTENT', langset);
         checkAddress($("#address_input_data").val());
     });
+    
+    //판매국가는 우선 한국만!
+    $("#priceinputarea").hide();
+    
+    if (langset != "KR") {
+    	$("#sale_select").hide();
+    }
+    
+    $("#salecheck").click(function(){
+			var checked = $("#salecheck").is(":checked");
+			
+			if(checked)
+				$("#priceinputarea").show();
+			else
+				$("#priceinputarea").hide();
+		});
     
     var input = document.querySelector('input[name=tagTextarea]');
 		new Tagify(input);
@@ -612,7 +648,8 @@ function flightrecordUploadInit() {
 		    oldAddressVal = currentVal;
 		    address_flat = -999;
 		    address_flng = -999;
-		});				
+		});
+		
   	
     hideLoader();
 }
@@ -648,6 +685,8 @@ function checkAddress(address) {
 	
 		     	address_flat = r.data.lat;	
 		     	address_flng = r.data.lng;
+		     	
+		     	$("#address_result").text(r.data.address);
 		     	showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
 	    	}
 	    	else {
@@ -4237,7 +4276,7 @@ function uploadFlightList(isUpdate) {
 			showAlert(LANG_JSON_DATA[langset]['msg_input_record_name']);
 			return;
 		}				
-		
+    
 		var tag_values = $("#tagTextarea").val();
 
 		var youtube_data = $("#youtube_url_data").val();
@@ -4268,7 +4307,28 @@ function uploadFlightList(isUpdate) {
     	}
     	
     	youtube_data = massageYotubeUrl(youtube_data);
-    	saveYoutubeUrl(mname, tag_values, youtube_data, address_flat, address_flng, function(bSuccess) {
+    	
+    	var price = 0;
+	   	if (langset == "KR") {
+	   		if (youtube_data == "") {
+						showAlert("영상의 판매를 원하시면 판매하실 원본영상의 유튜브 URL을 입력해 주세요.");
+						hideLoader();
+						return;
+				}
+					
+	    	var checked = $("#salecheck").is(":checked");
+				if(checked) {
+					var t_p = $("#price_input_data").val();
+					if (t_p == "") {
+						showAlert("영상의 판매를 원하시면 판매 희망 가격을 입력해 주세요.");
+						hideLoader();
+						return;
+					}
+					
+					price = t_p * 1;
+				}
+	    }
+    	saveYoutubeUrl(mname, tag_values, youtube_data, price, address_flat, address_flng, function(bSuccess) {
         	if (bSuccess == true) {
         		showAlert(LANG_JSON_DATA[langset]['msg_success']);
         		location.href = cur_controller + "?page_action=recordlist";
@@ -4296,14 +4356,36 @@ function getBase64(file, mname, tag_values, youtube_data, isUpdate, isSyncData, 
 
 function uploadDJIFlightListCallback(mname, tag_values, youtube_data, isUpdate, isSyncData, base64file) {
     var userid = getCookie("dev_user_id");
-
-    youtube_data = massageYotubeUrl(youtube_data);
+   	
+   	youtube_data = massageYotubeUrl(youtube_data);
+   	
+   	var price = 0;
+   	if (langset == "KR") {
+   		if (youtube_data == "") {
+					showAlert("영상의 판매를 원하시면 판매하실 원본영상의 유튜브 URL을 입력해 주세요.");
+					hideLoader();
+					return;
+			}
+				
+    	var checked = $("#salecheck").is(":checked");
+			if(checked) {
+				var t_p = $("#price_input_data").val();
+				if (t_p == "") {
+					showAlert("영상의 판매를 원하시면 판매 희망 가격을 입력해 주세요.");
+					hideLoader();
+					return;
+				}
+				
+				price = t_p * 1;
+			}
+    }
 
     var jdata = { "action": "position", "daction": "convert",
     	"clientid": userid, "name": mname,
     	"youtube_data_id": youtube_data,
     	"update" : isUpdate,
     	"sync" : isSyncData,
+    	"price" : price,
     	"tag_values" : tag_values,
     	"recordfile": base64file };
 
@@ -4498,14 +4580,18 @@ function setMoveActionFromMap(index, item) {
     setSliderPos(index);
 }
 
-function saveYoutubeUrl(rname, tag_values, data_id, flat, flng, callback) {
+function saveYoutubeUrl(rname, tag_values, data_id, price, flat, flng, callback) {
 
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "youtube", "youtube_data_id": data_id, "clientid": userid, "name": rname, "tag_values" : tag_values };
     
-    if (flat > 0) {
+    if (flat != -999) {
     		jdata["flat"] = flat;
     		jdata["flng"] = flng;
+    }
+    
+    if (price > 0) {
+    		jdata["price"] = price;
     }
 
     showLoader();
@@ -4608,7 +4694,7 @@ function setYoutubeID() {
 
     if (fi_data_url.indexOf("youtube") >= 0) {
         setYoutubePlayer(fi_data_url);
-        saveYoutubeUrl(cur_flightrecord_name, tag_values, fi_data_url, -1, -1, function(bSuccess) {
+        saveYoutubeUrl(cur_flightrecord_name, tag_values, fi_data_url, -1, -999, -999, function(bSuccess) {
         	if (bSuccess == true) {
         		showAlert(LANG_JSON_DATA[langset]['msg_success']);
         	}
@@ -4876,6 +4962,41 @@ function getQueryVariable(variable) {
             return decodeURIComponent(pair[1]);
         }
     }
+}
+
+
+function requestAddress() {
+		var userid = getCookie("dev_user_id");    
+    var jdata = {"clientid" : userid, "action" : "util", "daction": "address_by_gps"};
+    
+    var latxlng = $("#latxlng").val();
+    var gpsar;
+    if (latxlng != "") {
+    	gpsar = latxlng.split(",");
+    	jdata["lat"] = gpsar[0];
+    	jdata["lng"] = gpsar[1];
+    }
+    else {
+    	jdata["lat"] = $("#lat").val();
+    	jdata["lng"] = $("#lng").val();
+    }
+    
+
+		showLoader();
+  	ajaxRequest(jdata, function (r) {
+	    hideLoader();
+	    if(r.result == "success") {
+	    	
+				$("#address").val(r.address);
+				hideLoader();
+	    }
+	    else {
+	    	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+				hideLoader();
+	    }
+	  }, function(request,status,error) {
+	    hideLoader();
+	  });
 }
 
 function GATAGM(label, category, language) {
