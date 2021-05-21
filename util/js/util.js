@@ -18,6 +18,7 @@ $(function () {
     if (isSet(lang))
         langset = lang;
 
+		utilInit();
 });
 
 
@@ -104,12 +105,18 @@ function showAskDialog(atitle, acontent, oktitle, needInput, okhandler, cancelha
 
 function utilInit() {
 
-		$("#latxlng").keypress(function (e) {
+		$("#address").keypress(function (e) {
         if (e.which == 13){
-                   requestAddress();  // 실행할 이벤트
+        		requestGPS();  //
         }
     });
-    
+
+		$("#lng").keypress(function (e) {
+        if (e.which == 13){
+        		requestAddress();  //
+        }
+    });
+        
 		hideLoader();
 }
 
@@ -179,65 +186,64 @@ function setCaptcha(jdata, successHandler, failHandler) {
 
 
 function requestAddress() {
-    
+    GATAGM("public_address_by_gps", "service", langset);
     var jdata = {"action" : "public_address_by_gps", "daction" : "public_address_by_gps"};
   	jdata["lat"] = $("#lat").val();
   	jdata["lng"] = $("#lng").val();
     
     if (isSet(jdata["lat"]) == false || isSet(jdata["lng"]) == false) {
-    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
-    	return;
+	    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
+	    	return;
     }
 
 		showLoader();
 		setCaptcha(jdata, function (r) {
-							    hideLoader();
-							    if(r.result == "success") {
-							    	
-										$("#address").val(r.address);
-										hideLoader();
-							    }
-							    else {
-							    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
-										hideLoader();
-							    }
-							  }, 
-							  function(request,status,error) {
-							    hideLoader();
-							  }
+		    hideLoader();
+		    if(r.result == "success") {
+					$("#address").val(r.address);
+					showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
+		    }
+		    else {
+		    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
+		    }
+		  }, 
+		  function(request,status,error) {
+		    hideLoader();
+		  }
 		);
 		
 }
 
 
 function requestGPS(address) {
+		GATAGM("public_gps_by_address", "service", langset);
 		var jdata = {"action" : "public_gps_by_address", "daction" : "public_gps_by_address"};
   	jdata["address"] = $("#address").val();
     
     if (isSet(jdata["address"]) == false) {
-    	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
-    	return;
+	    	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
+	    	return;
     }
     
     showLoader();
 		setCaptcha(jdata, function (r) {
 	    	if(r.result == "success") {
-		      if (r.data == null) {
-		      	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
-		        return;
-		      }
-	
-					$("#lat").val(r.data.lat);
-  				$("#lng").val(r.data.lng);
-		     	
-		     	showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
+			      if (r.data == null) {
+			      	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
+			        return;
+			      }
+		
+						$("#lat").val(r.data.lat);
+	  				$("#lng").val(r.data.lng);
+			     	
+			     	showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
 	    	}
 	    	else {
-		  		showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
+		  			showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 	    	}
 	  	},
 	  	function(request,status,error) {
-	  		showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
+	  			showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
 	  	}
 	  );
 }
