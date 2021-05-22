@@ -461,6 +461,11 @@ function setNoFlightlistHistory() {
 
 function setFlightlistHistory() {
 		$('#dataTable-Flight_list').empty();
+		
+		$('#dataTable-Flight_list').append("<div class='text-center'><h4>인근 지역을 드론으로 촬영한 영상들의 목록입니다 - <a href='https://duni.io' target='_new'>촬영요청하기</a></h4></div>");
+		
+		$('#dataTable-Flight_list').append("<hr>");
+		
 	  flightRecArray.forEach(function(item) {
 	    appendFlightListTable(item);
 	  });
