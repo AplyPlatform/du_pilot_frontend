@@ -461,7 +461,6 @@ function setNoFlightlistHistory() {
 
 function setFlightlistHistory() {
 		$('#dataTable-Flight_list').empty();
-		$('#dataTable-Flight_list').append("<hr>");
 	  flightRecArray.forEach(function(item) {
 	    appendFlightListTable(item);
 	  });
