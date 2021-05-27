@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2020-2021 APLY Inc. All rights reserved.
+Copyright 2020 APLY Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -284,7 +284,7 @@ function centerPageInit() {
 	}
 
   $("#main_contents").load(loadPage, function () {      
-      flightRecords2dMapInit();
+      flightRecords2DMapInit();
       centerInit();
   });
 
@@ -307,10 +307,19 @@ function initPilotCenter() {
     }
     else if (page_action == "missiondesign") {
         $("#main_contents").load("mission_design.html", function () {
-            map2dInit();
+            map2DInit();
             selectMonitorIndex("private", 0);
-            addObjectTo2dMap(0, "private", "drone");
+            addObjectTo2DMap(0, "private", "drone");
             designInit();
+        });
+        $("#mission_menu").addClass("active");
+    }
+    else if (page_action == "missiongen") {
+        $("#main_contents").load("mission_gen.html", function () {
+	        	selectMonitorIndex("private", 0);
+	    			map2DInit();
+	    			addObjectTo2DMap(0, "private", "drone");
+            missionGenInit();
         });
         $("#mission_menu").addClass("active");
     }
@@ -322,8 +331,8 @@ function initPilotCenter() {
     }
     else if (page_action == "monitor") {
         $("#main_contents").load("monitor.html", function () {
-            map2dInit();
-            map3dInit();
+            map2DInit();
+            map3DInit();
             monitorInit();
         });
         $("#monitor_menu").addClass("active");
@@ -336,7 +345,7 @@ function initPilotCenter() {
     }
     else if (page_action == "recordlist") {
         $("#main_contents").load("record_list.html", function () {            
-            flightRecords2dMapInit();
+            flightRecords2DMapInit();
             flightrecordListInit("private");
         });
         $("#record_menu").addClass("active");
@@ -344,18 +353,18 @@ function initPilotCenter() {
     else if (page_action == "publicrecordlist") {
         $("#main_contents").load("record_list.html", function () {            
             selectMonitorIndex("private", 0);
-            addObjectTo2dMap(0, "private", "drone");
-            flightRecords2dMapInit();
+            addObjectTo2DMap(0, "private", "drone");
+            flightRecords2DMapInit();
             flightrecordListInit("public");
         });
         $("#record_menu").addClass("active");
     }
     else if (page_action == "publicrecordlist_detail") {
         $("#main_contents").load("record_detail.html", function () {
-            map2dInit();
+            map2DInit();
             selectMonitorIndex("private", 0);
-            addObjectTo2dMap(0, "private", "drone");
-            map3dInit();
+            addObjectTo2DMap(0, "private", "drone");
+            map3DInit();
             addObjectTo3DMap(0, "private", "drone");
             flightDetailInit("public");
         });
@@ -363,10 +372,10 @@ function initPilotCenter() {
     }
     else if (page_action == "recordlist_detail") {
         $("#main_contents").load("record_detail.html", function () {
-            map2dInit();
+            map2DInit();
             selectMonitorIndex("private", 0);
-            addObjectTo2dMap(0, "private", "drone");
-            map3dInit();
+            addObjectTo2DMap(0, "private", "drone");
+            map3DInit();
             addObjectTo3DMap(0, "private", "drone");
             flightDetailInit("private");
         });
@@ -584,6 +593,134 @@ function designInit() {
 }
 
 var oldAddressVal = "";
+
+
+function missionGenInit() {
+		designDataArray = [];
+		
+		$('#btnForGenMissionByAddress').click(function () {
+        GATAGM('btnForGenMissionByAddress', 'CONTENT', langset);
+        
+        genPlanByAddress($('#gen_address').val());
+    });
+        
+    $('#btnForGenMissionByGPS').click(function () {
+        GATAGM('btnForGenMissionByGPS', 'CONTENT', langset);
+        
+        genPlanByGPS($('#lat').val() * 1, $('#lng').val() * 1);
+    });
+    
+    $('#btnForRegistMission').off('click');
+    $('#btnForRegistMission').click(function () {
+        GATAGM('btnForRegistMission', 'CONTENT', langset);
+        askMissionNameForDesignRegister();
+    });
+    
+    hideLoader();
+}
+
+function genPlanByAddress(address) {
+		if (isSet(address) == false) {
+    		showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+        return;
+    }
+    
+    if (oldAddressVal == address) return;
+    
+    oldAddressVal = address;
+    
+    var userid = getCookie("dev_user_id");    
+    var jdata = {"clientid" : userid, "action" : "util", "daction": "gps_by_address", "address" : address};
+		
+		showLoader();
+		ajaxRequest(jdata, function (r) {
+	    	if(r.result == "success") {
+		      if (r.data == null) {
+		      	hideLoader();
+		      	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+		        return;
+		      }
+	
+					$('#lat').val(r.data.lat);
+					$('#lng').val(r.data.lng);
+					
+		     	genPlan(r.data.lat * 1, r.data.lng * 1);
+	    	}
+	    	else {		  	
+	    		hideLoader();	
+	    		showAlert(LANG_JSON_DATA[langset]['msg_input_corrent_address']);
+	    	}
+	  	},
+	  	function(request,status,error) {
+	  		hideLoader();
+	  		showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
+	  });
+}
+
+function genPlanByGPS(lat, lng) {
+		if (isSet(lat) == false || isSet(lng) == false) {
+			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			return;
+		}
+		
+		if (address_flat == lat && address_flng == lng) return;
+		
+		address_flat = lat;
+		address_flng = lng;
+		
+		var userid = getCookie("dev_user_id");    
+    var jdata = {"clientid" : userid, "action" : "util", "daction": "address_by_gps", "lat" : lat, "lng" : lng};
+    
+    showLoader();
+  	ajaxRequest(jdata, function (r) {
+	    if(r.result == "success") {
+	    	
+				$("#gen_address").val(r.address);
+				
+				genPlan(lat, lng);
+	    }
+	    else {
+	    	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+				hideLoader();
+	    }
+	  }, function(request,status,error) {
+	    hideLoader();
+	  });
+}
+
+
+function genPlan(lat, lng) {
+		var data = 
+			[
+				{"alt" : 2, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 2m 고도, 1.5 m/s 속도로 타겟 지점으로 이동
+				{"alt" : 2, "speed" : 1.2, "act" : 5, "actparam" : "-89", "lat" : lat, "lng" : lng}, // gimbal_pitch, 직각아래
+				{"alt" : 2, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
+				{"alt" : 2, "speed" : 1.2, "act" : 2, "actparam" : "0", "lat" : lat, "lng" : lng}, // //start_record
+				{"alt" : 40, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // //stay // 고도 40m까지 업
+				{"alt" : 40, "speed" : 1.2, "act" : 5, "actparam" : "0", "lat" : lat, "lng" : lng}, // gimbal_pitch, 정면
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "180", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 41, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // stay // 고도 41m까지 업
+				{"alt" : 41, "speed" : 1.2, "act" : 4, "actparam" : "-180", "lat" : lat, "lng" : lng}, // stay // 고도 40m까지 업
+				{"alt" : 41, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
+				{"alt" : 2, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 2m 고도
+				{"alt" : 2, "speed" : 1.2, "act" : 3, "actparam" : "0", "lat" : lat, "lng" : lng} // stop_record, 촬영 정지
+			];
+		
+		
+            
+		designDataArray = data;
+		
+		designDataArray.forEach(function(item,index,d) {
+			var dt = {"lat" : lat, "lng" : lng, "alt" : item.alt + 500, "dsec" : index};
+			arrayFlightRecordData.push(dt);
+		});
+		
+    moveToPositionOnMap("private", 0, lat, lng, 600, 0, 0, 0);
+    
+    var dpoint = ol.proj.fromLonLat([lng, lat]);
+    drawCadastral(null, null, dpoint[0], dpoint[1], mainMap2DpointSource);
+    
+}
 
 function flightrecordUploadInit() {
 
@@ -927,7 +1064,7 @@ function missionListInit() {
     getMissionList(); 
 }
 
-function flightRecords2dMapInit() {
+function flightRecords2DMapInit() {
     var dpoint = ol.proj.fromLonLat([126.5203904, 33.3616837]);
 		
 		popup2DMapContainer = document.getElementById('popup');
@@ -1876,12 +2013,10 @@ function startMon() {
 }
 
 
-function first3DcameraMove(owner, fobject) {
+function first3DcameraMove(item) {
     if (!isSet(v3DMapViewer)) return;
 
     var camera = v3DMapViewer.camera;
-
-    var item = fobject[0];
 
     camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
@@ -1906,15 +2041,6 @@ function first3DcameraMove(owner, fobject) {
             }, 2500);
         },
     });
-
-    fobject.forEach(function (d, index) {
-        moveToPositionOnMap(owner, index, d.lat * 1, d.lng * 1, d.alt, d.yaw, d.roll, d.pitch);
-    });
-
-    setTimeout(function () {
-        if (bMonStarted == false) return;
-        nextMon();
-    }, 1000);
 }
 
 function processMon(owner, output) {
@@ -2025,7 +2151,7 @@ function processMon(owner, output) {
             }
 
             addObjectTo3DMap((index + 1), owner, kind);
-            addObjectTo2dMap((index + 1), owner, kind);
+            addObjectTo2DMap((index + 1), owner, kind);
         });
 
 
@@ -2046,8 +2172,17 @@ function processMon(owner, output) {
 
         if (!isSet(v3DMapViewer))
             nexttour(owner, fobject);
-        else
-            first3DcameraMove(owner, fobject);
+        else {
+            first3DcameraMove(fobject[0]);
+            fobject.forEach(function (d, index) {
+				        moveToPositionOnMap(owner, index, d.lat * 1, d.lng * 1, d.alt, d.yaw, d.roll, d.pitch);
+				    });
+				
+				    setTimeout(function () {
+				        if (bMonStarted == false) return;
+				        nextMon();
+				    }, 1000);
+        }
     }
     else nexttour(owner, fobject);
 
@@ -2911,11 +3046,11 @@ function showDataWithName(target, name) {
         var exist_data = setFlightRecordDataToView(target, fdata.data, false);
 				if (exist_data) {
 					if (isSet(fdata.cada)) {
-							setAddressAndCada("#map_address", fdata.address, fdata.cada, mainMap2DpointSource);              
+							setAddressAndCada("#map_address", fdata.address, fdata.cada, mainMap2DpointSource);
           }
           else {
               var dpoint = ol.proj.fromLonLat([fdata.flng, fdata.flat]);
-            	rawCadastral("#map_address", name, dpoint[0], dpoint[1], mainMap2DpointSource);
+            	drawCadastral("#map_address", name, dpoint[0], dpoint[1], mainMap2DpointSource);
           }	            	                            		              
 				}
 				else {
@@ -2996,6 +3131,13 @@ function makeForFlightListMap(index, flat, flng, hasYoutube) {
 }
 
 function updateCadaData(record_name, address, cada_data) {
+		if (isSet(record_name) == false 
+			|| isSet(address) == false 
+			|| isSet(cada_data) == false) {
+				hideLoader();
+				return;
+		}
+		
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "set_cada", "clientid": userid, "cada": cada_data, "address": address, "name": record_name };
 
@@ -3008,12 +3150,14 @@ function updateCadaData(record_name, address, cada_data) {
 }
 
 function drawCadastral(disp_id, name, x, y, vSource) {
+		if (isSet(x) == false || isSet(y) == false) return;
+		
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "cada", "clientid": userid, "x": x, "y": y };
 
     ajaxRequest(jdata, function (r) {
-    	  hideLoader();
         if (r == null || r.data == null || r.data.response.status !== "OK") {
+        	hideLoader();
         	return;
         }
 
@@ -3051,13 +3195,14 @@ function drawCadastral(disp_id, name, x, y, vSource) {
             } catch (e) {
             }
         }
-
-        setAddressAndCada(disp_id, _addressText, _features, vSource);
-        setAddressAndCada(disp_id, _addressText, _features, vVectorForHistory);
-
-				if (isSet(name))
+        
+        setAddressAndCada(disp_id, _addressText, response.result.featureCollection.features, vSource);
+        setAddressAndCada(disp_id, _addressText, response.result.featureCollection.features, vVectorForHistory);
+        
+        if (isSet(name))
         	updateCadaData(name, _addressText, response.result.featureCollection.features);
-
+        	
+        hideLoader();
     }, function (request, status, error) {
         hideLoader();
         monitor("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -3242,7 +3387,10 @@ function appendFlightRecordTable(target, item) {
         });
     }
 
-
+    $('#map_address_' + curIndex).click(function () {
+        GATAGM('map_address_' + curIndex, 'CONTENT', langset);
+        moveFlightHistoryMap(flat, flng);
+    });
 
     var retSource = null;
     if (flat != -999) {
@@ -3264,11 +3412,6 @@ function appendFlightRecordTable(target, item) {
 
     if (flat != -999) {
         moveFlightHistoryMap(flat, flng);
-
-		    $('#map_address_' + curIndex).click(function () {
-		        GATAGM('map_address_' + curIndex, 'CONTENT', langset);
-		        moveFlightHistoryMap(flat, flng);
-		    });
     }
 
     nAppendListCount++;
@@ -3518,7 +3661,7 @@ function registMission(mname, mspeed) {
     ajaxRequest(jdata, function (r) {
         if (r.result == "success") {
 				    alert(mname + " (" + mspeed + "m/s) : " + LANG_JSON_DATA[langset]['msg_success']);
-				    location.href = cur_controller + "?page_action=list";
+				    location.href = cur_controller + "?page_action=missionlist";
         }
         else {
             showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
@@ -3684,7 +3827,7 @@ function setFlightRecordDataToView(target, cdata, bfilter) {
 
     drawLineGraph();
 
-    draw3dMap();
+    draw3DMap();
 
     var item = arrayFlightRecordData[0];
     moveToPositionOnMap("private", 0, item.lat * 1, item.lng * 1, item.alt, item.yaw, item.roll, item.pitch);
@@ -3820,7 +3963,7 @@ function getColor(colorName, alpha) {
     return Cesium.Color.fromAlpha(color, parseFloat(alpha));
 }
 
-function draw3dMap() {
+function draw3DMap() {
     var start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16));
 
     var position = computeCirclularFlight(start);
@@ -3840,7 +3983,7 @@ function remove3dObjects() {
     }
 }
 
-function addObjectTo3DMap(index, owner, kind) {
+function addObjectTo3DMapWithGPS(index, owner, kind, lat, lng, alt) {
 
     if (!isSet(planePrimitives)) {
         return;
@@ -3853,7 +3996,7 @@ function addObjectTo3DMap(index, owner, kind) {
     var camera = v3DMapViewer.camera;
 
     var position = Cesium.Cartesian3.fromDegrees(
-        126.5610038, 33.3834381, 3000
+        lng, lat, alt
     );
 
     var glbUrl, gColor, gColor;
@@ -3912,7 +4055,11 @@ function addObjectTo3DMap(index, owner, kind) {
 
 }
 
-function map3dInit() {
+function addObjectTo3DMap(index, owner, kind) {
+    addObjectTo3DMapWithGPS(index, owner, kind, 33.3834381, 126.5610038, 3000);
+}
+
+function map3DInit() {
   	if(use3DMap == false) {
 	    $("#main3dMap").hide();//for the license
 	    $("#map3dViewer").text(LANG_JSON_DATA[langset]['msg_sorry_now_on_preparing']);
@@ -4051,7 +4198,7 @@ function remove2dObjects() {
     arrayCurrentMainMap2DObjectPosImage = null;
 }
 
-function addObjectTo2dMap(index, owner, kind) {
+function addObjectTo2DMap(index, owner, kind) {
     if (!isSet(mainMap2DVectorSource)) return;
 
     if (!isSet(arrayCurrentMainMap2DObjectPos)) {
@@ -4094,7 +4241,7 @@ function addObjectTo2dMap(index, owner, kind) {
     mainMap2DVectorSource.addFeature(current_pos);
 }
 
-function map2dInit() {
+function map2DInit() {
 
     var styles = [
         'Road',
@@ -4172,6 +4319,8 @@ function map2dInit() {
 
     // update the HTML page when the position changes.
     geolocation.on('change', function () {
+    		if (!$('#accuracy')) return;
+    		
         $('#accuracy').text(geolocation.getAccuracy() + ' [m]');
         $('#altitude').text(geolocation.getAltitude() + ' [m]');
         $('#altitudeAccuracy').text(geolocation.getAltitudeAccuracy() + ' [m]');
@@ -4185,7 +4334,8 @@ function map2dInit() {
     // handle geolocation error.
     geolocation.on('error', function (error) {
         var info = $('#monitor');
-        info.text(error.message);
+        if (info)
+        	info.text(error.message);
     });
 
     if (isSet($('#track'))) {
@@ -4242,7 +4392,7 @@ function move2DMapIcon(owner, index, lat, lng, alt, yaw) {
     	arrayCurrentMainMap2DObjectPosImage[owner][index].setRotation(yaw);
     }
 
-    if (owner == currentMonitorOwner && currentMonitorIndex == index)
+    if (isSet(currentMainMap2DView) && owner == currentMonitorOwner && currentMonitorIndex == index)
         currentMainMap2DView.setCenter(location);
 }
 
