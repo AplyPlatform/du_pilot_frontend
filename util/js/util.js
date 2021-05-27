@@ -892,6 +892,7 @@ function requestAddress() {
 					oldAddressVal = r.data.address;
 
 					if (isSet(r.data.data)) {
+						$("#historyMapArea").hide();
 						flightRecArray = r.data.data;
 	      		setFlightlistHistory(oldLatVal + "," + oldLngVal);
 					}
