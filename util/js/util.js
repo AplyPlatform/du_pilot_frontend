@@ -49,7 +49,7 @@ var goToTop = function() {
 		});
 
 	};
-	
+
 function setCookie(cName, cValue, cDay) {
     var date = new Date();
     date.setTime(date.getTime() + cDay * 60 * 60 * 24 * 1000);
@@ -144,7 +144,7 @@ function utilInit() {
         		requestAddress();  //
         }
     });
-    
+
     initYoutubeAPI();
 		hideLoader();
 }
@@ -203,11 +203,11 @@ function getQueryVariable(variable) {
 function setCaptcha(jdata, successHandler, failHandler) {
 
 	grecaptcha.ready(function () {
-        grecaptcha.execute('6LehUpwUAAAAAKTVpbrZ2ciN3_opkJaKOKK11qY6', { action: 'action_name' })
+        grecaptcha.execute('6LfPn_UUAAAAAN-EHnm2kRY9dUT8aTvIcfrvxGy7', { action: 'action_name' })
             .then(function (token) {
  								jdata['captcha_token'] = token;
 						  	ajaxRequest(jdata, successHandler, failHandler);
-                
+
             });
   });
 
@@ -265,24 +265,24 @@ var stopIndex = null;
 var playIndex = null;
 
 function onPlayerStateChange(event) {
-	for ( var i = 0 ; i < players.length ; i ++ ) { // 각 플레이어의 상태를      
-      var state = players[i].getPlayerState(); 
+	for ( var i = 0 ; i < players.length ; i ++ ) { // 각 플레이어의 상태를
+      var state = players[i].getPlayerState();
 
       // 초기 화면에서 재생 된 경우
-      if ( state === YT.PlayerState.PLAYING && playingIndex === null ) { 
-      	playingIndex = i;  
+      if ( state === YT.PlayerState.PLAYING && playingIndex === null ) {
+      	playingIndex = i;
       	// 다른 플레이어가 재생 중에 그 선수 이외가 재생 된 경우
-      } else if ( ( state === YT.PlayerState.BUFFERING || state === YT.PlayerState.PLAYING ) && playingIndex !== i ) { 
+      } else if ( ( state === YT.PlayerState.BUFFERING || state === YT.PlayerState.PLAYING ) && playingIndex !== i ) {
       	stopIndex = playingIndex;
         playIndex = i;
-      } 
-  }    
-          
+      }
+  }
+
   // 재생 중이던 플레이어를 일시 중지
   if ( stopIndex !== null ) { players[stopIndex].pauseVideo();
   	stopIndex = null;
-  }  
-      
+  }
+
 	if ( playIndex !== null ) { playingIndex = playIndex ;
 	   playIndex = null;
 	}
@@ -293,7 +293,7 @@ function onPlayerStateChange(event) {
 	var flightHistoryView;
 	var mainMap2DpointSource;
 	var mainMap2DCadaSource;
-	
+
 	var vVectorLayerForCompany;
 	var vVectorLayerForHistory;
 
@@ -303,11 +303,11 @@ function onPlayerStateChange(event) {
 	var container = document.getElementById('popup');
 	var content = document.getElementById('popup-content');
 	var closer = document.getElementById('popup-closer');
-	
+
 	function flightHistoryMapInit() {
 		var dpoint = ol.proj.fromLonLat([0, 0]);
 
-		container.style.visibility = "visible"; 
+		container.style.visibility = "visible";
 		var overlay = new ol.Overlay({
 		  element: container,
 		  autoPan: true,
@@ -321,7 +321,7 @@ function onPlayerStateChange(event) {
 		  closer.blur();
 		  return false;
 		};
-		
+
 	  flightHistoryView = new ol.View({
 	      center: dpoint,
 	      zoom: 14
@@ -428,15 +428,15 @@ function onPlayerStateChange(event) {
 	        maxZoom: 19
 	    })
 		});
-		
+
 		mainMap2DpointSource = new ol.source.Vector({});
-		
+
 		var pointLayer = new ol.layer.Vector({
         source: mainMap2DpointSource
     });
-    
+
     mainMap2DCadaSource = new ol.source.Vector({});
-		
+
 		var cadaLayer = new ol.layer.Vector({
         source: mainMap2DCadaSource,
         style: new ol.style.Style({
@@ -466,17 +466,17 @@ function onPlayerStateChange(event) {
 
 		$("#historyMapArea").hide();
 	}
-	
+
 	function createNewCompanyIconFor2DMap(i, item) {
 		var pos_icon = new ol.Feature({
 	          geometry: new ol.geom.Point(ol.proj.fromLonLat([item.lng * 1, item.lat * 1])),
 	          cname: item.name,
 	          cindex : item.cid
 	      });
-	  
+
 	  return pos_icon;
 	}
-	
+
 	function getCompanyList() {
 		flightCompanySource.clear();
 
@@ -507,7 +507,7 @@ function onPlayerStateChange(event) {
 	    hideLoader();
 	  });
 	}
-	
+
 	function getCompanyInfo(title, cid) {
 	  var jdata = {"action": "public_company_detail", "cid" : cid};
 
@@ -650,9 +650,9 @@ function addNewIconFor2DMap(npos, vsource) { //todo
 		var pos_icon = new ol.Feature({
 	          geometry: new ol.geom.Point(npos)
 	  });
-	  
+
 	  pos_icon.setStyle(iconStyle);
-	  
+
 	  vsource.addFeature(pos_icon);
 }
 
@@ -671,11 +671,11 @@ function makeForFlightListMap(index, flat, flng, address, hasYoutube) {
 	  var vVectorLayer = new ol.layer.Vector({
 	      source: vSource,
 	      zIndex: 77,
-	      style: new ol.style.Style({	    
+	      style: new ol.style.Style({
 	      			stroke: new ol.style.Stroke({
                 color: '#ff0000',
                 width: 2
-            	}),        
+            	}),
 	            image: new ol.style.Circle({
 					            radius: 7,
 					            fill: new ol.style.Fill({ color: '#ff333377' }),
@@ -712,7 +712,7 @@ function makeForFlightListMap(index, flat, flng, address, hasYoutube) {
 
 	  var icon = createNewIconFor2DMap(index, {lat:flat, lng:flng, alt:0, address: address, hasYoutube : hasYoutube});
 	  vSource.addFeature(icon);
-	  
+
 	  return vSource;
 }
 
@@ -759,20 +759,20 @@ function setAddressAndCada(address_id, address, cada, wsource) {
 	  if (address_id != null && isSet($(address_id)))
 	  	$(address_id).text(address);
 }
-	
+
 function appendFlightListTable(item) {
 		var name = item.name;
 		var dtimestamp = item.dtime;
-		var data = item.data;		
+		var data = item.data;
 		var address = item.address;
 		var cada = item.cada;
 		var youtube_url = item.youtube_data_id;
 		var curIndex = tableCount;
 		var tag_values = item.tag_values;
 	  var appendRow = "<div class='service' id='flight-list-" + curIndex + "' name='flight-list-" + curIndex + "'><div class='row'>";
-	  
+
 	  var flat = (isSet(item.flat) && item.flat != "" ? item.flat * 1 : -999);
-		var flng = (isSet(item.flng) && item.flng != "" ? item.flng * 1 : -999);	  
+		var flng = (isSet(item.flng) && item.flng != "" ? item.flng * 1 : -999);
 
 	  if (flat != -999) {
 	  	appendRow = appendRow + "<div class='col-md-4'><div id='map_" + curIndex + "' style='height:200px;width:100%;'></div>";
@@ -785,7 +785,7 @@ function appendFlightListTable(item) {
 	  appendRow = appendRow + "<div id='youTubePlayer_" + curIndex + "'></div>";//row
 	  appendRow = appendRow + "</div><div class='col-md-4'>";//row
 		appendRow = appendRow
-						+ "<a onclick='GATAGM(\"util_flight_list_public_title_click\", \"CONTENT\", \"" 
+						+ "<a onclick='GATAGM(\"util_flight_list_public_title_click\", \"CONTENT\", \""
 						+ name + "\", \""
 						+ langset + "\");' href='/center/main.html?page_action=publicrecordlist_detail&record_name="
 						+ encodeURIComponent(name) + "'>" + name + "</a><hr size=1 color=#eeeeee>";
@@ -793,9 +793,9 @@ function appendFlightListTable(item) {
 	  if (flat != -999) {
 	  		appendRow = appendRow + "<small><span class='text-xs' id='map_address_" + curIndex + "'></span></small>";
 	  }
-	  
+
 	  if (isSet(tag_values) && tag_values != "") {
-	  	appendRow = appendRow + "<br><br>";    	
+	  	appendRow = appendRow + "<br><br>";
     	var tag_array = JSON.parse(tag_values);
     	tag_array.forEach(function(tg) {
     		appendRow = appendRow + "<a href=/center/main.html?page_action=publicrecordlist&keyword=" + encodeURIComponent(tg.value) + "><span class='badge badge-light'>" + tg.value + "</span></a> ";
@@ -807,7 +807,7 @@ function appendFlightListTable(item) {
 	  appendRow = appendRow + "</div></div></div>"; //col, row, service,
 
 	  if (isSet(youtube_url)) {
-	  	var vid = getYoutubeQueryVariable(youtube_url);			
+	  	var vid = getYoutubeQueryVariable(youtube_url);
 			appendRow = appendRow + "<a id='video-pop-" + curIndex +  "' video-lang='" + langset + "' video-name='" + name + "' video-url='https://www.youtube.com/watch?v=" + vid + "'></a>";
 	  }
 
@@ -839,17 +839,17 @@ function appendFlightListTable(item) {
 
 function setNoFlightlistHistory(latlng) {
 		$('#dataTable-Flight_list').empty();
-		
+
 		let msg = "<div class='service'><h4>이 지역을 드론으로 촬영한 영상이 보고 싶지 않으세요?</h4><a class='btn btn-primary btn-lg' role='button' href='https://duni.io' target='_new' onClick='GATAGM(\"util_request_duni_btn_1\",\"SERVICE\",\"" + latlng + "\",\"" + langset + "\");'>드론촬영 요청</a></div>";
 		$('#dataTable-Flight_list').append(msg);
 }
 
 function setFlightlistHistory(latlng) {
 		$('#dataTable-Flight_list').empty();
-		
+
 		$('#dataTable-Flight_list').append("<div class='text-center'><h4>인근 지역을 드론으로 촬영한 영상들의 목록입니다 - <a href='https://duni.io' target='_new' onClick='GATAGM(\"util_request_duni_btn_2\",\"SERVICE\",\"" + latlng + "\",\"" + langset + "\");'>드론촬영 요청하기</a></h4></div>");
 		$('#dataTable-Flight_list').append("<hr>");
-		
+
 	  flightRecArray.forEach(function(item) {
 	    appendFlightListTable(item);
 	  });
@@ -860,12 +860,12 @@ var oldLatVal = -999;
 var oldLngVal = -999;
 
 function requestAddress() {
-    
+
     var jdata = {"action" : "public_address_by_gps", "daction" : "public_address_by_gps"};
   	jdata["lat"] = $("#lat").val() * 1;
   	jdata["lng"] = $("#lng").val() * 1;
-  	
-    
+
+
     if (isSet(jdata["lat"]) == false || isSet(jdata["lng"]) == false) {
 	    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 	    	return;
@@ -873,14 +873,14 @@ function requestAddress() {
 
 		//같은 값으로 조회 시도
 		if (oldLatVal == jdata["lat"] && oldLngVal == jdata["lng"]) return;
-		
+
 		oldLatVal = jdata["lat"];
 		oldLngVal = jdata["lng"];
-		
+
   	var npos = ol.proj.fromLonLat([oldLngVal, oldLatVal]);
   	jdata["x"] = npos[0];
   	jdata["y"] = npos[1];
-		
+
 		GATAGM("public_address_by_gps", "SERVICE", oldLatVal + "," + oldLngVal, langset);
 
 		showLoader();
@@ -888,9 +888,9 @@ function requestAddress() {
 		    hideLoader();
 		    if(r.result == "success") {
 					$("#address").val(r.data.address);
-					
+
 					oldAddressVal = r.data.address;
-					
+
 					if (isSet(r.data.data)) {
 						flightRecArray = r.data.data;
 	      		setFlightlistHistory(oldLatVal + "," + oldLngVal);
@@ -898,7 +898,7 @@ function requestAddress() {
 					else {
 						$("#historyMapArea").show();
 						moveFlightHistoryMapAndCada(oldLatVal, oldLngVal, r.data.cada.response.result.featureCollection.features);
-					
+
 						setNoFlightlistHistory(oldLatVal + "," + oldLngVal);
 						showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
 					}
@@ -906,33 +906,33 @@ function requestAddress() {
 		    else {
 		    	showAlert("좌표를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 		    }
-		  }, 
+		  },
 		  function(request,status,error) {
 		    hideLoader();
 		    showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
 		  }
 		);
-		
+
 }
 
 
 function requestGPS(address) {
-		
+
 		var jdata = {"action" : "public_gps_by_address", "daction" : "public_gps_by_address"};
   	jdata["address"] = $("#address").val();
-    
+
     if (isSet(jdata["address"]) == false) {
 	    	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 	    	return;
     }
-    
+
     //같은 값으로 조회 시도
 		if (oldAddressVal == jdata["address"]) return;
-		
+
 		oldAddressVal = jdata["address"];
-		
+
 		GATAGM("public_gps_by_address", "SERVICE", oldAddressVal, langset);
-    
+
     showLoader();
 		setCaptcha(jdata, function (r) {
 				hideLoader();
@@ -941,10 +941,10 @@ function requestGPS(address) {
 			      	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 			        return;
 			      }
-		
+
 						$("#lat").val(r.data.lat);
 	  				$("#lng").val(r.data.lng);
-			     	
+
 			     	requestAddress();
 	    	}
 	    	else {

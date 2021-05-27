@@ -24,7 +24,7 @@ $(function () {
 
     $("#droneplay_name").attr("placeholder", LANG_JSON_DATA[langset]['name_label']);
     $("#droneplay_email").attr("placeholder", LANG_JSON_DATA[langset]['email_label']);
-    $("#droneplay_phonenumber").attr("placeholder", LANG_JSON_DATA[langset]['phone_label']);    
+    $("#droneplay_phonenumber").attr("placeholder", LANG_JSON_DATA[langset]['phone_label']);
 
     $("#register_label").text(LANG_JSON_DATA[langset]['register_label']);
     $("#privacy_link_label").text(LANG_JSON_DATA[langset]['privacy_link_label']);
@@ -51,10 +51,10 @@ function onAgree() {
 
 function showPrivacyButton() {
 	  GATAGM('privacy_link_label', 'CONTENT', langset);
-	  	  
+
 	  $.get("/privacy_" + langset + "_raw.html", function(html_string){
       showAlert(html_string);
-   	});	  	      
+   	});
 }
 
 function goHomeButton(btnName) {
@@ -95,7 +95,7 @@ function requestRegister() {
     showLoader();
 
     grecaptcha.ready(function () {
-        grecaptcha.execute('6LehUpwUAAAAAKTVpbrZ2ciN3_opkJaKOKK11qY6', { action: 'action_name' })
+        grecaptcha.execute('6LfPn_UUAAAAAN-EHnm2kRY9dUT8aTvIcfrvxGy7', { action: 'action_name' })
             .then(function (token) {
                 var droneplay_name = $('#droneplay_name').val();
                 var droneplay_email = $('#droneplay_email').val();
