@@ -135,6 +135,12 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
 		
 		<div class="gtco-services gtco-section">
 		  <div class="gtco-container">
+		  			<div class="service-wrap" id="historyMapArea">
+		  				<div class="service">
+		  					<div id="historyMap" style="width:100%;height:300px"></div>
+		  				</div>
+	        	</div>
+	        	
 	        	<div class="service-wrap" id="dataTable-Flight_list">
 	        			
 	        	</div>
@@ -212,8 +218,16 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
 				</div>
 			</div>
 		</footer>
-	
 		
+		<div id="popup" class="ol-popup">
+    	<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    	<div id="popup-content"></div>
+  	</div>
+	
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+	
 		<div class="modal fade" id="errorModal">
 	    	<div class="modal-dialog modal-sm">
 	      		<div class="modal-content">

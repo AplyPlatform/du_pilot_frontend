@@ -3053,11 +3053,10 @@ function drawCadastral(disp_id, name, x, y, vSource) {
         }
 
         setAddressAndCada(disp_id, _addressText, _features, vSource);
-        if (vVectorForHistory) {
-            setAddressAndCada(disp_id, _addressText, _features, vVectorForHistory);
-        }
+        setAddressAndCada(disp_id, _addressText, _features, vVectorForHistory);
 
-        updateCadaData(name, _addressText, response.result.featureCollection.features);
+				if (isSet(name))
+        	updateCadaData(name, _addressText, response.result.featureCollection.features);
 
     }, function (request, status, error) {
         hideLoader();
@@ -3069,11 +3068,7 @@ function drawCadastral(disp_id, name, x, y, vSource) {
 
 
 function setAddressAndCada(address_id, address, cada, wsource) {
-    //var curText = getFlightRecordTitle();
-    var _features = new Array();
-    var _addressText = "";
-
-
+   
     if (isSet(c3ddataSource)) {
         Cesium.GeoJsonDataSource.crsNames['customProj'] = function (coords) {
             var lonlat = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
@@ -3095,7 +3090,15 @@ function setAddressAndCada(address_id, address, cada, wsource) {
             clampToGround: true
         });
     }
+    
+    if (isSet($(address_id)))
+        $(address_id).text(address);
+        
+    if (isSet(wsource) == false) return;
 
+		var _features = new Array();
+    var _addressText = "";
+    
     for (var idx = 0; idx < cada.length; idx++) {
         try {
             var geojson_Feature = cada[idx];
@@ -3128,11 +3131,8 @@ function setAddressAndCada(address_id, address, cada, wsource) {
         }
     }
 
-
     wsource.addFeatures(_features);
-
-    if (isSet($(address_id)))
-        $(address_id).text(address);
+    
 }
 
 function appendFlightRecordTable(target, item) {
@@ -3242,10 +3242,7 @@ function appendFlightRecordTable(target, item) {
         });
     }
 
-    $('#map_address_' + curIndex).click(function () {
-        GATAGM('map_address_' + curIndex, 'CONTENT', langset);
-        moveFlightHistoryMap(flat, flng);
-    });
+
 
     var retSource = null;
     if (flat != -999) {
@@ -3267,6 +3264,11 @@ function appendFlightRecordTable(target, item) {
 
     if (flat != -999) {
         moveFlightHistoryMap(flat, flng);
+
+		    $('#map_address_' + curIndex).click(function () {
+		        GATAGM('map_address_' + curIndex, 'CONTENT', langset);
+		        moveFlightHistoryMap(flat, flng);
+		    });
     }
 
     nAppendListCount++;
