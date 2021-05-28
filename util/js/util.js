@@ -618,10 +618,12 @@ function onPlayerStateChange(event) {
 	}
 
 	function moveFlightHistoryMapAndCada(lat, lng, cada) {
+		$("#historyMapArea").show();
+		
 		var npos = ol.proj.fromLonLat([lng, lat]);
 		
 		container.style.opacity = 0.8;
-		var latlng = lat + "_" + lng;
+		var latlng = lat + "," + lng;
 		overlayBoxcontent.innerHTML = "<div><h4>이 지역을 드론으로 촬영한<br>영상이 보고 싶지 않으세요?</h4><a class='btn btn-primary btn-sm' role='button' href='https://duni.io/index.php?page=rental' target='_new' onClick='GATAGM(\"util_request_duni_btn_1\",\"SERVICE\",\"" + latlng + "\",\"" + langset + "\");'>드론촬영 요청</a></div>";
 		overlayBox.setPosition(npos);
 		
@@ -649,7 +651,7 @@ function createNewIconFor2DMap(i, item) {
 }
 
 
-function addNewIconFor2DMap(npos, vsource) { //todo
+function addNewIconFor2DMap(npos, vsource) {
 		var iconStyle = new ol.style.Style({
 		  image: new ol.style.Icon({
 		    src: '../images/pin.png',
@@ -850,6 +852,7 @@ function appendFlightListTable(item) {
 	}
 
 function setFlightlistHistory(latlng) {
+		$("#historyMapArea").hide();
 		$('#dataTable-Flight_list').empty();
 
 		$('#dataTable-Flight_list').append("<div class='text-center'><h4>인근 지역을 드론으로 촬영한 영상들의 목록입니다 - <a href='https://duni.io' target='_new' onClick='GATAGM(\"util_request_duni_btn_2\",\"SERVICE\",\"" + latlng + "\",\"" + langset + "\");'>드론촬영 요청하기</a></h4></div>");
@@ -900,12 +903,12 @@ function requestAddress() {
 					oldAddressVal = r.data.address;
 
 					if (isSet(r.data.data)) {
-						$("#historyMapArea").hide();
+						
 						flightRecArray = r.data.data;
 	      		setFlightlistHistory(oldLatVal + "," + oldLngVal);
 					}
 					else {
-						$("#historyMapArea").show();
+						
 						moveFlightHistoryMapAndCada(oldLatVal, oldLngVal, r.data.cada);
 						showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
 					}
