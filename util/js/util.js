@@ -630,8 +630,8 @@ function onPlayerStateChange(event) {
 		flightHistoryView.setCenter(npos);
 		addNewIconFor2DMap(npos, mainMap2DpointSource);
 		
-		if (isSet(cada))
-			setAddressAndCada(null, null, cada.response.result.featureCollection.features, mainMap2DCadaSource);
+		//if (isSet(cada))
+		//	setAddressAndCada(null, null, cada.response.result.featureCollection.features, mainMap2DCadaSource);
 	}
 
 var flightRecArray = [];
