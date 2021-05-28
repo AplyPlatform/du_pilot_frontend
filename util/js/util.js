@@ -627,13 +627,8 @@ function onPlayerStateChange(event) {
 		overlayBox.setPosition(npos);
 		
 		flightHistoryView.setCenter(npos);
-		
-		
 		addNewIconFor2DMap(npos, mainMap2DpointSource);
-		
-		alert("1");
-		return;
-		
+
 		if (isSet(cada))
 			setAddressAndCada(null, null, cada.response.result.featureCollection.features, mainMap2DCadaSource);
 	}
