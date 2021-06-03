@@ -125,7 +125,7 @@ UploadVideo.prototype.uploadFile = function (file) {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
-                showAlert("Failed to upload. (" + message + ")");
+                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "<br>" + message); //todo
             }
         }.bind(this),
         onProgress: function (data) {
@@ -153,7 +153,7 @@ UploadVideo.prototype.uploadFile = function (file) {
             this.videoId = uploadResponse.id;
             if (this.onUploadCompleteCallback)
             	this.onUploadCompleteCallback(this.videoId);
-            this.pollForVideoStatus();
+            //this.pollForVideoStatus();
         }.bind(this)
     });
     // This won't correspond to the *exact* start of the upload, but it should be close enough.
