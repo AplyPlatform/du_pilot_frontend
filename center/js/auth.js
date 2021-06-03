@@ -21,6 +21,10 @@ function tryAuth() {
     window.setTimeout(checkAuth, 1);
 }
 
+function tryUploadVideo() {
+		window.setTimeout(uploadVideo.handleUploadClicked, 1);
+}
+
 // Attempt the immediate OAuth 2.0 client flow as soon as the page loads.
 // If the currently logged-in Google Account has previously authorized
 // the client specified as the OAUTH2_CLIENT_ID, then the authorization
@@ -43,7 +47,7 @@ function handleAuthResult(authResult) {
         
         if (uploadVideo) {
         	uploadVideo.ready(gapi.auth.getToken().access_token);
-        	uploadVideo.handleUploadClicked();
+        	tryUploadVideo();
         }
         else
         	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
