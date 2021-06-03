@@ -814,9 +814,6 @@ function flightrecordUploadInit() {
         }       
 		});
 		
-		$("#set_youtube_address_view").hide();
-    $("#set_youtube_upload_view").show();
-    
     uploadVideo = new UploadVideo();
     uploadVideo.onUploadCompleteCallback = function (vid) {
     	$('#youtube_url_data').val("https://youtube.com/watch?v=" + vid);
@@ -829,6 +826,9 @@ function flightrecordUploadInit() {
 		}
 		
   	setUpload(true);
+  	
+  	$("#set_youtube_address_view").hide();
+    $("#set_youtube_upload_view").show();
     hideLoader();
 }
 
