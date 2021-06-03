@@ -167,6 +167,11 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
 UploadVideo.prototype.handleUploadClicked = function () {
 		GATAGM('uploadVideoToYoutubeButton', 'CONTENT', langset);
 		
+		setTimeout(this.uploadVideoAction.bind(this), 1);
+};
+
+UploadVideo.prototype.uploadVideoAction = function () {
+
 		if (upload_not_allow){
 				showAlert(LANG_JSON_DATA[langset]['msg_sorry_now_on_preparing_youtube']);
 				return;
@@ -204,7 +209,8 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		var fname = $('#record_name_field').val();
 		var fdesc = $('#movieDescription').val();
     this.uploadFile($('#movieFile').get(0).files[0], fname, fdesc);
-};
+
+}
 
 UploadVideo.prototype.pollForVideoStatus = function () {
     this.gapi.client.request({
