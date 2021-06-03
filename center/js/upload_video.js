@@ -73,6 +73,7 @@ UploadVideo.prototype.ready = function (accessToken) {
     this.accessToken = accessToken;
     this.gapi = gapi;
     this.authenticated = true;
+    /*
     this.gapi.client.request({
         path: '/youtube/v3/channels',
         params: {
@@ -87,7 +88,8 @@ UploadVideo.prototype.ready = function (accessToken) {
                 $('#channel-thumbnail').attr('src', response.items[0].snippet.thumbnails.default.url);
             }
         }.bind(this)
-    });        
+    });
+    */        
 };
 
 /**
