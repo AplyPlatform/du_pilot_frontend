@@ -29,11 +29,16 @@
 			            </div>			            			            
 			            
 			            <div id="upload_tabs">
-										<ul>
-											  <li><a href="#dji_upload_filed" id="tab_menu_upload_selector_dji" onclick="GATAGM('tab_menu_upload_selector_dji', 'CONTENT', langset);setUpload(true);">비행기록 업로드</a></li>
-											  <li><a href="#address_location_field" id="tab_menu_upload_selector_address" onclick="GATAGM('tab_menu_upload_selector_address', 'CONTENT', langset);setUpload(false);">주소 입력</a></li>
-										</ul>
-				            				            
+			            	<div>
+			            			<input type="radio" class="form-control" id="tab_menu_upload_selector_dji" name="record_kind" value="dji_upload_filed" onclick="GATAGM('tab_menu_upload_selector_dji', 'CONTENT', langset);setUpload(true); checked>
+  											<label for="tab_menu_upload_selector_dji">비행기록 업로드</label>
+  									</div>
+  									<div>
+			            			<input type="radio" class="form-control" id="tab_menu_upload_selector_address" name="record_kind" value="address_location_field" onclick="GATAGM('tab_menu_upload_selector_address', 'CONTENT', langset);setUpload(false);>
+  											<label for="tab_menu_upload_selector_address">주소 입력</label>
+  									</div>
+  									
+									          
 										<div id="dji_upload_filed">
 											<br>
 											<div>
