@@ -22,7 +22,7 @@ function tryAuth() {
 }
 
 function tryUploadVideo() {
-		window.setTimeout(uploadVideo.handleUploadClicked, 1);
+		window.setTimeout(uploadVideo.handleUploadClicked.bind(uploadVideo), 1);
 }
 
 // Attempt the immediate OAuth 2.0 client flow as soon as the page loads.
