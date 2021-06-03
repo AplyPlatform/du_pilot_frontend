@@ -2875,7 +2875,6 @@ function showDataWithName(target, name) {
     setFlightRecordTitle(name);
     cur_flightrecord_name = name;
 
-    $("#movieTitle").val(name);
     $("#movieDescription").val(name);
     $("#btnForPublic").hide();
     $("#btnForDelete").hide();

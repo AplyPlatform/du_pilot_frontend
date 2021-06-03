@@ -104,14 +104,14 @@ UploadVideo.prototype.uploadFile = function (file) {
 			return;
 		}
 
-		if ($('#movieTitle').val() == "") {
+		if ($('#record_name_field').val() == "") {
 			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
 			return;
 		}
 				
     var metadata = {
         snippet: {
-            title: $('#movieTitle').val(),
+            title: $('#record_name_field').val(),
             description: $('#movieDescription').text(),
             tags: this.tags,
             categoryId: this.categoryId
