@@ -3438,6 +3438,7 @@ function setYoutubeVideo(index, youtube_url) {
       height: '200',
       width: '100%',
       videoId: vid,
+      host: 'https://www.youtube.com',
       events: {
         'onReady': onPlayerReadyForList,
         'onStateChange': onPlayerStateChange
@@ -4960,6 +4961,7 @@ function onYouTubeIframeAPIReady() {
         width: '1000',
         height: '400',
         videoId: youtube_data_id,
+        host: 'https://www.youtube.com',
         playerVars: { rel: 0 },//\uCD94\uCC9C\uC601\uC0C1 \uC548\uBCF4\uC5EC\uC8FC\uAC8C \uC124\uC815
         events: {
             'onReady': onPlayerReady, //\uB85C\uB529\uD560\uB54C \uC774\uBCA4\uD2B8 \uC2E4\uD589
@@ -4994,7 +4996,9 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-		for ( var i = 0 ; i < players.length ; i ++ ) { // 각 플레이어의 상태를      
+		for ( var i = 0 ; i < players.length ; i ++ ) { //
+				if(typeof players[i].getPlayerState === 'undefined') continue;
+				
         var state = players[i].getPlayerState(); 
  
         // 초기 화면에서 재생 된 경우
