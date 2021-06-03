@@ -61,6 +61,9 @@ var UploadVideo = function () {
 
     this.uploadStartTime = 0;        
     
+    
+    this.onUploadCompleteCallback = null;
+    
     $('#uploadVideoToYoutubeButton').off('click');
     $('#uploadVideoToYoutubeButton').on("click", this.handleUploadClicked.bind(this));
 };
@@ -122,7 +125,7 @@ UploadVideo.prototype.uploadFile = function (file) {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
-                showAlert("오류가 발생했습니다. 잠시후 다시 시도해 주세요. (" + message + ")");
+                showAlert("Failed to upload. (" + message + ")");
             }
         }.bind(this),
         onProgress: function (data) {
@@ -135,8 +138,8 @@ UploadVideo.prototype.uploadFile = function (file) {
             var percentageComplete = (bytesUploaded * 100) / totalBytes;
 
             $('#upload-progress').attr({
-                value: bytesUploaded,
-                max: totalBytes
+                value: bytesUploaded / 1024,
+                max: totalBytes / 1024
             });
 
             $('#percent-transferred').text(percentageComplete);
@@ -148,10 +151,8 @@ UploadVideo.prototype.uploadFile = function (file) {
         onComplete: function (data) {
             var uploadResponse = JSON.parse(data);
             this.videoId = uploadResponse.id;
-            saveYoutubeUrl("https://youtube.com/watch?v=" + this.videoId);
-            setYoutubePlayerPureID(this.videoId);
-            hideMovieDataSet();
-            $('#uploadVideoToYoutubeButton').attr('disabled', false);
+            if (this.onUploadCompleteCallback)
+            	this.onUploadCompleteCallback(this.videoId);
             this.pollForVideoStatus();
         }.bind(this)
     });
