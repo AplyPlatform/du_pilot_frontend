@@ -800,6 +800,34 @@ function flightrecordUploadInit() {
 		    address_flng = -999;
 		});
 		
+		
+		$("input[name='media_upload_kind']:radio").change(function () {
+        var cVal = this.value;
+        
+        if (cVal == "tab_menu_set_youtube_address") {
+        	$("#set_youtube_address_view").show();
+        	$("#set_youtube_upload_view").hide();
+        }
+        else {
+        	$("#set_youtube_address_view").hide();
+        	$("#set_youtube_upload_view").show();
+        }       
+		});
+		
+		$("#set_youtube_address_view").hide();
+    $("#set_youtube_upload_view").show();
+    
+    uploadVideo = new UploadVideo();
+    uploadVideo.onUploadCompleteCallback = function (vid) {
+    	$('#youtube_url_data').val("https://youtube.com/watch?v=" + vid);
+      $('#uploadVideoToYoutubeButton').attr('disabled', false);
+      $("#set_youtube_address_view").show();
+    	$("#set_youtube_upload_view").hide();
+    };
+    if (authSucceed == true) {    	
+			uploadVideo.ready(gapi.auth.getToken().access_token);                        
+		}
+		
   	setUpload(true);
     hideLoader();
 }
