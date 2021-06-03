@@ -1024,6 +1024,7 @@ function flightDetailInit(target) {
     	$('#youtube_url_data').val("https://youtube.com/watch?v=" + vid);
       hideMovieDataSet();
       setYoutubePlayerPureID(vid);
+			showAlert(LANG_JSON_DATA[langset]['msg_youtube_uploaded']);
     };
     if (authSucceed == true) {    	
 			uploadVideo.ready(gapi.auth.getToken().access_token);                        
