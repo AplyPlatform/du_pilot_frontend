@@ -41,8 +41,10 @@ function handleAuthResult(authResult) {
         // content that should be visible after authorization succeeds.
         authSucceed = true;
         
-        if (uploadVideo)
+        if (uploadVideo) {
         	uploadVideo.ready(gapi.auth.getToken().access_token);
+        	uploadVideo.handleUploadClicked();
+        }
         else
         	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
 
