@@ -99,6 +99,16 @@ UploadVideo.prototype.ready = function (accessToken) {
  * @param {object} file File object corresponding to the video to upload.
  */
 UploadVideo.prototype.uploadFile = function (file) {
+		if ($('#movieDescription').text() == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			return;
+		}
+
+		if ($('#movieTitle').val() == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			return;
+		}
+				
     var metadata = {
         snippet: {
             title: $('#movieTitle').val(),
@@ -127,7 +137,7 @@ UploadVideo.prototype.uploadFile = function (file) {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
-                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "<br>" + message); //todo
+                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "<br>" + message);
             }
         }.bind(this),
         onProgress: function (data) {
