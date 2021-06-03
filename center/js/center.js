@@ -792,17 +792,21 @@ function flightrecordUploadInit() {
 		    address_flng = -999;
 		});
 		
-  	
+  	setUpload(true);
     hideLoader();
 }
 
 function setUpload(bWhich) {
 		if (bWhich == true) {
 			bDJIFileUpload = true;
+			$("dji_upload_filed").show();
+			$("address_location_field").hide();
 			return;
 		}
 		
 		bDJIFileUpload = false;
+		$("dji_upload_filed").hide();
+		$("address_location_field").show();
 }
 
 function checkAddress(address) {		
