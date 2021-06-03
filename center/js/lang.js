@@ -152,6 +152,8 @@ var LANG_JSON_DATA = {
         "badgeHelpContent": "'html'코드의 삽입이 가능한 홈페이지나 블로그, 웹사이트 게시물에 아래의 코드를 복사해서 붙여 넣으세요. 비행기록을 자연스럽게, 멋지게 증명하실 수 있습니다.",        
         "address_input_data_label" : "촬영지 주소",
         "open_record_label": "공개 비행영상 기록",
+        "label_set_youtube_url": "Youtube URL 입력",
+        "label_upload_movie": "영상 업로드",
         "tab_menu_upload_selector_dji": "비행기록 업로드",
         "tab_menu_upload_selector_address": "주소 입력",
         "more_label": "더보기 ...",

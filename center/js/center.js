@@ -744,7 +744,6 @@ function flightrecordUploadInit() {
     $('#duni_flight_record_format_label').text(LANG_JSON_DATA[langset]['duni_flight_record_format_label']);
     $('#collapseRecordFileParams').html(LANG_JSON_DATA[langset]['collapseRecordFileParams']);
 
-    $("#youtube_url_label").text(LANG_JSON_DATA[langset]['youtube_url_label']);
     $("#record_name_field").attr("placeholder", LANG_JSON_DATA[langset]['msg_input_record_name']);
     $("#name_label").text(LANG_JSON_DATA[langset]['name_label']);
     $("#youtube_url_label").text(LANG_JSON_DATA[langset]['youtube_url_label']);
@@ -757,7 +756,10 @@ function flightrecordUploadInit() {
     $("#address_input_data_label").text(LANG_JSON_DATA[langset]['address_input_data_label']);
     
     $("#tab_menu_upload_selector_dji").text(LANG_JSON_DATA[langset]['tab_menu_upload_selector_dji']);
-    $("#tab_menu_upload_selector_address").text(LANG_JSON_DATA[langset]['tab_menu_upload_selector_address']);            
+    $("#tab_menu_upload_selector_address").text(LANG_JSON_DATA[langset]['tab_menu_upload_selector_address']); 
+    
+    $("#tab_menu_set_youtube_address").text(LANG_JSON_DATA[langset]['label_set_youtube_url']);    
+    $("#tab_menu_set_youtube_upload").text(LANG_JSON_DATA[langset]['label_upload_movie']);       
     
     $('#btnForUploadFlightList').click(function () {
         GATAGM('btnForUploadFlightList', 'CONTENT', langset);
