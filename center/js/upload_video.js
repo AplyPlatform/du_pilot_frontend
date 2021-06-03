@@ -128,7 +128,7 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
-                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "<br>" + message);
+                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "\n" + message);
             }
         }.bind(this),
         onProgress: function (data) {
