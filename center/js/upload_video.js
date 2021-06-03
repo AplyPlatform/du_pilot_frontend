@@ -99,7 +99,7 @@ UploadVideo.prototype.ready = function (accessToken) {
  * @param {object} file File object corresponding to the video to upload.
  */
 UploadVideo.prototype.uploadFile = function (file) {
-		if ($('#movieDescription').text() == "") {
+		if ($('#movieDescription').val() == "") {
 			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
 			return;
 		}
@@ -112,7 +112,7 @@ UploadVideo.prototype.uploadFile = function (file) {
     var metadata = {
         snippet: {
             title: $('#record_name_field').val(),
-            description: $('#movieDescription').text(),
+            description: $('#movieDescription').val(),
             tags: this.tags,
             categoryId: this.categoryId
         },
