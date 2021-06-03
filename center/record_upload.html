@@ -30,18 +30,18 @@
 			            
 			            <div id="upload_tabs">
 			            	<div class="row">
-				            	<div class="col">
+				            	<table border=0 cellspacing=4 cellpadding=0><tr><td>
 				            			<input type="radio" id="tab_menu_upload_selector_dji" name="record_kind" value="dji_upload_filed" onclick="GATAGM('tab_menu_upload_selector_dji', 'CONTENT', langset);setUpload(true);" checked>
 	  											<label class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_upload_selector_dji">비행기록 업로드</label>
-	  									</div>
-	  									<div class="col">
+	  									</td>
+	  									<td>
 				            			<input type="radio" id="tab_menu_upload_selector_address" name="record_kind" value="address_location_field" onclick="GATAGM('tab_menu_upload_selector_address', 'CONTENT', langset);setUpload(false);">
 	  											<label class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_upload_selector_address">주소 입력</label>
-	  									</div>
+	  									</td></tr></table>
   									</div>
 									          
 										<div id="dji_upload_filed">
-											<br>
+											
 											<div>
 												<input type="file" class="form-control-file form-control bg-light border-0 small" id="flight_record_file">
 											</div>
@@ -60,7 +60,7 @@
 										</div>
 										
 										<div id="address_location_field">
-				            	<br>
+				            	
 			              	<label for="address_input_data" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="address_input_data_label">촬영지 주소</label>			              				              				              	
 			              	<div class="input-group">				              	
 					              <input name="address_input_data" type="text" class="form-control" placeholder="" id="address_input_data">
