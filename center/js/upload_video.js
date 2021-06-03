@@ -98,21 +98,12 @@ UploadVideo.prototype.ready = function (accessToken) {
  * @method uploadFile
  * @param {object} file File object corresponding to the video to upload.
  */
-UploadVideo.prototype.uploadFile = function (file) {
-		if ($('#movieDescription').val() == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
-			return;
-		}
-
-		if ($('#record_name_field').val() == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
-			return;
-		}
-				
+UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
+		
     var metadata = {
         snippet: {
-            title: $('#record_name_field').val(),
-            description: $('#movieDescription').val(),
+            title: fname,
+            description: fdesc,
             tags: this.tags,
             categoryId: this.categoryId
         },
@@ -196,9 +187,23 @@ UploadVideo.prototype.handleUploadClicked = function () {
         showAlert(LANG_JSON_DATA[langset]['msg_select_file']);
         return;
     }
+		
+    if ($('#movieDescription').val() == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			return;
+		}
 
+		if ($('#record_name_field').val() == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			return;
+		}
+		
     $('#uploadVideoToYoutubeButton').attr('disabled', true);
-    this.uploadFile($('#movieFile').get(0).files[0]);
+    
+				
+		var fname = $('#record_name_field').val();
+		var fdesc = $('#movieDescription').val();
+    this.uploadFile($('#movieFile').get(0).files[0], fname, fdesc);
 };
 
 UploadVideo.prototype.pollForVideoStatus = function () {
