@@ -243,6 +243,8 @@ MediaUploader.prototype.onContentUploadError_ = function(e) {
  */
 MediaUploader.prototype.onUploadError_ = function(e) {
   this.onError(e.target.response); // TODO - Retries for initial upload
+  
+  $('#uploadVideoToYoutubeButton').attr('disabled', false);
 };
 
 /**

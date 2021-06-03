@@ -43,10 +43,12 @@ function handleAuthResult(authResult) {
         
         if (uploadVideo) {
         	uploadVideo.ready(gapi.auth.getToken().access_token);
-        	//setTimeout(uploadVideo.handleUploadClicked.bind(uploadVideo), 5);
+        	setTimeout(uploadVideo.handleUploadClicked.bind(uploadVideo), 5);
         }
-        else
+        else {
+        	$('#uploadVideoToYoutubeButton').attr('disabled', false);
         	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
+        }
 
     } else {
         // Make the #login-link clickable. Attempt a non-immediate OAuth 2.0

@@ -198,9 +198,8 @@ UploadVideo.prototype.handleUploadClicked = function () {
 			return;
 		}
 		
-    $('#uploadVideoToYoutubeButton').attr('disabled', true);
-    
-				
+		$('#uploadVideoToYoutubeButton').attr('disabled', true);
+		
 		var fname = $('#record_name_field').val();
 		var fdesc = $('#movieDescription').val();
     this.uploadFile($('#movieFile').get(0).files[0], fname, fdesc);
