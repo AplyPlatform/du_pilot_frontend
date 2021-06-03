@@ -829,8 +829,8 @@ function flightrecordUploadInit() {
 		
   	setUpload(true);
   	
-  	$("#set_youtube_address_view").show();
-    $("#set_youtube_upload_view").hide();
+  	$("#set_youtube_address_view").hide();
+    $("#set_youtube_upload_view").show();
     hideLoader();
 }
 

@@ -26,29 +26,29 @@
 	            		</div>
 	            		
 	            		<div class="row">
-				            <div class="col-3">
-				            			<input type="radio" name="media_upload_kind" value="tab_menu_set_youtube_address" onclick="GATAGM('tab_menu_set_youtube_address', 'CONTENT', langset);" checked>
-	  											<label id="tab_menu_set_youtube_address" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_address">유튜브 URL 입력</label>
-	  									</div>
-	  									<div class="col-3">
+	            				<div class="col-3">
 				            			<input type="radio" name="media_upload_kind" value="tab_menu_set_youtube_upload" onclick="GATAGM('tab_menu_set_youtube_upload', 'CONTENT', langset);">
 	  											<label id="tab_menu_set_youtube_upload" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_upload">영상 업로드</label>
+	  									</div>
+				            	<div class="col-3">
+				            			<input type="radio" name="media_upload_kind" value="tab_menu_set_youtube_address" onclick="GATAGM('tab_menu_set_youtube_address', 'CONTENT', langset);" checked>
+	  											<label id="tab_menu_set_youtube_address" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_address">유튜브 URL 입력</label>
 	  									</div>
   								</div>
 	            		
 	            		<div id="set_youtube_address_view">
-			              	<input name="youtube_url_data" type="text" class="form-control" placeholder="https://www.youtube.com/watch?v=q2PzFbh6HBE" id="youtube_url_data">
+			              	<input name="youtube_url_data" type="text" class="form-control" placeholder="Youtube Full URL ex)https://www.youtube.com/watch?v=q2PzFbh6HBE" id="youtube_url_data">
 			            </div>			        
 			            							        			
 						    	<div id="set_youtube_upload_view" style="backgroud-color:#eeeeee;">
 							      <div>
 							        <label for="title" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="title_for_moviedata_label">영상 제목</label>
-							        <input id="movieTitle" class="form-control" type="text" value="비행기록 1">
+							        <input id="movieTitle" class="form-control" type="text" value="ex) flight-record 1">
 							      </div>
 							      
 							      <div>
 							        <label for="description" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="desc_for_moviedata_label">영상 설명</label>
-							        <textarea class="form-control" id="movieDescription">비행기록 1</textarea>
+							        <textarea class="form-control" id="movieDescription">ex) flight-record 1 - Blah</textarea>
 							      </div>
 							      
 							      <div class="row">
