@@ -43,7 +43,7 @@ function handleAuthResult(authResult) {
         
         if (uploadVideo) {
         	uploadVideo.ready(gapi.auth.getToken().access_token);
-        	setTimeout(uploadVideo.uploadVideoAction.bind(uploadVideo), STATUS_POLLING_INTERVAL_MILLIS);
+        	setTimeout(uploadVideo.handleUploadClicked.bind(uploadVideo), 5);
         }
         else
         	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);

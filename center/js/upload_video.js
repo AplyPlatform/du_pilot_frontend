@@ -141,13 +141,13 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
             var percentageComplete = (bytesUploaded * 100) / totalBytes;
 
             $('#upload-progress').attr({
-                value: bytesUploaded / 1024,
-                max: totalBytes / 1024
+                value: bytesUploaded,
+                max: totalBytes
             });
 
             $('#percent-transferred').text(percentageComplete);
-            $('#bytes-transferred').text(bytesUploaded);
-            $('#total-bytes').text(totalBytes);
+            $('#bytes-transferred').text(bytesUploaded/1024);
+            $('#total-bytes').text(totalBytes/1024);
 
             $('.during-upload').show();
         }.bind(this),
