@@ -202,10 +202,12 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		
 		if (tag_values != "") {
 			var tagArray = JSON.parse(tag_values);
-			this.tags = [];
+			var curTags = [];
 			tagArray.forEach(function(tg) {
-				this.tags.push(tg.value);
+				curTags.push(tg.value);
 			});	
+			
+			this.tags = curTags;
 		}
 		
 		$('#uploadVideoToYoutubeButton').attr('disabled', true);
