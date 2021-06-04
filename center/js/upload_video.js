@@ -138,7 +138,7 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
             // The times are in millis, so we need to divide by 1000 to get seconds.
             var bytesPerSecond = bytesUploaded / ((currentTime - this.uploadStartTime) / 1000);
             var estimatedSecondsRemaining = (totalBytes - bytesUploaded) / bytesPerSecond;
-            var percentageComplete = (bytesUploaded * 100) / totalBytes;
+            var percentageComplete = Math.round((bytesUploaded * 100) / totalBytes);
 
             $('#upload-progress').attr({
                 value: bytesUploaded,
@@ -146,8 +146,8 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
             });
 
             $('#percent-transferred').text(percentageComplete);
-            $('#bytes-transferred').text(bytesUploaded/1024);
-            $('#total-bytes').text(totalBytes/1024);
+            $('#bytes-transferred').text(Math.round(bytesUploaded/1024));
+            $('#total-bytes').text(Math.round(totalBytes/1024));
 
             $('.during-upload').show();
         }.bind(this),
