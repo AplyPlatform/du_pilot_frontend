@@ -4503,11 +4503,6 @@ function uploadFlightList(isUpdate) {
 		
 		
 		var mmemo = $("#memoTextarea").val();
-
-		if (mmemo == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
-			return;
-		}
     
 		var tag_values = $("#tagTextarea").val();
 
@@ -4928,11 +4923,6 @@ function setYoutubeID() {
     var fi_data_url = massageYotubeUrl(data_id);
     
     var mmemo = $("#memoTextarea").val();
-    
-		if (mmemo == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
-			return;
-		}
     
     var tag_values = $("#tagTextarea").val();
 
