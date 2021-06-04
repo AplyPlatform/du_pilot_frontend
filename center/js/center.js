@@ -4817,10 +4817,10 @@ function setMoveActionFromMap(index, item) {
     setSliderPos(index);
 }
 
-function saveYoutubeUrl(rname, tag_values, data_id, price, flat, flng, callback) {
+function saveYoutubeUrl(rname, mmemo, tag_values, data_id, price, flat, flng, callback) {
 
     var userid = getCookie("dev_user_id");
-    var jdata = { "action": "position", "daction": "youtube", "youtube_data_id": data_id, "clientid": userid, "name": rname, "tag_values" : tag_values };
+    var jdata = { "action": "position", "daction": "youtube", "youtube_data_id": data_id, "clientid": userid, "name": rname, "tag_values" : tag_values, "memo" : mmemo };
     
     if (flat != -999) {
     		jdata["flat"] = flat;
@@ -4927,11 +4927,18 @@ function setYoutubeID() {
 
     var fi_data_url = massageYotubeUrl(data_id);
     
+    var mmemo = $("#memoTextarea").val();
+    
+		if (mmemo == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
+			return;
+		}
+    
     var tag_values = $("#tagTextarea").val();
 
     if (fi_data_url.indexOf("youtube") >= 0) {
         setYoutubePlayer(fi_data_url);
-        saveYoutubeUrl(cur_flightrecord_name, tag_values, fi_data_url, -1, -999, -999, function(bSuccess) {
+        saveYoutubeUrl(cur_flightrecord_name, mmemo, tag_values, fi_data_url, -1, -999, -999, function(bSuccess) {
         	if (bSuccess == true) {
         		showAlert(LANG_JSON_DATA[langset]['msg_success']);
         	}
