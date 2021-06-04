@@ -46,7 +46,7 @@ var LANG_JSON_DATA = {
         "option_public_label": "공개",
         "option_unlisted_label": "일부공개(링크가 있는 사용자만 영상을 볼수 있음)",
         "option_private_label": "비공개",
-        "uploadVideoToYoutubeButton": "유튜브에 영상 업로드",
+        "uploadVideoToYoutubeButton": "유튜브에 영상 등록",
         "youtube_url_label": "유튜브 URL",
         "menu_left_top_title_label": "파일럿 센터",
         "top_menu_logout": "로그아웃",

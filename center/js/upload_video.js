@@ -38,7 +38,7 @@ var UploadVideo = function () {
      * @type Array.<string>
      * @default ['google-cors-upload']
      */
-    this.tags = ['youtube-cors-upload'];
+    this.tags = ['flight-record'];
 
     /**
      * The numeric YouTube
@@ -196,6 +196,16 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		if ($('#record_name_field').val() == "") {
 			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
 			return;
+		}
+		
+		let tag_values = $("#tagTextarea").val();
+		
+		if (tag_values != "") {
+			var tagArray = JSON.parse(fdata.tag_values);
+			this.tags = [];
+			tagArray.forEach(function(tg) {
+				this.tags.push(tg.value);
+			});	
 		}
 		
 		$('#uploadVideoToYoutubeButton').attr('disabled', true);
