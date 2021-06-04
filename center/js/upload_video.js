@@ -188,13 +188,14 @@ UploadVideo.prototype.handleUploadClicked = function () {
         return;
     }
 		
-    if ($('#movieDescription').val() == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+		var mmemo = $("#memoTextarea").val();
+    if (mmemo == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
 			return;
 		}
 
 		if ($('#record_name_field').val() == "") {
-			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input']);
+			showAlert(LANG_JSON_DATA[langset]['msg_input_record_name']);
 			return;
 		}
 		
@@ -213,7 +214,7 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		$('#uploadVideoToYoutubeButton').attr('disabled', true);
 		
 		var fname = $('#record_name_field').val();
-		var fdesc = $('#movieDescription').val();
+		var fdesc = $('#memoTextarea').val();
     this.uploadFile($('#movieFile').get(0).files[0], fname, fdesc);
 };
 

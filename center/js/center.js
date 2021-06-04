@@ -732,8 +732,7 @@ function flightrecordUploadInit() {
 
     $('#btnForUploadFlightList').text(LANG_JSON_DATA[langset]['msg_upload']);
 
-		$("#title_for_moviedata_label").text(LANG_JSON_DATA[langset]['title_for_moviedata_label']);
-		$("#desc_for_moviedata_label").text(LANG_JSON_DATA[langset]['desc_for_moviedata_label']);
+		$("#desc_for_moviedata_label").text(LANG_JSON_DATA[langset]['input_memo_label']);
 		$("#privacy_for_moviedata_label").text(LANG_JSON_DATA[langset]['privacy_for_moviedata_label']);
 		$("#option_public_label").text(LANG_JSON_DATA[langset]['option_public_label']);
 		$("#option_unlisted_label").text(LANG_JSON_DATA[langset]['option_unlisted_label']);
@@ -965,8 +964,7 @@ function flightDetailInit(target) {
 
     $("#head_title").text(document.title);
     $("#modifyBtnForMovieData").text(LANG_JSON_DATA[langset]['modifyBtnForMovieData']);
-    $("#title_for_moviedata_label").text(LANG_JSON_DATA[langset]['title_for_moviedata_label']);
-    $("#desc_for_moviedata_label").text(LANG_JSON_DATA[langset]['desc_for_moviedata_label']);
+    $("#desc_for_moviedata_label").text(LANG_JSON_DATA[langset]['input_memo_label']);
     $("#privacy_for_moviedata_label").text(LANG_JSON_DATA[langset]['privacy_for_moviedata_label']);
     $("#option_public_label").text(LANG_JSON_DATA[langset]['option_public_label']);
     $("#option_unlisted_label").text(LANG_JSON_DATA[langset]['option_unlisted_label']);
@@ -2879,7 +2877,6 @@ function showDataWithName(target, name) {
     setFlightRecordTitle(name);
     cur_flightrecord_name = name;
 
-    $("#movieDescription").val(name);
     $("#btnForPublic").hide();
     $("#btnForDelete").hide();
     $("#btnForUpdateTitle").hide();
@@ -4476,7 +4473,8 @@ function nexttour(owner, fobject) {
     }, 2500);
 }
 
-function askIsSyncData(files, mname, tag_values, youtube_data, isUpdate, uploadDJIFlightListCallback) {
+function askIsSyncData(params, callback) {
+		
     showAskDialog(
         LANG_JSON_DATA[langset]['modal_title'],
         LANG_JSON_DATA[langset]['msg_is_sync_data'],
@@ -4484,11 +4482,13 @@ function askIsSyncData(files, mname, tag_values, youtube_data, isUpdate, uploadD
         false,
         function () {
         		showLoader();			    	
-			      getBase64(files, mname, tag_values, youtube_data, isUpdate, true, uploadDJIFlightListCallback);
+        		params['isSyncData'] = true;
+			      getBase64(params, callback);
         },
         function () {
-        		showLoader();			    	
-			      getBase64(files, mname, tag_values, youtube_data, isUpdate, false, uploadDJIFlightListCallback);			      
+        		showLoader();
+        		params['isSyncData'] = false;			    	
+			      getBase64(params, callback);			      
         }
     );
 }
@@ -4500,6 +4500,14 @@ function uploadFlightList(isUpdate) {
 			showAlert(LANG_JSON_DATA[langset]['msg_input_record_name']);
 			return;
 		}				
+		
+		
+		var mmemo = $("#memoTextarea").val();
+
+		if (mmemo == "") {
+			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
+			return;
+		}
     
 		var tag_values = $("#tagTextarea").val();
 
@@ -4512,12 +4520,14 @@ function uploadFlightList(isUpdate) {
     	}
     	
     	if (isSet(youtube_data)) {
-    		askIsSyncData(files[0], mname, tag_values, youtube_data, isUpdate, uploadDJIFlightListCallback);
+    		var params = {file: files[0], mname : mname, mmemo : mmemo, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate};
+    		askIsSyncData(params, uploadDJIFlightListCallback);
     		return;
     	}
 
-    	showLoader();    	
-      getBase64(files[0], mname, tag_values, youtube_data, isUpdate, false, uploadDJIFlightListCallback);      
+    	showLoader();  
+    	var params = {file : files[0], mname : mname, mmemo: mmemo, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate, isSyncData : false};  	
+      getBase64(params, uploadDJIFlightListCallback);      
       return;
     }
 		
@@ -4552,7 +4562,7 @@ function uploadFlightList(isUpdate) {
 					price = t_p * 1;
 				}
 	    }
-    	saveYoutubeUrl(mname, tag_values, youtube_data, price, address_flat, address_flng, function(bSuccess) {
+    	saveYoutubeUrl(mname, mmemo, tag_values, youtube_data, price, address_flat, address_flng, function(bSuccess) {
         	if (bSuccess == true) {
         		showAlert(LANG_JSON_DATA[langset]['msg_success']);
         		location.href = cur_controller + "?page_action=recordlist";
@@ -4564,12 +4574,14 @@ function uploadFlightList(isUpdate) {
     }
 }
 
-function getBase64(file, mname, tag_values, youtube_data, isUpdate, isSyncData, callback) {
+function getBase64(params, callback) {
+		
     var reader = new FileReader();
 
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(params.file);
     reader.onload = function () {
-        callback(mname, tag_values, youtube_data, isUpdate, isSyncData, reader.result);
+    		params['base64file'] = reader.result;
+        callback(params);
     };
     reader.onerror = function (error) {
         hideLoader();
@@ -4578,10 +4590,10 @@ function getBase64(file, mname, tag_values, youtube_data, isUpdate, isSyncData, 
 }
 
 
-function uploadDJIFlightListCallback(mname, tag_values, youtube_data, isUpdate, isSyncData, base64file) {
-    var userid = getCookie("dev_user_id");
+function uploadDJIFlightListCallback(params) {
+    let userid = getCookie("dev_user_id");
    	
-   	youtube_data = massageYotubeUrl(youtube_data);
+   	var youtube_data = massageYotubeUrl(params.youtube_data);
    	
    	var price = 0;
    	if (langset == "KR") {
@@ -4605,13 +4617,14 @@ function uploadDJIFlightListCallback(mname, tag_values, youtube_data, isUpdate, 
     }
 
     var jdata = { "action": "position", "daction": "convert",
-    	"clientid": userid, "name": mname,
+    	"clientid": userid, "name": params.mname,
     	"youtube_data_id": youtube_data,
-    	"update" : isUpdate,
-    	"sync" : isSyncData,
+    	"update" : params.isUpdate,
+    	"sync" : params.isSyncData,
     	"price" : price,
-    	"tag_values" : tag_values,
-    	"recordfile": base64file };
+    	"tag_values" : params.tag_values,
+    	"memo" : params.mmemo,
+    	"recordfile": params.base64file };
 
     ajaxRequest(jdata, function (r) {
         if (r.result == "success") {
