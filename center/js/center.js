@@ -761,6 +761,8 @@ function flightrecordUploadInit() {
     $("#tab_menu_set_youtube_address").text(LANG_JSON_DATA[langset]['label_set_youtube_url']);    
     $("#tab_menu_set_youtube_upload").text(LANG_JSON_DATA[langset]['label_upload_movie']);       
     
+    $("#label_must_select_record_or_address").text(LANG_JSON_DATA[langset]['label_must_select_record_or_address']);
+    
     $('#btnForUploadFlightList').click(function () {
         GATAGM('btnForUploadFlightList', 'CONTENT', langset);
         
@@ -822,6 +824,7 @@ function flightrecordUploadInit() {
     	$("input:radio[name='media_upload_kind']:radio[value='tab_menu_set_youtube_address']").prop('checked', true);
       $("#set_youtube_address_view").show();
     	$("#set_youtube_upload_view").hide();
+    	showAlert(LANG_JSON_DATA[langset]['msg_video_upload_success']);
     };
     if (authSucceed == true) {    	
 			uploadVideo.ready(gapi.auth.getToken().access_token);                        
