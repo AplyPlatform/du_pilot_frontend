@@ -201,7 +201,7 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		let tag_values = $("#tagTextarea").val();
 		
 		if (tag_values != "") {
-			var tagArray = JSON.parse(fdata.tag_values);
+			var tagArray = JSON.parse(tag_values);
 			this.tags = [];
 			tagArray.forEach(function(tg) {
 				this.tags.push(tg.value);
