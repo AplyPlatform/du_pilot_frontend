@@ -152,7 +152,7 @@ var LANG_JSON_DATA = {
         "msg_video_upload_success": "영상을 성공적으로 업로드 하였습니다",
         "msg_input_corrent_address" : "올바른 주소를 입력한 후 '주소확인'을 클릭하세요.", 
         "badgeHelpContent": "'html'코드의 삽입이 가능한 홈페이지나 블로그, 웹사이트 게시물에 아래의 코드를 복사해서 붙여 넣으세요. 비행기록을 자연스럽게, 멋지게 증명하실 수 있습니다.",
-        "label_must_select_record_or_address" : "비행 기록 파일을 선택하거나 주소를 입력해 주세요.",
+        "label_must_select_record_or_address" : "비행기록 파일을 선택하거나 주소를 입력해 주세요.",
         "address_input_data_label" : "촬영지 주소",
         "open_record_label": "공개 비행영상 기록",
         "label_set_youtube_url": "Youtube URL 입력",
