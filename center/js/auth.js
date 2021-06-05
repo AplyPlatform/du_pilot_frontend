@@ -8,7 +8,6 @@ var OAUTH2_SCOPES = [
 ];
 
 var apiIsReady = false;
-var authSucceed = false;
 // Upon loading, the Google APIs JS client automatically invokes this callback.
 var googleApiClientReady = function () {
 
@@ -39,14 +38,18 @@ function handleAuthResult(authResult) {
     if (authResult && !authResult.error) {
         // Authorization was successful. Hide authorization prompts and show
         // content that should be visible after authorization succeeds.
-        authSucceed = true;
+        
+        setCookie("user_google_auth_token", gapi.auth.getToken().access_token);
+        hideLoader();
         
         if (uploadVideo) {
-        	uploadVideo.ready(gapi.auth.getToken().access_token);
-        	setTimeout(uploadVideo.handleUploadClicked.bind(uploadVideo), 5);
+        	showLoader();
+        	uploadVideo.ready();
+        	uploadVideo.handleUploadClicked();
         }
         else {
         	$('#uploadVideoToYoutubeButton').attr('disabled', false);
+        	hideLoader();
         	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
         }
 

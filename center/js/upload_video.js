@@ -59,37 +59,18 @@ var UploadVideo = function () {
      */
     this.videoId = '';
 
-    this.uploadStartTime = 0;        
-    
-    
+    this.uploadStartTime = 0;    
+    this.accessToken = ''; 
     this.onUploadCompleteCallback = null;
-    
-    $('#uploadVideoToYoutubeButton').off('click');
-    $('#uploadVideoToYoutubeButton').on("click", this.handleUploadClicked.bind(this));
 };
 
 
-UploadVideo.prototype.ready = function (accessToken) {
-    this.accessToken = accessToken;
-    this.gapi = gapi;
-    this.authenticated = true;
-    /*
-    this.gapi.client.request({
-        path: '/youtube/v3/channels',
-        params: {
-            part: 'snippet',
-            mine: true
-        },
-        callback: function (response) {
-            if (response.error) {
-                console.log(response.error.message);
-            } else {
-                $('#channel-name').text(response.items[0].snippet.title);
-                $('#channel-thumbnail').attr('src', response.items[0].snippet.thumbnails.default.url);
-            }
-        }.bind(this)
-    });
-    */        
+UploadVideo.prototype.ready = function () {
+		let accessTokenT = getCookie("user_google_auth_token");
+		if (accessTokenT === "undefined" || accessTokenT === null || accessTokenT == "") return;
+		
+    this.accessToken = accessTokenT;
+    this.gapi = gapi;     
 };
 
 /**
@@ -128,7 +109,9 @@ UploadVideo.prototype.uploadFile = function (file, fname, fdesc) {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
-                showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "\n" + message);
+            	hideLoader();
+        			//$('#uploadVideoToYoutubeButton').attr('disabled', false);
+              showAlert(LANG_JSON_DATA[langset]['msg_error_sorry'] + "\n" + message);
             }
         }.bind(this),
         onProgress: function (data) {
@@ -168,33 +151,37 @@ UploadVideo.prototype.handleUploadClicked = function () {
 		GATAGM('uploadVideoToYoutubeButton', 'CONTENT', langset);
 		
 		if (upload_not_allow){
+				hideLoader();
 				showAlert(LANG_JSON_DATA[langset]['msg_sorry_now_on_preparing_youtube']);
 				return;
 		}
 		
 		if (apiIsReady == false) {
+				hideLoader();
         showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
         return;
     }
-    else {
-        if (authSucceed == false) {        
-            tryAuth();
-            return;
-        }
+ 
+    if (this.accessToken == '') {
+    		tryAuth();
+        return;
     }
 		
     if (!$('#movieFile').get(0).files[0] || $('#movieFile').get(0).files[0] == null) {
-        showAlert(LANG_JSON_DATA[langset]['msg_select_file']);
+    		hideLoader();
+        showAlert(LANG_JSON_DATA[langset]['msg_select_video_file']);
         return;
     }
 		
 		var mmemo = $("#memoTextarea").val();
     if (mmemo == "") {
+    	hideLoader();
 			showAlert(LANG_JSON_DATA[langset]['msg_fill_memo']);
 			return;
 		}
 
 		if ($('#record_name_field').val() == "") {
+			hideLoader();
 			showAlert(LANG_JSON_DATA[langset]['msg_input_record_name']);
 			return;
 		}
