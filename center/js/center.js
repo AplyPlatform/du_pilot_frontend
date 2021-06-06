@@ -764,10 +764,19 @@ function flightrecordUploadInit() {
     
     $("#label_must_select_record_or_address").text(LANG_JSON_DATA[langset]['label_must_select_record_or_address']);
     
+    $("#disclaimer").html(LANG_JSON_DATA[langset]['youtubeTOS']);
+    
     $('#btnForUploadFlightList').click(function () {
         GATAGM('btnForUploadFlightList', 'CONTENT', langset);
         
         uploadCheckBeforeUploadFlightList();
+    });
+    
+    $("#address_input_data").keypress(function (e) {
+        if (e.which == 13){
+        	GATAGM('enterForAddressCheck', 'CONTENT', langset);
+        	checkAddress($("#address_input_data").val());
+        }
     });
         
     $('#btnForAddressCheck').click(function () {
@@ -933,10 +942,12 @@ function checkAddress(address) {
         return;
     }
     
+    showLoader();
     var userid = getCookie("dev_user_id");    
     var jdata = {"clientid" : userid, "action" : "util", "daction": "gps_by_address", "address" : address};
 		
 		ajaxRequest(jdata, function (r) {
+				hideLoader();
 	    	if(r.result == "success") {
 		      if (r.data == null) {
 		      	address_flat = -999;	
@@ -958,6 +969,7 @@ function checkAddress(address) {
 	    	}
 	  	},
 	  	function(request,status,error) {
+	  		hideLoader();
 	  		address_flat = -999;	
 	     	address_flng = -999;
 	  		showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
@@ -1075,6 +1087,8 @@ function flightDetailInit(target) {
     $('#roll_label').text(LANG_JSON_DATA[langset]['roll_label']);
     $('#pitch_label').text(LANG_JSON_DATA[langset]['pitch_label']);
     $('#yaw_label').text(LANG_JSON_DATA[langset]['yaw_label']);
+    
+    $("#disclaimer").html(LANG_JSON_DATA[langset]['youtubeTOS']);
 
     $("#btnForLink").hide();
     $("#btnForSharing").hide();		

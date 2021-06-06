@@ -179,7 +179,7 @@ var LANG_JSON_DATA = {
         "a_time_label": "총 비행시간",
         "a_time_min_label": "분",
         "callsign_pre_label": "DUNI 파일럿",
-        "dji_flight_record_get_label": "DJI 비행기록 파일 얻는 방법 (클릭)",
+        "dji_flight_record_get_label": "얻는 방법 : 클릭",
         "duni_flight_record_format_label": "DUNI 비행기록 파일 포맷 (클릭)",
         "page_center_title": "DUNI 파일럿 센터",
         "page_list_title": "비행계획 보기",
@@ -214,6 +214,7 @@ var LANG_JSON_DATA = {
             + "<p>- <a href='https://m.blog.naver.com/PostView.nhn?blogId=apache81&logNo=220423814490' target=new>https://m.blog.naver.com/PostView.nhn?blogId=apache81&logNo=220423814490</a></p>"
             + "<p>- <a href='http://blog.daum.net/dipod/857' target=new>http://blog.daum.net/dipod/857</a></p>"
             + "<p>- <a href='https://www.youtube.com/watch?v=59pE9N3pXdg' target=new>https://www.youtube.com/watch?v=59pE9N3pXdg</a></p>",
+        "youtubeTOS" : "동영상을 제출하면 YouTube <a href='https://www.youtube.com/t/terms' target=_new>서비스 약관</a> 및 <a href='https://www.youtube.com/yt/about/policies/' target=_new>커뮤니티 가이드</a>에 동의하게 됩니다.",
     },
 
 
@@ -384,7 +385,7 @@ var LANG_JSON_DATA = {
         "a_time_label": "Total flight time",
         "a_time_min_label": "minute(s)",
         "callsign_pre_label": "DUNI PILOT",
-        "dji_flight_record_get_label": "How to get DJI flight-record file (Click)",
+        "dji_flight_record_get_label": "How to get the file : Click",
         "duni_flight_record_format_label": "DUNI Flight record format (Click)",
         "page_center_title": "DUNI PILOT Center",
         "page_list_title": "Flight Mission List",
@@ -424,5 +425,7 @@ var LANG_JSON_DATA = {
             + "<p>- <a href='https://m.blog.naver.com/PostView.nhn?blogId=apache81&logNo=220423814490' target=new>https://m.blog.naver.com/PostView.nhn?blogId=apache81&logNo=220423814490</a></p>"
             + "<p>- <a href='http://blog.daum.net/dipod/857' target=new>http://blog.daum.net/dipod/857</a></p>"
             + "<p>- <a href='https://www.youtube.com/watch?v=59pE9N3pXdg' target=new>https://www.youtube.com/watch?v=59pE9N3pXdg</a></p>",
+            
+         "youtubeTOS" : "By submitting a video to YouTube, you agree to the YouTube <a href='https://www.youtube.com/t/terms' target=_new>Terms of Service</a> and <a href='https://www.youtube.com/yt/about/policies/' target=_new>Community Guidelines</a>.",
     }
 };
