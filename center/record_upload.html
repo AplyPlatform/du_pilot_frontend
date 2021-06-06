@@ -62,7 +62,7 @@
 								      
 								      <div class="col">
 									      		
-										        <label for="privacy-status" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="privacy_for_moviedata_label">영상 공개수준</label>
+										        <label for="privacy-status" class="text-xs font-weight-bold text-default text-uppercase mb-1">&nbsp;</label>
 										        <select id="privacy-status" class="form-control">
 										          <option value="public" id="option_public_label">공개</option>
 										          <option value="unlisted" selected id="option_unlisted_label">일부공개(링크가 있는 사용자만 영상을 볼수 있음)</option>
@@ -80,11 +80,7 @@
 			            <div id="upload_tabs">
 			            	
 			            	<hr color="#eee">
-			            	<div class="row">
-				            	<div class="col">
-				            		<span id="label_must_select_record_or_address" class="text-xs font-weight-bold text-default mb-1">비행기록 파일을 선택하거나 주소를 입력해 주세요.</span>
-				            	</div>
-				            </div>
+			            	
 			            	<div class="row">
 				            	<div class="col">
 				            			<input type="radio" name="record_kind" value="dji_upload_filed" onclick="GATAGM('tab_menu_upload_selector_dji', 'CONTENT', langset);setUpload(true);" checked>
@@ -137,7 +133,7 @@
 								 	<div>
 								  		<br>
 											<label for="tagTextarea" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="input_tag_label">태그</label>
-											<input type="text" id='tagTextarea' name='tagTextarea'/>											
+											<input type="text" id='tagTextarea' name='tagTextarea' value='DUNI'/>											
 			            </div>
 			            
 			            <div id="sale_select">
