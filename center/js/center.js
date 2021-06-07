@@ -4522,6 +4522,10 @@ function map2DInit() {
         view: currentMainMap2DView
     });
     
+    
+    var curCoodinate;
+    var finalPlanGenPositionLonLat = [0,0];
+    
     var modify = new ol.interaction.Modify({
 		  hitDetection: vectorLayer,
 		  source: mainMap2DVectorSource,
@@ -4529,8 +4533,11 @@ function map2DInit() {
 		modify.on(['modifystart', 'modifyend'], function (evt) {
 		  if(evt.type === 'modifystart') 
 			  $("#mainMap").css('cursor', 'grabbing');
-			else
+			else {
+				finalPlanGenPositionLonLat = ol.proj.toLonLat(curCoodinate);
+				console.log(finalPlanGenPositionLonLat[0] + "," + finalPlanGenPositionLonLat[1]); //todo
 				$("#mainMap").css('cursor', 'pointer');
+			}
 		});
 		var overlaySource = modify.getOverlay().getSource();
 		overlaySource.on(['addfeature', 'removefeature'], function (evt) {
@@ -4541,8 +4548,8 @@ function map2DInit() {
 		});
 		
 		main2dMap.on('pointermove', function(evt) {
-		  var coordinate = evt.coordinate;
-		  console.log(coordinate);
+		  curCoodinate = evt.coordinate;
+		  
 		}); 
 		
 		main2dMap.addInteraction(modify);
