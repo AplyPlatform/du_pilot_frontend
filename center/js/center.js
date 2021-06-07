@@ -4400,7 +4400,7 @@ function map2DInit() {
 		
 		let style_len = styles.length;
     for (var i = 1; i <= style_len; i++) {
-        maplayers.push(new ol.layer.Tile({//todo
+        maplayers.push(new ol.layer.Tile({
             visible: false,
             preload: Infinity,
             source: new ol.source.BingMaps({
@@ -4504,7 +4504,7 @@ function map2DInit() {
         });
     }
 
-    maplayers[0].setVisible(true); //Road (detailed)
+    maplayers[3].setVisible(true); //AerialWithLabels
     maplayers[4].setVisible(true); //pointLayer
     maplayers[5].setVisible(true); //vectorLayer
     
@@ -4545,8 +4545,8 @@ function map2DInit() {
 				finalPlanGenPositionLonLat = ol.proj.toLonLat(curCoodinate);
 				
 				if ($('#lat').length) {
-					$('#lat').val(finalPlanGenPositionLonLat[0]);
-					$('#lng').val(finalPlanGenPositionLonLat[1]);
+					$('#lat').val(finalPlanGenPositionLonLat[1]);
+					$('#lng').val(finalPlanGenPositionLonLat[0]);
 				}
 				
 				$("#mainMap").css('cursor', 'pointer');
