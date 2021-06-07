@@ -310,18 +310,12 @@ function initPilotCenter() {
     }
     else if (page_action == "missiondesign") {
         $("#main_contents").load("mission_design.html", function () {
-            map2DInit();
-            selectMonitorIndex("private", 0);
-            addObjectTo2DMap(0, "private", "drone");
             designInit();
         });
         $("#mission_menu").addClass("active");
     }
     else if (page_action == "missiongen") {
         $("#main_contents").load("mission_gen.html", function () {
-	        	selectMonitorIndex("private", 0);
-	    			map2DInit();
-	    			addObjectTo2DMap(0, "private", "drone");
             missionGenInit();
         });
         $("#mission_menu").addClass("active");
@@ -334,8 +328,6 @@ function initPilotCenter() {
     }
     else if (page_action == "monitor") {
         $("#main_contents").load("monitor.html", function () {
-            map2DInit();
-            map3DInit();
             monitorInit();
         });
         $("#monitor_menu").addClass("active");
@@ -497,6 +489,10 @@ function centerInit() {
 
 
 function designInit() {
+		map2DInit();
+    selectMonitorIndex("private", 0);
+    addObjectTo2DMap(0, "private", "drone");
+            
     designDataArray = [];
 
     document.title = LANG_JSON_DATA[langset]['page_mission_design_title'];
@@ -599,6 +595,13 @@ var oldAddressVal = "";
 
 
 function missionGenInit() {
+		selectMonitorIndex("private", 0);
+		map2DInit();
+		addObjectTo2DMap(0, "private", "drone");
+		
+		designDroneHandler();
+		
+	    			
 		designDataArray = [];
 		
 		$('#btnForGenMissionByAddress').click(function () {
@@ -985,6 +988,8 @@ function setMonFilter() {
 }
 
 function monitorInit() {
+		map2DInit();
+    map3DInit();
 
     bMonStarted = false;
     bFilterOn = false;
@@ -4450,7 +4455,7 @@ function map2DInit() {
 
     var vectorLayer = new ol.layer.Vector({
         source: mainMap2DVectorSource,
-        zIndex: 10000
+        zIndex: 100
     });
 
     maplayers.push(pointLayer);
@@ -4519,6 +4524,25 @@ function map2DInit() {
         loadTilesWhileAnimating: true,
         view: currentMainMap2DView
     });
+    
+    var modify = new ol.interaction.Modify({
+		  hitDetection: vectorLayer,
+		  source: mainMap2DVectorSource,
+		});
+		modify.on(['modifystart', 'modifyend'], function (evt) {
+		  target.style.cursor = evt.type === 'modifystart' ? 'grabbing' : 'pointer';
+		  
+		  if (evt.type === 'modifyend') {
+		  	var coordinate = evt.coordinate;
+		  	console.log(coordinate);
+		  }
+		});
+		var overlaySource = modify.getOverlay().getSource();
+		overlaySource.on(['addfeature', 'removefeature'], function (evt) {
+		  target.style.cursor = evt.type === 'addfeature' ? 'pointer' : '';
+		});
+		
+		main2dMap.addInteraction(modify);
 }
 
 function showLoader() {
