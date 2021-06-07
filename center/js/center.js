@@ -4527,7 +4527,11 @@ function map2DInit() {
 		  source: mainMap2DVectorSource,
 		});
 		modify.on(['modifystart', 'modifyend'], function (evt) {
-		  target.style.cursor = evt.type === 'modifystart' ? 'grabbing' : 'pointer';
+		  if(evt.type === 'modifystart') 
+			  $("#mainMap").css('cursor', 'grabbing');
+			else
+				$("#mainMap").css('cursor', 'pointer');
+				
 		  
 		  if (evt.type === 'modifyend') {
 		  	var coordinate = evt.coordinate;
@@ -4536,7 +4540,10 @@ function map2DInit() {
 		});
 		var overlaySource = modify.getOverlay().getSource();
 		overlaySource.on(['addfeature', 'removefeature'], function (evt) {
-		  target.style.cursor = evt.type === 'addfeature' ? 'pointer' : '';
+		  if(evt.type === 'addfeature') 
+			  $("#mainMap").css('cursor', 'pointer');
+			else
+				$("#mainMap").css('cursor', '');
 		});
 		
 		main2dMap.addInteraction(modify);
