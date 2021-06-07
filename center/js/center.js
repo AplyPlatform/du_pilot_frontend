@@ -599,9 +599,6 @@ function missionGenInit() {
 		map2DInit();
 		addObjectTo2DMap(0, "private", "drone");
 		
-		designDroneHandler();
-		
-	    			
 		designDataArray = [];
 		
 		$('#btnForGenMissionByAddress').click(function () {
