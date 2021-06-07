@@ -4544,6 +4544,9 @@ function map2DInit() {
 			  $("#mainMap").css('cursor', 'pointer');
 			else
 				$("#mainMap").css('cursor', '');
+				
+			var coordinate = evt.coordinate;
+		  	console.log(coordinate);
 		});
 		
 		main2dMap.addInteraction(modify);
