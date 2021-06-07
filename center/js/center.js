@@ -4385,14 +4385,22 @@ function addObjectTo2DMap(index, owner, kind) {
 function map2DInit() {
 
     var styles = [
+    		'Road (Detailed)',
         'Road',
         'Aerial',
-        'AerialWithLabels'
+        'AerialWithLabels',
     ];
     var maplayers = [];
-    var i, style_len = styles.length;
-    for (i = 0; i < style_len; ++i) {
-        maplayers.push(new ol.layer.Tile({
+    
+    maplayers.push(
+				new ol.layer.Tile({
+		      source: new ol.source.OSM(),
+		    })
+		);
+		
+		let style_len = styles.length;
+    for (var i = 1; i <= style_len; i++) {
+        maplayers.push(new ol.layer.Tile({//todo
             visible: false,
             preload: Infinity,
             source: new ol.source.BingMaps({
@@ -4404,7 +4412,7 @@ function map2DInit() {
             })
         }));
     }
-
+    
     var dokdo = ol.proj.fromLonLat([126.5610038, 33.3834381]);
     var scaleLineControl = new ol.control.ScaleLine();
 
@@ -4496,9 +4504,9 @@ function map2DInit() {
         });
     }
 
-    maplayers[1].setVisible(true); //Aerial
-    maplayers[3].setVisible(true); //pointLayer
-    maplayers[4].setVisible(true); //vectorLayer
+    maplayers[0].setVisible(true); //Road (detailed)
+    maplayers[4].setVisible(true); //pointLayer
+    maplayers[5].setVisible(true); //vectorLayer
     
   	
   	var overviewMapControl = new ol.control.OverviewMap({
