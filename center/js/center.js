@@ -1854,7 +1854,7 @@ function setSlider(i) {
 
 
 function setSliderPos(i) {
-    if (!isSet($("#slider"))) return;
+    if ($("#slider").length <= 0) return;
 
     if (i < 0) {
         $('#sliderText').html("-");
@@ -1866,7 +1866,7 @@ function setSliderPos(i) {
 }
 
 function setYawStatus(yaw) {
-    if (!isSet($('#yawStatus'))) return;
+    if ($('#yawStatus').length <= 0) return;
     var yawStatus = document.getElementById('yawStatus');
     if (!isSet(yawStatus)) return;
     if (!isSet(yaw)) return;
@@ -1891,7 +1891,7 @@ function setYawStatus(yaw) {
 
 
 function setPitchStatus(pitch) {
-    if (!isSet($('#pitchStatus'))) return;
+    if ($('#pitchStatus').length <= 0) return;
     var pitchStatus = document.getElementById('pitchStatus');
     if (!isSet(pitchStatus)) return;
     if (!isSet(pitch)) return;
@@ -1916,7 +1916,7 @@ function setPitchStatus(pitch) {
 }
 
 function setRollStatus(roll) {
-    if (!isSet($('#rollCanvas'))) return;
+    if ($('#rollCanvas').length <= 0) return;
     var canvas = document.getElementById('rollCanvas');
     if (!isSet(canvas)) return;
     if (!isSet(roll)) return;
@@ -2836,13 +2836,13 @@ function makeFlightRecordsToTable(target, data) {
 }
 
 function getFlightRecordTitle() {
-    if (!isSet($("#record_name_field"))) return "";
+    if ($("#record_name_field").length <= 0) return "";
 
     return $("#record_name_field").text();
 }
 
 function setFlightRecordTitle(msg) {
-    if (!isSet($("#record_name_field"))) return;
+    if ($("#record_name_field").length <= 0) return;
 
     $("#record_name_field").val(msg);
 }
@@ -3374,7 +3374,7 @@ function setAddressAndCada(address_id, address, cada, wsource) {
         });
     }
     
-    if (isSet($(address_id)))
+    if ($(address_id).length)
         $(address_id).text(address);
         
     if (isSet(wsource) == false) return;
@@ -4479,7 +4479,7 @@ function map2DInit() {
         	info.text(error.message);
     });
 
-    if (isSet($('#track'))) {
+    if ($('#track').length) {
         $('#track').change(function () {
             geolocation.setTracking($("#track").is(":checked"));
         });
@@ -4535,7 +4535,12 @@ function map2DInit() {
 			  $("#mainMap").css('cursor', 'grabbing');
 			else {
 				finalPlanGenPositionLonLat = ol.proj.toLonLat(curCoodinate);
-				console.log(finalPlanGenPositionLonLat[0] + "," + finalPlanGenPositionLonLat[1]); //todo
+				
+				if ($('#lat').length) {
+					$('#lat').val(finalPlanGenPositionLonLat[0]);
+					$('#lng').val(finalPlanGenPositionLonLat[1]);
+				}
+				
 				$("#mainMap").css('cursor', 'pointer');
 			}
 		});
@@ -4774,7 +4779,7 @@ function getCookie(cName) {
 }
 
 function showCurrentInfo(dlatlng, alt) {
-    if (!isSet($("#position_info"))) return;
+    if ($("#position_info").length <= 0) return;
 
     var latlng = ol.proj.fromLonLat(dlatlng);
     var hdms = ol.coordinate.toStringHDMS(latlng);
