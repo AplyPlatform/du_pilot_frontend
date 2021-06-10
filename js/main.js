@@ -379,7 +379,8 @@
 	          name: "lat: " + item.lat + ", lng: " + item.lng + ", alt: " + item.alt,
 	          mindex : i,
 						maddress : item.address,
-						mhasYoutube : item.hasYoutube
+						mhasYoutube : item.hasYoutube,
+						mname : item.name
 	      });
 
 	  return pos_icon;
@@ -437,12 +438,8 @@
 	      view: c_view
 	    });
 
-	  var icon = createNewIconFor2DMap(index, {lat:flat, lng:flng, alt:0, address: address, hasYoutube : hasYoutube});
+	  var icon = createNewIconFor2DMap(index, {lat:flat, lng:flng, alt:0, name: "", address: address, hasYoutube : hasYoutube});
 	  vSource.addFeature(icon);
-
-    if (isSet(flightHistorySource)) {
-        flightHistorySource.addFeature(icon);
-    }
 
 	  return vSource;
 	}
@@ -498,7 +495,10 @@
 	var vVectorLayerForHistory;
 
 	var flightRecArray = [];
+	
+	var flightRecFullArray = [];
 	var companyArray = [];
+	
 
 	var container = document.getElementById('popup');
 	var content = document.getElementById('popup-content');
@@ -800,9 +800,41 @@
     GATAGM("index_page_vMap_" + ii, "CONTENT", langset);
 
     var hasYoutube = features[0].get('mhasYoutube');
+  		
+		if (hasYoutube) {
+			var name = features[0].get('mname');
+			getFlightRecordInfo(name);
+		}
+	}
+	
+	function getFlightRecordInfo(name) {
+			var jdata = {"action": "public_record_detail", "name" : name};
 
-  	if (hasYoutube)
-  		$("#video-pop-" + ii).click();
+			showLoader();
+	
+	  	ajaxRequest(jdata, function (r) {
+		    if(r.result == "success") {
+		    	hideLoader();
+		    	
+		      if (r.data == null) {
+		      	showAlert(LANG_JSON_DATA[langset]['msg_no_data']);	
+		        return;
+		      }
+		      
+			  	var vid = getYoutubeQueryVariable(r.data.youtube_data_id);			
+					$("#video-pop-view").attr("video-lang", langset);
+					$("#video-pop-view").attr("video-name", name);
+					$("#video-pop-view").attr("video-url", "https://www.youtube.com/watch?v=" + vid);
+					$("#video-pop-view").videoPopup();
+					$("#video-pop-view").click();
+		    }
+		  },
+		  	function(request,status,error) {
+		  		showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
+		  		hideLoader();
+		  });
+		
+			
 	}
 
 	function isCluster(feature) {
@@ -939,17 +971,7 @@
 	  appendRow = appendRow + "<br><small>" + dtimestamp + "</small>";
 
 	  appendRow = appendRow + "</div></div></div>"; //col, row, service,
-
-	  if (isSet(youtube_url)) {
-	  	var vid = getYoutubeQueryVariable(youtube_url);			
-			appendRow = appendRow + "<a id='video-pop-" + curIndex +  "' video-lang='" + langset + "' video-name='" + name + "' video-url='https://www.youtube.com/watch?v=" + vid + "'></a>";
-	  }
-
 	  $('#dataTable-Flight_list').append(appendRow);
-
-		if (isSet(youtube_url)) {
-			$("#video-pop-" + curIndex).videoPopup();
-		}
 
 		var retSource = null;
 		if (flat != -999) {
@@ -967,11 +989,23 @@
 	  	setEmptyVideo(curIndex);
 	  }
 
-	  if (flat != -999) {
+	  if (tableCount == 0 && flat != -999) {
       moveFlightHistoryMap(flat, flng);
     }
 
 	  tableCount++;
+	}
+	
+	
+	function setFlightlistFullHistory() {
+		flightRecFullArray.forEach(function(item, index, arra) {
+			if (isSet(item.flat) == false || item.lat == -999) return;
+			let hasYoutube = isSet(item.youtube_data_id) == true ? true : false;
+	    var icon = createNewIconFor2DMap(index, {lat:item.flat, lng:item.flng, name: item.name, alt:0, address: item.address, hasYoutube : hasYoutube });
+	    if (isSet(flightHistorySource)) {
+	        flightHistorySource.addFeature(icon);
+	    }
+	  });
 	}
 
 	function setFlightlistHistory() {
@@ -997,8 +1031,40 @@
            }
     });
 	}
-
+	
 	function getFlightList() {
+	  var jdata = {"action": "public_record_list", "list" : true};
+
+	  showLoader();
+	  ajaxRequest(jdata, function (r) {
+	    hideLoader();
+	    if(r.result == "success") {
+	      if (r.data == null || r.data.length == 0) {
+	        showAlert(LANG_JSON_DATA[langset]['msg_no_data']);
+					hideLoader();
+	        return;
+	      }
+
+				flightRecFullArray = r.data;
+	      setFlightlistFullHistory();
+				hideLoader();
+	    }
+	    else {
+	    	if (r.reason == "no data") {
+	    		showAlert(LANG_JSON_DATA[langset]['msg_no_data']);
+	    	}
+	    	else {
+		    	showAlert(LANG_JSON_DATA[langset]['msg_error_sorry']);
+		    }
+
+				hideLoader();
+	    }
+	  }, function(request,status,error) {
+	    hideLoader();
+	  });
+	}
+
+	function getFlightSomeList() {
 	  var jdata = {"action": "public_record_list"};
 
 	  showLoader();
@@ -1038,7 +1104,8 @@
 	}
 
 	function onYouTubeIframeAPIReady() {
-	  getFlightList();
+	  	getFlightSomeList();
+			getFlightList();
   }
 
 $(function(){
@@ -1052,6 +1119,6 @@ $(function(){
 	goToTop();
 	loaderPage();
 	flightHistoryMapInit();
-	initYoutubeAPI();	
 	getCompanyList();
+	initYoutubeAPI();
 });
