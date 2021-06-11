@@ -1288,6 +1288,7 @@
 				if($("#searchKeyword").val() == "") {
 					$("#defaultListView").show();
 					$("#searchListView").hide();
+					searchKeyword = "";
 				}
 				else {
 					$("#defaultListView").hide();
