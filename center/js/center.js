@@ -2784,8 +2784,8 @@ function searchFlightRecord(target, keyword) {
     var isPublic = (target == "public") ? true : false;
     var jdata = { "action": "position", "daction": "find_record", "keyword": keyword, "clientid": userid, "public": isPublic };
     
-    if ($("#getFlightRecords").val() != "") {
-    		jdata["target_email"] = $("#getFlightRecords").val();
+    if ($("#target_key").val() != "") {
+    		jdata["target_email"] = $("#target_key").val();
     }
 
     hasMore = "";
@@ -2885,8 +2885,8 @@ function getFlightRecords(target) {
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "download", "clientid": userid };
     
-    if ($("#getFlightRecords").val() != "") {
-    		jdata["target_email"] = $("#getFlightRecords").val();
+    if ($("#target_key").val() != "") {
+    		jdata["target_email"] = $("#target_key").val();
     }
 
     if (target == "public") {
