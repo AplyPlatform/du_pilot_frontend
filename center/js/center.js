@@ -377,6 +377,13 @@ function initPilotCenter() {
         });
         $("#record_menu").addClass("active");
     }    
+    else if (page_action == "summary_list") {
+        $("#main_contents").load("record_list_summary.html", function () {
+           flightRecords2DMapInit();
+           flightrecordsListSummaryInit("private");
+        });
+        $("#record_menu").addClass("active");
+    }
     else if (page_action == "summary") {
         $("#main_contents").load("summary.html", function () {
             summaryInit();
@@ -1139,6 +1146,39 @@ function flightrecordListInit(target) {
         $('#page_about_title').text(LANG_JSON_DATA[langset]['page_flight_rec_view_title']);
         $('#page_about_content').text(LANG_JSON_DATA[langset]['record_list_about_content']);
     }
+
+    $("#head_title").text(document.title);
+
+    $("#btnForLoadFlightList").text(LANG_JSON_DATA[langset]['btnForLoadFlightList']);
+
+    $("#name_label").text(LANG_JSON_DATA[langset]['name_label']);
+    $("#date_label").text(LANG_JSON_DATA[langset]['date_label']);
+    $("#manage_label").text(LANG_JSON_DATA[langset]['manage_label']);
+
+    $("#search_key").attr("placeholder", LANG_JSON_DATA[langset]['msg_record_search_key']);
+
+    $("#btnForSearchFlightRecord").click(function () {
+        GATAGM('btnForSearchFlightRecord', 'CONTENT', langset);
+        searchFlightRecord(target, $("#search_key").val());
+    });
+
+    $('#btnForLoadFlightList').click(function () {
+        GATAGM('btnForLoadFlightList', 'CONTENT', langset);
+        getFlightRecords(target);
+    });
+
+    $('#btnForLoadFlightList').hide();
+
+    current_target = target;
+    initYoutubeAPIForFlightList();
+}
+
+
+function flightrecordsListSummaryInit(target) {
+		
+    document.title = LANG_JSON_DATA[langset]['page_flight_rec_view_title'];
+    $('#page_about_title').text(LANG_JSON_DATA[langset]['page_flight_rec_view_title']);
+    $('#page_about_content').text(LANG_JSON_DATA[langset]['record_list_about_content']);
 
     $("#head_title").text(document.title);
 
@@ -2743,6 +2783,10 @@ function searchFlightRecord(target, keyword) {
     var userid = getCookie("dev_user_id");
     var isPublic = (target == "public") ? true : false;
     var jdata = { "action": "position", "daction": "find_record", "keyword": keyword, "clientid": userid, "public": isPublic };
+    
+    if ($("#getFlightRecords").val() != "") {
+    		jdata["target_email"] = $("#getFlightRecords").val();
+    }
 
     hasMore = "";
 
@@ -2840,6 +2884,10 @@ function getFullFlightRecords() {
 function getFlightRecords(target) {
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "download", "clientid": userid };
+    
+    if ($("#getFlightRecords").val() != "") {
+    		jdata["target_email"] = $("#getFlightRecords").val();
+    }
 
     if (target == "public") {
         jdata['public'] = true;
