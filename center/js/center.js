@@ -864,6 +864,27 @@ function flightrecordUploadInit() {
 
   	setUpload(true);
   	
+  	var d = new Date();
+  	var curr_day = d.getDate();
+		curr_day = curr_day < 10 ? "0" + curr_day : curr_day;
+		var curr_month = d.getMonth();
+		curr_month++;
+		 
+		curr_month = curr_month < 10 ? "0" + curr_month : curr_month;
+		
+		var curr_year = d.getFullYear();
+		
+		var curr_hour = d.getHours();
+		curr_hour = curr_hour < 10 ? "0" + curr_hour : curr_hour;
+		
+		var curr_min = d.getMinutes();
+		curr_min = curr_min < 10 ? "0" + curr_min : curr_min;
+		
+		var curr_sec = d.getSeconds();
+		curr_sec = curr_sec < 10 ? "0" + curr_sec : curr_sec;
+		
+		$("#txtDatflighttime_input_data").val(curr_year + "-" + curr_month + "-" + curr_day + " " + curr_hour + ":" + curr_min + ":" + curr_sec);
+  	
   	$("#set_youtube_address_view").hide();
     $("#set_youtube_upload_view").show();
     hideLoader();
@@ -4814,9 +4835,20 @@ function uploadFlightList(isUpdate) {
     			return;
     	}
     	
+    	var flightTime = $("#txtDatflighttime_input_data").val();
+    	if (flightTime == "") {
+    			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input'] + " : 촬영일시");
+    			return;
+    	}
+    	
+    	var fTime = Date.parse(flightTime);
+    	var uTime = new Date();
+			uTime.setHours(fTime.getHours() - 9);
+			startTime = uTime.getTime();
+    	
     	youtube_data = massageYotubeUrl(youtube_data);
 	    
-	    params = {mname : mname, mmemo: mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, flat: address_flat, flng: address_flng}; 
+	    params = {mname : mname, mmemo: mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, flat: address_flat, flng: address_flng, startTime : startTime}; 
 	    
     	saveYoutubeUrl(params, function(bSuccess) {
         	if (bSuccess == true) {
@@ -5058,7 +5090,7 @@ function setMoveActionFromMap(index, item) {
 function saveYoutubeUrl(params, callback) {
 	
     var userid = getCookie("dev_user_id");
-    var jdata = { "action": "position", "daction": "youtube", "youtube_data_id": params.youtube_data, "clientid": userid, "name": params.mname, "tag_values" : params.tag_values, "memo" : params.mmemo };
+    var jdata = { "action": "position", "daction": "youtube", "youtube_data_id": params.youtube_data, "clientid": userid, "name": params.mname, "tag_values" : params.tag_values, "memo" : params.mmemo, "starttime" : params.startTime };
     
     if (params.flat != -999) {
     		jdata["flat"] = params.flat;
