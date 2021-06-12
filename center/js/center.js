@@ -5250,7 +5250,7 @@ function setYoutubePlayer(d_id) {
 function onYouTubeIframeAPIReady() {
 		if (viewmode != "pilot") return;
 		
-		if (page_action == "recordlist" || page_action == "publicrecordlist" || page_action == "center") {
+		if (page_action == "recordlist" || page_action == "publicrecordlist" || page_action == "center" || page_action == "summary_list") {
 			getFullFlightRecords(current_target);
     	getFlightRecords(current_target);
     	return;
