@@ -4842,8 +4842,14 @@ function uploadFlightList(isUpdate) {
     	}
     	
     	var fTime = Date.parse(flightTime);
+    	if (isNaN(fTime)) {
+		    	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input'] + " : 촬영일시");
+    			return;
+    	}
+		  
     	var uTime = new Date();
-			uTime.setHours(fTime.getHours() - 9);
+    	uTime.setTime(fTime);
+			uTime.setHours(uTime.getHours() - 9);
 			startTime = uTime.getTime();
     	
     	youtube_data = massageYotubeUrl(youtube_data);
