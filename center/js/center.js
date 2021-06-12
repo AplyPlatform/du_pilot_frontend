@@ -883,7 +883,7 @@ function flightrecordUploadInit() {
 		var curr_sec = d.getSeconds();
 		curr_sec = curr_sec < 10 ? "0" + curr_sec : curr_sec;
 		
-		$("#txtDatflighttime_input_data").val(curr_year + "-" + curr_month + "-" + curr_day + " " + curr_hour + ":" + curr_min + ":" + curr_sec);
+		$("#flighttime_input_data").val(curr_year + "-" + curr_month + "-" + curr_day + " " + curr_hour + ":" + curr_min + ":" + curr_sec);
   	
   	$("#set_youtube_address_view").hide();
     $("#set_youtube_upload_view").show();
@@ -4835,7 +4835,7 @@ function uploadFlightList(isUpdate) {
     			return;
     	}
     	
-    	var flightTime = $("#txtDatflighttime_input_data").val();
+    	var flightTime = $("#flighttime_input_data").val();
     	if (flightTime == "") {
     			showAlert(LANG_JSON_DATA[langset]['msg_wrong_input'] + " : 촬영일시");
     			return;
