@@ -1128,8 +1128,10 @@ function flightDetailInit(target) {
     $('#uploadVideoToYoutubeButton').on("click", uploadVideo.handleUploadClicked.bind(uploadVideo));
 		
     var record_name = getQueryVariable("record_name");
+    var target_key = getQueryVariable("target_key");
+    
     if (record_name != null && record_name != "") {
-        showDataWithName(target, decodeURIComponent(unescape(record_name)));
+        showDataWithName(target, target_key, decodeURIComponent(unescape(record_name)));
     }            
 }
 
@@ -2783,9 +2785,10 @@ function searchFlightRecord(target, keyword) {
     var userid = getCookie("dev_user_id");
     var isPublic = (target == "public") ? true : false;
     var jdata = { "action": "position", "daction": "find_record", "keyword": keyword, "clientid": userid, "public": isPublic };
+    var target_key = $("#target_key").length > 0 ? $("#target_key").val() : "";
     
-    if ($("#target_key").val() != "") {
-    		jdata["target_email"] = $("#target_key").val();
+    if (target_key != "") {
+    		jdata["target_email"] = target_key;
     }
 
     hasMore = "";
@@ -2813,7 +2816,7 @@ function searchFlightRecord(target, keyword) {
             flightRecArray = [];
             $('#dataTable-Flight_list').empty();
             nAppendListCount = 0;
-            makeFlightRecordsToTable(target, r.data);
+            makeFlightRecordsToTable(target, target_key, r.data);
             hideLoader();
         }
         else {
@@ -2884,9 +2887,9 @@ function getFullFlightRecords() {
 function getFlightRecords(target) {
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "position", "daction": "download", "clientid": userid };
-    
-    if ($("#target_key").val() != "") {
-    		jdata["target_email"] = $("#target_key").val();
+    var target_key = $("#target_key").length > 0 ? $("#target_key").val() : "";
+    if (target_key != "") {
+    		jdata["target_email"] = target_key;
     }
 
     if (target == "public") {
@@ -2930,7 +2933,7 @@ function getFlightRecords(target) {
 
             $('#historyMap').show();
 
-            makeFlightRecordsToTable(target, r.data);
+            makeFlightRecordsToTable(target, target_key, r.data);
             hideLoader();
         }
         else {
@@ -2951,7 +2954,7 @@ function getFlightRecords(target) {
 
 
 
-function makeFlightRecordsToTable(target, data) {
+function makeFlightRecordsToTable(target, target_key, data) {
     if (data == null || data.length == 0)
         return;
 
@@ -2960,7 +2963,7 @@ function makeFlightRecordsToTable(target, data) {
 		});
 
     data.forEach(function (item) {
-        appendFlightRecordTable(target, item);
+        appendFlightRecordTable(target, target_key, item);
         flightRecArray.push(item);
     });    
 }
@@ -3081,10 +3084,10 @@ function makeShareFlightData(name, user_email) {
 
 }
 
-function showDataWithName(target, name) {
+function showDataWithName(target, target_key, name) {
 
     var userid = getCookie("dev_user_id");
-    var jdata = { "action": "position", "daction": "download_spe", "name": name, "clientid": userid };
+    var jdata = { "action": "position", "daction": "download_spe", "name": name, "clientid": userid, "target_email" : target_key };
 
 		if (target == "public") {
         jdata['public'] = true;
@@ -3544,7 +3547,7 @@ function setAddressAndCada(address_id, address, cada, wsource) {
     
 }
 
-function appendFlightRecordTable(target, item) {
+function appendFlightRecordTable(target, target_key, item) {
     var name = item.name;
     var dtimestamp = item.dtime;
     var data = item.data;
@@ -3567,12 +3570,12 @@ function appendFlightRecordTable(target, item) {
         appendRow = appendRow
             + "<a onclick='GATAGM(\"flight_list_public_title_click_"
             + name + "\", \"CONTENT\", \""
-            + langset + "\");' href='" + cur_controller + "?page_action=publicrecordlist_detail&record_name="
+            + langset + "\");' href='" + cur_controller + "?target_key=" + target_key + "&page_action=publicrecordlist_detail&record_name="
             + encodeURIComponent(name) + "'>" + name + "</a>";
     }
     else {
         appendRow = appendRow + "<a onclick='GATAGM(\"flight_list_title_click_" + name + "\", \"CONTENT\", \""
-            + langset + "\");' href='" + cur_controller + "?page_action=recordlist_detail&record_name="
+            + langset + "\");' href='" + cur_controller + "?target_key=" + target_key + "&page_action=recordlist_detail&record_name="
             + encodeURIComponent(name) + "'>" + name + "</a>";
     }
 
