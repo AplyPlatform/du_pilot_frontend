@@ -3636,7 +3636,7 @@ function appendFlightRecordTable(target, target_key, item) {
 
     appendRow = appendRow + "<div class='row'><div class='col-sm'><span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span><span class='text-xs font-weight-bold mb-1'>" + dtimestamp + "</span></div></div>"
         + "<div class='row'><div class='col-sm text-right'>"
-        + "<h6><span class='badge badge-secondary' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</span></h6>"
+        + "<h6><span class='badge badge-secondary' style='cursor: pointer' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</span></h6>"
         + "</div></div></div></div>"; //row, card-body, card
 
     $('#dataTable-Flight_list').append(appendRow);
