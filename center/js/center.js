@@ -768,7 +768,7 @@ function flightrecordUploadInit() {
 
     $("#tab_menu_set_youtube_address").text(LANG_JSON_DATA[langset]['label_set_youtube_url']);
     $("#tab_menu_set_youtube_upload").text(LANG_JSON_DATA[langset]['label_upload_movie']);
-   	
+
     $("#flighttime_input_data_label").text(LANG_JSON_DATA[langset]['flighttime_input_data_label']);
 
     $("#disclaimer").html(LANG_JSON_DATA[langset]['youtubeTOS']);
@@ -3612,14 +3612,15 @@ function appendFlightRecordTable(target, target_key, item) {
         appendRow = appendRow + "<div class='col-sm' id='map_" + curIndex + "' style='height:200px;'></div>";
     }
 
-    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a><div class='form-group'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='3'>";
+    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a></div></div>";
 
+		appendRow = appendRow + "<div class='row'><div class='col-10 text-right'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='2'>"
     if (isSet(memo)) {
         appendRow = appendRow + memo;
     }
 
-    appendRow = appendRow + "</textarea>";
-    appendRow = appendRow + "<button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div></div>"; //form-group col-sm
+    appendRow = appendRow + "</textarea></div><div class='col-2'>";
+    appendRow = appendRow + "<button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div>"; //col-sm row
 
     appendRow = appendRow + "<div class='row'><div class='col-sm'>";
 
@@ -4848,7 +4849,7 @@ function uploadFlightList(isUpdate) {
 		    	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input'] + " : 촬영일시");
     			return;
     	}
-			
+
     	// var uTime = new Date();
     	// uTime.setTime(fTime);
 			// uTime.setHours(uTime.getHours() - 9);
