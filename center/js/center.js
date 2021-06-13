@@ -3612,9 +3612,9 @@ function appendFlightRecordTable(target, target_key, item) {
         appendRow = appendRow + "<div class='col-sm' id='map_" + curIndex + "' style='height:200px;'></div>";
     }
 
-    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a></div></div>";
+    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a><br></div></div>";
 
-		appendRow = appendRow + "<div class='row'><div class='col-10 text-right'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='2'>"
+		appendRow = appendRow + "<div class='row'><div class='col-10 text-right'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='1'>"
     if (isSet(memo)) {
         appendRow = appendRow + memo;
     }
@@ -3636,7 +3636,7 @@ function appendFlightRecordTable(target, target_key, item) {
 
     appendRow = appendRow + "<div class='row'><div class='col-sm'><span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span><span class='text-xs font-weight-bold mb-1'>" + dtimestamp + "</span></div></div>"
         + "<div class='row'><div class='col-sm text-right'>"
-        + "<button class='btn btn-secondary text-xs' type='button' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</button>"
+        + "<button class='btn btn-outline-secondary btn-sm' type='button' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</button>"
         + "</div></div></div></div>"; //row, card-body, card
 
     $('#dataTable-Flight_list').append(appendRow);
