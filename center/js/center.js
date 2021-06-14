@@ -3632,7 +3632,7 @@ function appendFlightRecordTable(target, target_key, item) {
     }
 
     appendRow = appendRow + "</textarea></div><div class='col-2 text-right'>";
-    appendRow = appendRow + "<button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div>"; //col-sm row
+    appendRow = appendRow + "<br><button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div>"; //col-sm row
 
 
     appendRow = appendRow + "<div class='row'><div class='col-sm'>";
