@@ -3662,8 +3662,9 @@ function appendFlightRecordTable(target, target_key, item) {
     $('#dataTable-Flight_list').append(appendRow);
     $("#owner_email_" + curIndex).hide();
     
-    if ($("#recorded_datetime_label_" + curIndex).length > 0)
-    	$("#recorded_datetime_label_" + curIndex).text(LANG_JSON_DATA[langset]['flighttime_input_data_label']);
+    if ($("#recorded_datetime_label_" + curIndex).length > 0) {
+    		$("#recorded_datetime_label_" + curIndex).text(LANG_JSON_DATA[langset]['flighttime_input_data_label']);
+    }
     
     $("#registered_datetime_label_" + curIndex).text(LANG_JSON_DATA[langset]['registered_datetime_label']);
 
