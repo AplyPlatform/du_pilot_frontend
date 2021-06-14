@@ -886,7 +886,7 @@ function makeDateTimeFormat(d) {
 
 		var curr_year = d.getFullYear();
 
-		var curr_hour = d.getHours();
+		var curr_hour = d.getHours() + 9;
 		curr_hour = curr_hour < 10 ? "0" + curr_hour : curr_hour;
 
 		var curr_min = d.getMinutes();
@@ -3645,8 +3645,8 @@ function appendFlightRecordTable(target, target_key, item) {
     appendRow = appendRow + "<div class='row'><div class='col-sm'>";
     
     
-    if (isSet(item.startime)) {
-    	appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>F: " + makeDateTimeFormat(new Date(item.startime)) + "</span>";
+    if (isSet(item.starttime)) {
+    	appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>F: " + makeDateTimeFormat(new Date(item.starttime)) + "</span>";
     }
     
     appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>R: " + dtimestamp + "</span>";
