@@ -867,7 +867,7 @@ function flightrecordUploadInit() {
   	setUpload(true);
 
   	var d = new Date();
-  	let retDateTime = makeDateTimeFormat(d);
+  	let retDateTime = makeDateTimeFormat(d, false);
 
 		$("#flighttime_input_data").val(retDateTime);
 
@@ -876,8 +876,10 @@ function flightrecordUploadInit() {
     hideLoader();
 }
 
-function makeDateTimeFormat(d) {
-		//d.setHours(d.getHours() + 9);
+function makeDateTimeFormat(d, isGMT) {
+		if(isGMT == true)
+			d.setHours(d.getHours() + 9);
+			
   	var curr_day = d.getDate();
 		curr_day = curr_day < 10 ? "0" + curr_day : curr_day;
 		var curr_month = d.getMonth();
@@ -3593,7 +3595,7 @@ function appendFlightRecordTable(target, target_key, item) {
     var flat = (isSet(item.flat) ? item.flat * 1 : -999);
 		var flng = (isSet(item.flng) ? item.flng * 1 : -999);
 		
-		dtimestamp = makeDateTimeFormat(new Date(dtimestamp));
+		dtimestamp = makeDateTimeFormat(new Date(dtimestamp), false);
 
     var appendRow = "<div class='card shadow mb-4' id='flight-list-" + curIndex + "' name='flight-list-" + curIndex + "'><div class='card-body'><div class='row'><div class='col-sm'>";
     appendRow = appendRow + (curIndex + 1) + " | ";
@@ -3649,7 +3651,7 @@ function appendFlightRecordTable(target, target_key, item) {
     
     if (isSet(item.starttime)) {
     	appendRow = appendRow + "<div class='col-sm text-left'><span class='text-xs mb-1' id='recorded_datetime_label_" + curIndex + "'></span> <span class='text-xs mb-1'>" 
-    							+ makeDateTimeFormat(new Date(item.starttime)) 
+    							+ makeDateTimeFormat(new Date(item.starttime), true) 
     							+ "</span></div>";
     }
     
