@@ -877,7 +877,7 @@ function flightrecordUploadInit() {
 }
 
 function makeDateTimeFormat(d, isGMT) {
-		if(isGMT == true)
+		if(isGMT == false)
 			d.setHours(d.getHours() + 9);
 			
   	var curr_day = d.getDate();
