@@ -22,7 +22,7 @@ var LANG_JSON_DATA = {
         "side_menu_flight_plan_list": "비행계획 목록",
         "side_menu_flight_plan_mon": "드론위치 보기",
         "side_menu_flight_record": "비행영상 기록",
-        "side_menu_flight_record_upload": "기록 업로드",
+        "side_menu_flight_record_upload": "기록 업로드/판매",
         "side_menu_flight_record_list": "내 기록 보기",
         "side_menu_flight_record_public_list": "공개 기록 보기",
         "side_menu_qa": "문의하기",
