@@ -3644,14 +3644,16 @@ function appendFlightRecordTable(target, target_key, item) {
     }
 
     appendRow = appendRow + "</div></div>";
-    appendRow = appendRow + "<div class='row'><div class='col-sm'>";
+    appendRow = appendRow + "<div class='row'>";
     
     
     if (isSet(item.starttime)) {
-    	appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>F: " + makeDateTimeFormat(new Date(item.starttime)) + "<br></span>";
+    	appendRow = appendRow + "<div class='col-sm text-left'><span class='text-xs font-weight-bold mb-1' id='recorded_datetime_label_" + curIndex + "'></div> <span class='text-xs font-weight-bold mb-1'>" 
+    							+ makeDateTimeFormat(new Date(item.starttime)) 
+    							+ "</span></div>";
     }
     
-    appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>R: " + dtimestamp + "</span>";
+    appendRow = appendRow + "<div class='col-sm text-right'><span class='text-xs font-weight-bold mb-1' id='registered_datetime_label" + curIndex + "'></div> <span class='text-xs font-weight-bold mb-1'>" + dtimestamp + "</span>";
     appendRow = appendRow + "</div></div><div class='row'><div class='col-sm text-right'>"
         + "<h6><span class='badge badge-secondary' style='cursor: pointer' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</span></h6>"
 
@@ -3659,6 +3661,11 @@ function appendFlightRecordTable(target, target_key, item) {
 
     $('#dataTable-Flight_list').append(appendRow);
     $("#owner_email_" + curIndex).hide();
+    
+    if ($("#recorded_datetime_label_" + curIndex).length > 0)
+    	$("#recorded_datetime_label_" + curIndex).text(LANG_JSON_DATA[langset]['flighttime_input_data_label']);
+    
+    $("#registered_datetime_label_" + curIndex).text(LANG_JSON_DATA[langset]['registered_datetime_label']);
 
     if (target == "public") {
         if (isSet(owner_email)) {
