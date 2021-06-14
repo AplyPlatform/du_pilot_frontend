@@ -877,6 +877,7 @@ function flightrecordUploadInit() {
 }
 
 function makeDateTimeFormat(d) {
+		d = d.setHours(d.getHours() + 9);
   	var curr_day = d.getDate();
 		curr_day = curr_day < 10 ? "0" + curr_day : curr_day;
 		var curr_month = d.getMonth();
@@ -885,8 +886,9 @@ function makeDateTimeFormat(d) {
 		curr_month = curr_month < 10 ? "0" + curr_month : curr_month;
 
 		var curr_year = d.getFullYear();
-
-		var curr_hour = d.getHours() + 9;
+		
+		
+		var curr_hour = d.getHours();
 		curr_hour = curr_hour < 10 ? "0" + curr_hour : curr_hour;
 
 		var curr_min = d.getMinutes();
