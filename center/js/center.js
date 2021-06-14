@@ -768,7 +768,7 @@ function flightrecordUploadInit() {
 
     $("#tab_menu_set_youtube_address").text(LANG_JSON_DATA[langset]['label_set_youtube_url']);
     $("#tab_menu_set_youtube_upload").text(LANG_JSON_DATA[langset]['label_upload_movie']);
-   	
+
     $("#flighttime_input_data_label").text(LANG_JSON_DATA[langset]['flighttime_input_data_label']);
 
     $("#disclaimer").html(LANG_JSON_DATA[langset]['youtubeTOS']);
@@ -3618,16 +3618,18 @@ function appendFlightRecordTable(target, target_key, item) {
         appendRow = appendRow + "<div class='col-sm' id='map_" + curIndex + "' style='height:200px;'></div>";
     }
 
-    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-left'><span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span></div><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a></div></div>";
 
+    appendRow = appendRow + "</div><div class='row'><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a><br><br></div></div>";
 
-		appendRow = appendRow + "<div class='row'><div class='col-sm text-left'><div class='form-group'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='3'>"
-    
+		appendRow = appendRow + "<div class='row'><div class='col-10 text-right'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='1'>"
+
     if (isSet(memo)) {
         appendRow = appendRow + memo;
     }
 
-    appendRow = appendRow + "</textarea><button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div></div>"; //form-group col-sm
+    appendRow = appendRow + "</textarea></div><div class='col-2 text-right'>";
+    appendRow = appendRow + "<button class='btn btn-primary text-xs' type='button' id='btnForUpdateMemo_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_modify_memo'] + "</button></div></div>"; //col-sm row
+
 
     appendRow = appendRow + "<div class='row'><div class='col-sm'>";
 
@@ -3648,9 +3650,9 @@ function appendFlightRecordTable(target, target_key, item) {
     }
     
     appendRow = appendRow + "<span class='text-xs font-weight-bold mb-1'>R: " + dtimestamp + "</span>";
-    
     appendRow = appendRow + "</div></div><div class='row'><div class='col-sm text-right'>"
-        + "<button class='btn btn-secondary text-xs' type='button' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</button>"
+        + "<h6><span class='badge badge-secondary' style='cursor: pointer' id='btnForRemoveFlightData_" + curIndex + "'>" + LANG_JSON_DATA[langset]['msg_remove'] + "</span></h6>"
+
         + "</div></div></div></div>"; //row, card-body, card
 
     $('#dataTable-Flight_list').append(appendRow);
@@ -4863,7 +4865,7 @@ function uploadFlightList(isUpdate) {
 		    	showAlert(LANG_JSON_DATA[langset]['msg_wrong_input'] + " : 촬영일시");
     			return;
     	}
-			
+
     	// var uTime = new Date();
     	// uTime.setTime(fTime);
 			// uTime.setHours(uTime.getHours() - 9);
