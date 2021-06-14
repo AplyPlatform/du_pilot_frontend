@@ -877,7 +877,7 @@ function flightrecordUploadInit() {
 }
 
 function makeDateTimeFormat(d) {
-		d = d.setHours(d.getHours() + 9);
+		d.setHours(d.getHours() + 9);
   	var curr_day = d.getDate();
 		curr_day = curr_day < 10 ? "0" + curr_day : curr_day;
 		var curr_month = d.getMonth();
