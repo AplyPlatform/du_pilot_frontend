@@ -3350,7 +3350,7 @@ function showDataWithName(target, target_key, name) {
 					$("#altitude_graph_area").hide();
           $("#map_area").hide();
           
-    			moveToPositionOnMap("private", 0, fdata.flat * 1, fdata.flng * 1, 200, 0, 0, 0);
+    			moveToPositionOnMap("private", 0, fdata.flat * 1, fdata.flng * 1, 1500, 0, 0, 0);
 				}
 				
 				if (isSet(fdata.cada)) {
