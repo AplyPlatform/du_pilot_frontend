@@ -767,6 +767,8 @@ function flightrecordUploadInit() {
 
     $("#tab_menu_set_youtube_address").text(GET_STRING_CONTENT('label_set_youtube_url'));
     $("#tab_menu_set_youtube_upload").text(GET_STRING_CONTENT('label_upload_movie'));
+    $("#tab_menu_set_no_video").text(GET_STRING_CONTENT('label_set_no_video'));
+    
 
     $("#flighttime_input_data_label").text(GET_STRING_CONTENT('flighttime_input_data_label'));
 
@@ -828,9 +830,13 @@ function flightrecordUploadInit() {
         	$("#set_youtube_address_view").show();
         	$("#set_youtube_upload_view").hide();
         }
-        else {
+        else if (cVal == "tab_menu_set_youtube_upload") {
         	$("#set_youtube_address_view").hide();
         	$("#set_youtube_upload_view").show();
+        }
+        else {
+        	$("#set_youtube_address_view").hide();
+        	$("#set_youtube_upload_view").hide();
         }
 		});
 
@@ -904,7 +910,7 @@ function makeDateTimeFormat(d, isGMT) {
 function uploadCheckBeforeUploadFlightList() {
 
 		var cVal = $(":input:radio[name='media_upload_kind']:checked").val();
-		if (cVal == "tab_menu_set_youtube_address") {
+		if (cVal == "tab_menu_set_youtube_address" || cVal == "tab_menu_set_no_video") {
       uploadFlightList(false);
       return;
     }
@@ -4805,6 +4811,11 @@ function uploadFlightList(isUpdate) {
 
 		var youtube_data = $("#youtube_url_data").val();
     var files = document.getElementById('flight_record_file').files;
+    
+    var cVal = $(":input:radio[name='media_upload_kind']:checked").val();
+		if (cVal == "tab_menu_set_no_video") {
+      youtube_data = "";
+    }
 
     var params = {};
 
