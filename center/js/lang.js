@@ -166,7 +166,7 @@ var LANG_JSON_DATA = {
         "tab_menu_upload_selector_address" : "촬영지 주소 입력",
         "open_record_label": "공개 비행영상 기록",
         "label_set_youtube_url": "Youtube URL 입력",
-        "label_set_no_video" : "영상 없음"
+        "label_set_no_video" : "영상 없음",
         "label_upload_movie": "영상 업로드",
         "tab_menu_upload_selector_dji": "비행기록 업로드",
         "tab_menu_upload_selector_address": "촬영지 주소 입력",
