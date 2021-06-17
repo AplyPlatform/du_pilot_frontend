@@ -13,7 +13,7 @@ limitations under the License.
 
 var LANG_JSON_DATA = {
 	"KR": {
-    		"modal_yes_btn": "네",
+    	"modal_yes_btn": "네",
         "modal_confirm_btn": "확인",
         "modal_title": "알림",
         "side_menu_dashboard": "Dashboard",
@@ -22,7 +22,7 @@ var LANG_JSON_DATA = {
         "side_menu_flight_plan_list": "비행계획 목록",
         "side_menu_flight_plan_mon": "드론위치 보기",
         "side_menu_flight_record": "비행영상 기록",
-        "side_menu_flight_record_upload": "기록 업로드/판매",
+        "side_menu_flight_record_upload": "비행영상 기록 업로드/판매",
         "side_menu_flight_record_list": "내 기록 보기",
         "side_menu_flight_record_public_list": "공개 기록 보기",
         "side_menu_qa": "문의하기",
@@ -55,7 +55,7 @@ var LANG_JSON_DATA = {
         "shared_record_data_msg": "공유받은 데이터입니다.",
         "map_kind_label": "지도 종류",
         "go_index_direct_label": "바로가기",
-        "mode_developer_label": "Lab & Developer로 바꾸기",
+        "mode_developer_label": "Lab으로 바꾸기",
         "mode_pilot_label": "파일럿뷰로 바꾸기",
         "phone_label": "전화번호",
         "email_label": "이메일",
@@ -229,7 +229,7 @@ var LANG_JSON_DATA = {
 
 
     "EN": {
-    		"modal_yes_btn": "Yes",
+    	"modal_yes_btn": "Yes",
         "modal_confirm_btn": "Confirm",
         "modal_title": "Notification",
         "side_menu_dashboard": "Dashboard",
@@ -287,7 +287,7 @@ var LANG_JSON_DATA = {
         "stop_share_label": "Stop sharing",
         "badge_code_label": "Badge code",
         "btnForSharing": "Share",
-				"btnForOpening": "Open",
+		"btnForOpening": "Open",
         "btnForLink": "Creating a new link",
         "privacy_link_label": "Privacy policy(KR)",
         "btnForBadge_make": "Generate badge code",
