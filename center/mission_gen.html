@@ -39,15 +39,15 @@
   <div class="col-lg-6 mb-4">
     <div class="card shadow mb-4">
     				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-          			<h6 class="m-0 font-weight-bold text-primary" id="page_about_title">(GPS)위도, 경도로 비행계획 만들기</h6>
+          			<h6 class="m-0 font-weight-bold text-primary" id="page_about_title">경도, 위도(GPS 좌표)로 비행계획 만들기</h6>
         		</div>
             <div class="card-body">
             	<div class="row">
 	    						<div class="col mr-3">
-						          	<label class="radio-inline text-xs font-weight-bold text-default text-uppercase mb-1" for="lat">Lat</label> <input name="lat" id="lat" type="text" class="form-control" value="" placeholder="위도 : 예) 37.1234" required="">
+						          	<input name="lat" id="lat" type="text" class="form-control" value="" placeholder="위도 : 예) 37.1234" required="">
 						      </div>
 						      <div class="col mr-3">
-						          	<label class="radio-inline text-xs font-weight-bold text-default text-uppercase mb-1" for="lat">Lng</label> <input name="lng" id="lng" type="text" class="form-control" value="" placeholder="경도 : 예) 127.1234" required="">
+						          	<input name="lng" id="lng" type="text" class="form-control" value="" placeholder="경도 : 예) 127.1234" required="">
 						      </div>
 						      <div class="col mr-3">
 						          	<button class="btn btn-primary" type="button" id="btnForGenMissionByGPS">
@@ -61,29 +61,17 @@
   
   <div class="col-lg-12 mb-4">
     <div class="card shadow mb-4">				
-    				<div class="card-body h-200">
+    				<div class="card-body h-300">
+	    				
 			      	<div id="mainMap" class="map2d"></div>
+			        		
 						</div>
 						
 						<div class="card-body">
 							<div class="row">
 								<div class="col-auto">
-	            		<div class="form-group">
-	                			<label for="layer-select" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="map_kind_label">지도 종류</label>
-	                  		<select id="layer-select" name="layer-select" class="form-control bg-light border-0 small">
-	                    									 <option value="Road (Detailed)" id="Road_detail">Road (Detailed)</option>
-																	       <option value="Aerial" id="Aerial_label">Aerial</option>
-																	       <option value="AerialWithLabels" selected id="Aerial_label_label">Aerial with labels</option>
-																	       <option value="Road" id="Road_label">Road</option>
-												</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-						<div class="card-body">
-							<div class="row">
-	                <button type="button" class="btn btn-primary btn-block" id="btnForRegistMission">저장하기</button>
+	                <button type="button" class="btn btn-primary" id="btnForRegistMission">저장하기</button>
+	              </div>
 	            </div>
             </div>
 	  </div>
