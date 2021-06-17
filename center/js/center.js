@@ -5308,14 +5308,25 @@ function setYoutubePlayerForDetaileView(d_id) {
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-function onYouTubeIframeAPIReady() {
-		if (g_str_cur_viewmode != "pilot") return;
-
-		if (g_str_page_action == "recordlist" || g_str_page_action == "publicrecordlist" || g_str_page_action == "center" || g_str_page_action == "summary_list") {
+function onYouTubeIframeAPIReady() {		
+		if (g_str_cur_viewmode == "pilot" &&
+				(g_str_page_action == "recordlist" 
+				|| g_str_page_action == "publicrecordlist" 
+				|| g_str_page_action == "center" 
+				|| g_str_page_action == "summary_list")) {
 			getFullFlightRecords(g_str_current_target);
     	getFlightRecords(g_str_current_target);
     	return;
     }
+    
+    if (g_str_cur_viewmode != "pilot"
+    		&& g_str_page_action == "center" ) {
+    	getFullFlightRecords(g_str_current_target);
+    	getFlightRecords(g_str_current_target);
+    	return;
+    }
+    
+    if (g_str_cur_viewmode != "pilot") return;
 
     g_youtube_player_for_detail_view = new YT.Player('youTubePlayer', {
         width: '1000',
