@@ -4,11 +4,11 @@
     <div class="card shadow">
         <!-- Card Header - Dropdown -->
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-primary" id="page_about_title">내 비행기록 업로드</h6>
+          <h6 class="m-0 font-weight-bold text-primary" id="page_about_title">드론영상에 나침반 삽입</h6>
         </div>
         <!-- Card Body -->
         <div class="card-body" id="page_about_content">
-           내 비행기록을 업로드하세요.
+           드론영상에 나침반을 넣으세요.
         </div>
     </div>
   </div>
@@ -31,10 +31,7 @@
 	  											<label id="tab_menu_set_youtube_upload" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_upload">영상 업로드</label>
 	  											&nbsp;&nbsp;
 				            			<input type="radio" name="media_upload_kind" value="tab_menu_set_youtube_address" onclick="GATAGM('tab_menu_set_youtube_address', 'CONTENT');">
-	  											<label id="tab_menu_set_youtube_address" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_address">유튜브 URL 입력</label>
-	  											&nbsp;&nbsp;
-				            			<input type="radio" name="media_upload_kind" value="tab_menu_set_no_video" onclick="GATAGM('tab_menu_set_no_video', 'CONTENT');">
-	  											<label id="tab_menu_set_no_video" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_no_video">영상 없음</label>
+	  											<label id="tab_menu_set_youtube_address" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_set_youtube_address">유튜브 URL 입력</label>	  											
 	  									</div>
   								</div>
 	            		
@@ -73,19 +70,7 @@
 							    </div>
 			            
 			            <div id="upload_tabs">
-			            	
-			            	<hr color="#eee">
-			            	
-			            	<div class="row">
-				            	<div class="col">
-				            			<input type="radio" name="record_kind" value="dji_upload_filed" onclick="GATAGM('tab_menu_upload_selector_dji', 'CONTENT');setFlightRecordUploadMode(true);" checked>
-	  											<label id="tab_menu_upload_selector_dji" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_upload_selector_dji">비행기록 업로드</label>
-	  											&nbsp;&nbsp;
-				            			<input type="radio" name="record_kind" value="address_location_field" onclick="GATAGM('tab_menu_upload_selector_address', 'CONTENT');setFlightRecordUploadMode(false);">
-	  											<label id="tab_menu_upload_selector_address" class="text-xs font-weight-bold text-default text-uppercase mb-1" for="tab_menu_upload_selector_address">주소 입력</label>
-	  									</div>
-  									</div>
-									          
+			            				            				            	
 										<div id="dji_upload_filed" style="backgroud-color:#eeeeee;">
 											<div class="row">
 												<div class="col">
@@ -112,33 +97,7 @@
 												</div>
 											</div>
 										</div>
-										
-										<div id="address_location_field">
-											<div class="row">
-												<div class="col">			              				              				              	
-					              		        	<div class="input-group">		              	
-							                        	<input name="address_input_data" type="text" class="form-control" placeholder="" id="address_input_data">
-							                        	<div class="input-group-append">
-							                          		<button class="btn btn-info" type="button" id="btnForAddressCheck">우편번호 찾기</button>
-							            				</div>
-							            			</div>
-							            			<span id="address_result"></span>
-							          			</div>
-							          			<div class="col">
-							          				<div class="input-group">	
-						              					<label for="flighttime_input_data" class="text-xs font-weight-bold text-default text-uppercase mb-1" id="flighttime_input_data_label">촬영일시</label>&nbsp;	
-						            					<input name="flighttime_input_data" type="text" class="form-control" placeholder="촬영시각" id="flighttime_input_data">
-						            				</div>
-						            			</div>
-											 </div>
-											 <div class="row">
-												 <div class="col">
-													<div class="input-group">		              	
-							                        	<input name="street_address" type="text" class="form-control" placeholder="" id="street_address">
-							            			</div>
-												 </div>
-											 </div>
-				            			</div>
+																														
 									</div>
 								  
 								  <hr color="#eee">
