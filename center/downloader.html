@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko">
 
 <head>
@@ -34,7 +34,7 @@
 	              
 	              <div class="card shadow py-2" id="screenDownloadComplete">
 	              	<div class="card-body text-center">
-	              		´Ù¿î·Îµå°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù. ´Ù¿î·Îµå°¡ ¿Ï·áµÈ ÆÄÀÏÀº ÃÖ¼Ò 1ÀÏ ÀÌ³»¿¡ »èÁ¦µÉ ¼ö ÀÖ½À´Ï´Ù.<br>
+	              		ë‹¤ìš´ë¡œë“œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ë‹¤ìš´ë¡œë“œê°€ ì™„ë£Œëœ íŒŒì¼ì€ ìµœì†Œ 1ì¼ ì´ë‚´ì— ì‚­ì œë  ìˆ˜ ìˆìŠµë‹ˆë‹¤.<br>
 	              		(Download is complete. Files that have been downloaded can be deleted within at least one day.)
 	              	</div>
 	              </div>
@@ -53,7 +53,7 @@
 	                </div>
 	                
 	                <div class="card-body text-center">
-										<canvas id="canvas" style="display:none"></canvas>
+										<progress id="progressBarForDownload" value="0" max="100" style="width:100%;height:5px"></progress>
 									</div>
 								</div>
 																
@@ -66,9 +66,6 @@
 
 <script src="./vendor/jquery/jquery.min.js"></script>
 <script>
-
-var canvas;
-var ctx;
 
 function loadEnd(e) {
   $("#screenDownloadComplete").show();
@@ -93,25 +90,11 @@ function downloadFile(file_url) {
 	    delete linker;
 	};
 	xhrObj.onprogress = function (e) {
-			showPer(Math.floor(e.loaded / e.total * 100));
+			let pos = Math.floor(e.loaded / e.total * 100);
+			$("#progressBarForDownload").val(pos);
 	};
 	xhrObj.open('GET', file_url);
 	xhrObj.send();
-}
-
-
-function showPer(per) {
-	ctx.clearRect(0, 0, 400, 400);	
-	ctx.strokeStyle = "#666";
-	ctx.lineWidth=10;
-	ctx.beginPath();
-	ctx.arc(60, 60, 50, 0, Math.PI * 2 * per / 100);
-	ctx.stroke();	
-	ctx.font = '24px serif';
-	ctx.fillStyle = "#000";
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.fillText(per + '%', 60, 60);
 }
 
 function getQueryVariable() {
