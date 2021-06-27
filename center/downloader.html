@@ -14,8 +14,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="css/style.css" rel="stylesheet">
-	<link href="css/sb-admin-2.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">	
 	<title>DUNI PILOT Center</title>	
 </head>
 <body>
@@ -33,7 +32,7 @@
 	                </div>
 	              </div>
 	              
-	              <div class="card shadow py-2">	                
+	              <div class="card shadow py-2" id="downloadProgress">	                
 	                <div class="card-body text-center">	                	
 	                	<div class="col">
 	                		<img src="../images/loader.gif" border=0> <img src="../images/loader.gif" border=0>
@@ -45,7 +44,12 @@
 	                		<img src="../images/loader.gif" border=0> <img src="../images/loader.gif" border=0>
 	                	</div>
 	                </div>
+	                
+	                <div class="card-body text-center">
+										<canvas id="canvas" style="display:none"></canvas>
+									</div>
 								</div>
+																
      				 </div>
     			</div>
     		</div>
@@ -53,20 +57,23 @@
     </div>
 	</div>
 
+<script src="./vendor/jquery/jquery.min.js"></script>
 <script>
-let file_url = getQueryVariable();
 
-if (file_url == "") {
-	alert("Invalid access");
-	location.href="/index.html";
-}
-else {
-	downloadFile(file_url);	
+var canvas;
+var ctx;
+
+function loadEnd(e) {
+  $("#downloadProgress").hide();
 }
 
 function downloadFile(file_url) {
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext("2d");
+
 	let temp_file_name = file_url.substring(file_url.lastIndexOf("/") + 1).split("?")[0];
 	var xhrObj = new XMLHttpRequest();
+	xhrObj.addEventListener("loadend", loadEnd);
 	xhrObj.responseType = 'blob';
 	xhrObj.onload = function () {
 	    var linker = document.createElement('a');
@@ -77,8 +84,26 @@ function downloadFile(file_url) {
 	    linker.click();
 	    delete linker;
 	};
+	xhrObj.onprogress = function (e) {
+			showPer(Math.floor(e.loaded / e.total * 100));
+	};
 	xhrObj.open('GET', file_url);
 	xhrObj.send();
+}
+
+
+function showPer(per) {
+	ctx.clearRect(0, 0, 400, 400);	
+	ctx.strokeStyle = "#666";
+	ctx.lineWidth=10;
+	ctx.beginPath();
+	ctx.arc(60, 60, 50, 0, Math.PI * 2 * per / 100);
+	ctx.stroke();	
+	ctx.font = '24px serif';
+	ctx.fillStyle = "#000";
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText(per + '%', 60, 60);
 }
 
 function getQueryVariable() {
@@ -94,6 +119,22 @@ function getQueryVariable() {
     return "";
 }
 
+$(function () {
+
+	let file_url = getQueryVariable();
+	
+	if (file_url == "") {
+		alert("Invalid access");
+		location.href="/index.html";
+	}
+	else {
+		downloadFile(file_url);	
+	}
+
+});
+
 </script>
+
+
 </body>
 </html>
