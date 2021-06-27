@@ -924,7 +924,12 @@ function embedCompassInit() {
 			$("#input_direct_file").val("")
 		});
 		
-		$("#colorPicker").spectrum();
+		$("#colorPicker").spectrum({
+		  type: "color",
+		  showInput: true,
+		  showInitial: true,
+		  showAlpha: false
+		});
     
     $("#file_upload_img").hide();
     $('#btnForUploadFlightList').hide();
