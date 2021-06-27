@@ -11,13 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var g_str_page_action = "center";
-var g_str_current_target = "private";
-var g_str_cur_lang = "KR";
-var g_str_cur_viewmode = "pilot"; // or "developer"
 
-var g_str_pilot_controller_for_viewmode;
-var g_str_dev_controller_for_viewmode;
 
 var g_b_monitor_started;
 
@@ -128,6 +122,11 @@ $(function () {
     setViewMode();
     setCommonText();
     initPilotCenter();
+    
+    //사이드바 기본 접기    
+    $("body").toggleClass("sidebar-toggled");
+    $(".sidebar").toggleClass("toggled");		  
+	  $('.sidebar .collapse').collapse('hide');		      
 });
 
 function goIndex(doAction) {
@@ -194,6 +193,8 @@ function setCommonText() {
     	$('#side_menu_flight_plan_design').text(GET_STRING_CONTENT('side_menu_flight_plan_design'));
     	$('#side_menu_flight_plan_list').text(GET_STRING_CONTENT('side_menu_flight_plan_list'));
     	$('#side_menu_flight_plan_mon').text(GET_STRING_CONTENT('side_menu_flight_plan_mon'));
+    	$('#side_menu_compass_embed').text(GET_STRING_CONTENT('side_menu_flight_record_embed_compass'));
+    	
     	$('#top_menu_token').text(GET_STRING_CONTENT('top_menu_token'));
 			$("#view_mode_selector").text(GET_STRING_CONTENT('mode_pilot_label'));
 			$("#droneplaytoken_view").val(getCookie("dev_token"));
@@ -203,12 +204,12 @@ function setCommonText() {
     }
 
     $('#menu_left_top_title_label').text(GET_STRING_CONTENT('menu_left_top_title_label'));
-
+		
     $('#side_menu_dashboard').text(GET_STRING_CONTENT('side_menu_dashboard'));
     $('#side_menu_flight_record').text(GET_STRING_CONTENT('side_menu_flight_record'));
     $('#side_menu_flight_record_upload').text(GET_STRING_CONTENT('side_menu_flight_record_upload'));
     $('#side_menu_flight_record_list').text(GET_STRING_CONTENT('side_menu_flight_record_list'));
-    $('#side_menu_flight_record_public_list').text(GET_STRING_CONTENT('side_menu_flight_record_public_list'));
+    $('#side_menu_flight_record_public_list').text(GET_STRING_CONTENT('side_menu_flight_record_public_list'));    
 
     $('#side_menu_qa').text(GET_STRING_CONTENT('side_menu_qa'));
     $('#side_menu_links').text(GET_STRING_CONTENT('side_menu_links'));
@@ -879,109 +880,254 @@ function flightrecordUploadInit() {
 }
 
 function embedCompassInit() {
-		document.title = GET_STRING_CONTENT('page_flight_rec_upload_title');
+		document.title = GET_STRING_CONTENT('side_menu_flight_record_embed_compass');
     $("#head_title").text(document.title);
 
-    $('#page_about_title').text(GET_STRING_CONTENT('page_flight_rec_upload_title'));
-    $('#page_about_content').text(GET_STRING_CONTENT('upload_about_content'));
+    $('#page_about_title').text(GET_STRING_CONTENT('req_compass_embed_lable'));
+    $('#page_about_content').text(GET_STRING_CONTENT('req_compass_embed_lable'));
 
-    $('#btnForUploadFlightList').text(GET_STRING_CONTENT('msg_upload'));
-
-		$("#desc_for_moviedata_label").text(GET_STRING_CONTENT('input_memo_label'));
-		$("#privacy_for_moviedata_label").text(GET_STRING_CONTENT('privacy_for_moviedata_label'));
-		$("#option_public_label").text(GET_STRING_CONTENT('option_public_label'));
-		$("#option_unlisted_label").text(GET_STRING_CONTENT('option_unlisted_label'));
-		$("#option_private_label").text(GET_STRING_CONTENT('option_private_label'));
-
-    $('#dji_flight_record_get_label').text(GET_STRING_CONTENT('dji_flight_record_get_label'));
+    $('#btnForUploadFlightList').text(GET_STRING_CONTENT('req_compass_embed_lable'));
     
-    $('#collapseRecordFileParams').html(GET_STRING_CONTENT('collapseRecordFileParams'));
-
-    $("#record_name_field").attr("placeholder", GET_STRING_CONTENT('msg_input_record_name'));
-    $("#name_label").text(GET_STRING_CONTENT('name_label'));
-    $("#youtube_url_label").text(GET_STRING_CONTENT('youtube_url_label'));
-    $("#input_memo_label").text(GET_STRING_CONTENT('input_memo_label'));
-
-    $("#input_tag_label").text(GET_STRING_CONTENT('input_tag_label'));
-
-    $("#dji_radio_label").text(GET_STRING_CONTENT('msg_dji_file_upload'));    
+    $('#label_compass_file_drop_area').text(GET_STRING_CONTENT('label_compass_file_drop_area'));
     
-    $("#tab_menu_set_youtube_address").text(GET_STRING_CONTENT('label_set_youtube_url'));
-    $("#tab_menu_set_youtube_upload").text(GET_STRING_CONTENT('label_upload_movie'));        
-    
-    $("#disclaimer").html(GET_STRING_CONTENT('youtubeTOS'));
-
-    $('#btnForUploadFlightList').click(function () {
-        GATAGM('btnForUploadFlightList', 'CONTENT');
-
-        uploadCheckBeforeUploadFlightList();
-    });   
-
-    //판매국가는 우선 한국만!
-    $("#priceinputarea").hide();
-
-    if (g_str_cur_lang != "KR") {
-    	$("#sale_select").hide();
-    }
-
-    $("#salecheck").click(function(){
-			var checked = $("#salecheck").is(":checked");
-
-			if(checked)
-				$("#priceinputarea").show();
-			else
-				$("#priceinputarea").hide();
+    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));
+            
+		let dropArea = $("#dropArea");						
+		dropArea.on("dragenter", function(e) { //드래그 요소가 들어왔을떄
+			dropArea.css('background-color', '#E3F2FC');
+			$("#file_upload_img").show();
+		}).on("dragleave", function(e) { //드래그 요소가 나갔을때			
+			dropArea.css('background-color', '#FFFFFF');
+			$("#file_upload_img").hide();
+		}).on("dragover", function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+		}).on('drop', function(e) {			
+			e.preventDefault();			
+			dropArea.css('background-color', '#FFFFFF');
+			$("#file_upload_img").hide();
+			fileDropCheck(e.originalEvent.dataTransfer.files);
 		});
-
-    var input = document.querySelector('input[name=tagTextarea]');
-		new Tagify(input);    
-
-		$("input[name='media_upload_kind']:radio").change(function () {
-        var cVal = this.value;
-
-        if (cVal == "tab_menu_set_youtube_address") {
-        	$("#set_youtube_address_view").show();
-        	$("#set_youtube_upload_view").hide();
-        }
-        else {
-        	$("#set_youtube_address_view").hide();
-        	$("#set_youtube_upload_view").show();
-        }
+		
+		$("#btnForUploadFlightList").on("click", function(e) {		
+				uploadCheckBeforeCompassEmbed();	
+		});				
+		
+		$("#input_direct_file").bind('change', function() {
+			fileDropCheck(this.files);
 		});
-
-    g_component_upload_youtube_video = new UploadVideo();
-    g_component_upload_youtube_video.onUploadCompleteCallback = function (vid) {
-    	$('#youtube_url_data').val("https://youtube.com/watch?v=" + vid);
-    	$("input:radio[name='media_upload_kind']:radio[value='tab_menu_set_youtube_address']").prop('checked', true);
-      $("#set_youtube_address_view").show();
-    	$("#set_youtube_upload_view").hide();
-
-    	g_params_for_upload_flight_rec['youtube_data'] = "https://youtube.com/watch?v=" + vid;
-
-    	hideLoader();
-
-    	if (g_b_fileupload_for_DJI == true) {
-    		askIsSyncData(g_params_for_upload_flight_rec, uploadDJIFlightListCallback);
-    		return;
-    	}
-
-    	saveYoutubeUrl(g_params_for_upload_flight_rec, function(bSuccess) {
-      	if (bSuccess == true) {
-      		showAlert(GET_STRING_CONTENT('msg_success'));
-  				location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=recordlist";
-      	}
-      	else {
-      		showAlert(GET_STRING_CONTENT('msg_error_sorry'));
-      	}
-    	});
-    };
-
-    g_component_upload_youtube_video.ready();
-  	
-  	$("#set_youtube_address_view").hide();
-    $("#set_youtube_upload_view").show();
+		
+		$("#input_direct_file").click(function() {
+			$(this).attr("value", "");
+			$("#input_direct_file").val("")
+		});
+    
+    $("#file_upload_img").hide();
+    $('#btnForUploadFlightList').hide();
+    $('#selectFileArea').show();
     hideLoader();
 }
+
+var recordFileForCompass = null;
+var videoFileForCompass = null;
+
+function fileDropCheck(files) {
+	if (files.length > 2) {
+		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+		return;	
+	}
+	
+	if (files.length == 2) {
+		if (isSet(recordFileForCompass) || isSet(videoFileForCompass)) {
+			showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+			return;	
+		}
+	}
+	
+	var isAdded = false;
+	for(var i = 0; i < files.length; i++) {
+		var file = files[i];
+												
+		if (isRecordFile(file.name)) {
+			if (isSet(recordFileForCompass)) {
+				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+				return;
+			}
+			else {				
+				console.log(file);
+				recordFileForCompass = file;				
+				preview(file, "record");
+				isAdded = true;
+			}
+		}
+		
+		if (isMovieFile(file.name)) {
+			if (isSet(videoFileForCompass)) {
+				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+				return;
+			}
+			else {				
+				console.log(file);
+				videoFileForCompass = file;				
+				preview(file, "video");
+				isAdded = true;
+			}
+		}				
+	}
+	
+	if (isAdded == false) showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+	
+	if (isSet(videoFileForCompass) && isSet(recordFileForCompass)) {
+		$('#selectFileArea').hide();
+		$('#btnForUploadFlightList').show();
+	}
+}
+
+function uploadCheckBeforeCompassEmbed() {								
+	if (!isSet(recordFileForCompass) || !isSet(videoFileForCompass)) {
+		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+		return;
+	}
+	
+	showLoader();
+	$('#btnForUploadFlightList').prop('disabled', true);
+	
+	var params = {file : recordFileForCompass};
+	getBase64(params, function(ret) {		
+		requestUploadForCompass(ret.base64file, getFileExtension(videoFileForCompass.name), recordFileForCompass.target.find("progress"));	
+	});		
+}
+
+function requestUploadForCompass(base64Recordfile, tempExt, progressBar) {
+		var userid = getCookie("dev_user_id");
+    var jdata = {
+    	"action": "position",
+    	"daction": "req_upload",
+    	"clientid": userid,
+    	"extension" : tempExt,
+    	"recordfile" : base64Recordfile    	
+    };
+
+    ajaxRequest(jdata, function (r) {
+    	if(r.result != "success") {
+    		$('#btnForUploadFlightList').prop('disabled', false);
+    		hideLoader();
+    		showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + r.reason);    		
+    		return;
+    	}
+    	
+    	progressBar.val(100);
+    	
+    	runNextSequence( function () {
+					videoFileUpload(videoFileForCompass, r.filename, r.extension, r.signedurl);
+			} );    	    		    		    	        
+    }, function (request, status, error) {
+      $('#btnForUploadFlightList').prop('disabled', false);
+      hideLoader();
+      showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + error);
+    });
+}
+
+function embedRequest(filename, tempExt) {
+		var userid = getCookie("dev_user_id");
+    var jdata = {
+    	"action": "position",
+    	"daction": "compass_embed",
+    	"clientid": userid,
+    	"extension" : tempExt,    	
+    	"filename" : filename
+    };
+
+    ajaxRequest(jdata, function (r) {
+    		hideLoader();
+        if (r.result == "success") {
+        	setProgress(100); //전체 프로그레스바 진행
+        	showAlert(GET_STRING_CONTENT("msg_pre_embed_compass_request_received") + getCookie("user_email") + GET_STRING_CONTENT("msg_post_embed_compass_request_received"));        	
+        	$('#btnForUploadFlightList').prop('disabled', false);
+        	
+        	$("#file_thumb_video").remove();
+        	$("#file_thumb_record").remove();
+					recordFileForCompass = null;					
+					videoFileForCompass = null;
+					
+					$('#selectFileArea').show();
+					$('#btnForUploadFlightList').hide();
+        }
+        else {
+        	$('#btnForUploadFlightList').prop('disabled', false);
+        	showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + r.reason);
+        }
+    }, function (request, status, error) {
+    		hideLoader();
+        $('#btnForUploadFlightList').prop('disabled', false);
+        showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + error);
+    });
+}
+
+
+function videoFileUpload(videoFile, tempName, tempExt, tempUrl) {
+	var $selfProgress = videoFile.target.find("progress");
+
+	$.ajax({
+		url: tempUrl,
+		data : videoFile,
+		type : 'PUT',
+		contentType : false,
+		processData: false,
+		cache: false,
+		xhr: function() { //XMLHttpRequest 재정의 가능
+			var xhr = $.ajaxSettings.xhr();
+			xhr.upload.onprogress = function(e) { //progress 이벤트 리스너 추가
+				var percent = e.loaded * 100 / e.total;
+				$selfProgress.val(percent); //개별 파일의 프로그레스바 진행
+			};
+	
+			return xhr;
+		},
+		success : function(ret) {			
+			setProgress(50); //전체 프로그레스바 진행
+										
+			runNextSequence( function () {
+					embedRequest(tempName, tempExt);
+				} );
+		}
+	});
+}
+
+function setProgress(per) {
+		var $progressBar = $("#progressBarForUpload");
+		$progressBar.val(per);
+}
+
+function preview(file, idx) {
+	var iconArea = '<i class="fas fa-map-marker-alt"></i>';
+	if(isMovieFile(file.name)) {
+		iconArea = '<i class="fas fa-video"></i>';
+	}
+	
+	var $div = $('<div id="file_thumb_' + idx + '"><table border=0 cellpadding=0 cellspacing=3 width=100%><tr><td width="20px" class="text-left">'			
+		+ '<span style="cursor:pointer" id="file_data_remover_' + idx + '"><b>X</b></span></td><td class="text-left">'
+		+ iconArea + ' ' + file.name + '<br><progress value="0" max="100" style="height:5px;"></progress></td></tr></table></div>');
+	$("#thumbnails").append($div);
+	file.target = $div;							
+				
+	$("#file_data_remover_" + idx).on("click", function(e) {				
+		$("#file_thumb_" + idx).remove();		
+		if (isRecordFile(file.name)) {
+			recordFileForCompass = null;
+		}
+		else {
+			videoFileForCompass = null;
+		}
+		
+		$('#selectFileArea').show();
+		$('#btnForUploadFlightList').hide();
+	});				
+}
+
+
+/////////////////////
+
 
 // 상세주소 확인
 function execDaumPostcode(){
@@ -2496,16 +2642,6 @@ function askToken() {
 }
 
 
-function isSet(value) {
-		if ( typeof(value) === 'number' )
-        return true;
-    if (value == "" || value == null || value == "undefined" || value == undefined)
-        return false;
-    return true;
-}
-
-
-
 function getMissionList() {
     var userid = getCookie("dev_user_id");
     var jdata = { "action": "mission", "daction": "get", "clientid": userid };
@@ -3878,10 +4014,6 @@ function deleteFlightData(name, index) {
 }
 
 
-function removeTableRow(rowname) {
-    $("#" + rowname).hide();
-}
-
 function askRemoveMissionItem(name, trname) {
     showAskDialog(
         GET_STRING_CONTENT('modal_title'),
@@ -4050,20 +4182,6 @@ function addPosIconsTo2DMap(posIcons) {
 
 }
 
-var oldLat = 0, oldLng = 0, oldAlt = 0;
-
-function isNeedSkip(lat, lng, alt) {
-    var ddl1 = Math.abs(lat - oldLat);
-    var ddl2 = Math.abs(lng - oldLng);
-    var ddl3 = Math.abs(alt - oldAlt);
-
-    if (ddl1 > 0.001 || ddl2 > 0.002 || ddl3 > 3) { //\uC784\uC758 \uD544\uD130
-        return true;
-    }
-
-    return false;
-}
-
 function setFlightRecordDataToView(target, cdata, bfilter) {
 
     if (isSet(cdata) == false || cdata.length <= 0 || cdata == "" || cdata == "-") {
@@ -4160,48 +4278,6 @@ var oldScatterpointIndex = -1;
 
 var oldLinedatasetIndex = -1;
 var oldLinepointIndex = -1;
-
-
-function ajaxRequest(data, callback, errorcallback) {
-    $.ajax({
-        url: "https://api.duni.io/v1/",
-        dataType: "json",
-        crossDomain: true,
-        cache: false,
-        data: JSON.stringify(data),
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        beforeSend: function (request) {
-            request.setRequestHeader("droneplay-token", getCookie('user_token'));
-        },
-        success: function (r) {
-        		if (r.result != "success" && r.result_code == 1) {
-        			setCookie("dev_user_id", "", -1);
-					    setCookie("user_token", "", -1);
-					    setCookie("dev_token", "", -1);
-					    setCookie("device_kind", "", -1);
-					    setCookie("device_id", "", -1);
-			        setCookie("user_email", "", -1);
-			        setCookie("image_url", "", -1);
-			        setCookie("temp_sns_token", "", -1);
-			        setCookie("temp_image_url", "", -1);
-			        setCookie("temp_email", "", -1);
-			        setCookie("temp_name", "", -1);
-			        setCookie("user_google_auth_token", "", -1);
-			
-			        goIndex("logout");
-        			alert(GET_STRING_CONTENT('msg_login_another_device_sorry'));        			
-        			return;
-        		}
-
-            callback(r);
-        },
-        error: function (request, status, error) {
-            monitor("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            errorcallback(request, status, error);
-        }
-    });
-}
 
 function logOut() {
 		var userid = getCookie("dev_user_id");
@@ -4502,25 +4578,6 @@ function move3DmapIcon(owner, index, lat, lng, alt, pitch, yaw, roll) {
     }
 }
 
-function style2DObjectFunction(pImage, textMsg) {
-    return [
-        new ol.style.Style(
-            {
-                image: pImage
-                ,
-                text: new ol.style.Text({
-                    font: '12px Calibri,sans-serif',
-                    fill: new ol.style.Fill({ color: '#000' }),
-                    stroke: new ol.style.Stroke({
-                        color: '#fff', width: 2
-                    }),
-                    text: textMsg
-                })
-            })
-    ];
-}
-
-
 function remove2dObjects() {
     if (g_array_point_cur_2D_mainmap_for_object != null) {
         g_array_point_cur_2D_mainmap_for_object.forEach(function (owner) {
@@ -4762,14 +4819,6 @@ function map2DInit() {
 		g_cur_2D_mainmap.addInteraction(modify);
 }
 
-function showLoader() {
-    $("#loading").show();
-}
-
-function hideLoader() {
-    $("#loading").fadeOut(800);
-}
-
 function move2DMapIcon(owner, index, lat, lng, alt, yaw) {
     var location = ol.proj.fromLonLat([lng * 1, lat * 1]);
 
@@ -4927,21 +4976,6 @@ function uploadFlightList(isUpdate) {
     }
 }
 
-function getBase64(params, callback) {
-
-    var reader = new FileReader();
-
-    reader.readAsDataURL(params.file);
-    reader.onload = function () {
-    		params['base64file'] = reader.result;
-        callback(params);
-    };
-    reader.onerror = function (error) {
-        hideLoader();
-        monitor('Error: ', error);
-    };
-}
-
 
 function uploadDJIFlightListCallback(params) {
     let userid = getCookie("dev_user_id");
@@ -4987,20 +5021,6 @@ function uploadDJIFlightListCallback(params) {
     });
 }
 
-function delCoockie(cName) {
-    document.cookie = name + "= " + "; expires=" + date.toUTCString() + "; path=/";
-}
-
-function setCookie(cName, cValue, cDay) {
-    var date = new Date();
-    date.setTime(date.getTime() + cDay * 60 * 60 * 24 * 1000);
-    document.cookie = cName + '=' + cValue + ';expires=' + date.toUTCString() + ';path=/';
-}
-
-function getCookie(cName) {
-    var value = document.cookie.match('(^|;) ?' + cName + '=([^;]*)(;|$)');
-    return value ? value[2] : null;
-}
 
 function showCurrentInfo(dlatlng, alt) {
     if ($("#position_info").length <= 0) return;
@@ -5205,20 +5225,6 @@ function showMovieDataSet() {
     });
 }
 
-function massageYotubeUrl(data_id) {
-    if (!isSet(data_id)) return "";
-
-    if (data_id.indexOf("?v=") >= 5) return data_id;
-
-    if (data_id.indexOf("youtu.be") >= 0) {
-        var splitUrl = data_id.split('/');
-        if (splitUrl.length < 4) return "";
-
-        return "https://www.youtube.com/watch?v=" + splitUrl[3];
-    }
-
-    return "";
-}
 
 function setFlightRecordTitleName() {
 		var target_name = $('#record_name_field').val();
@@ -5507,94 +5513,11 @@ function getCompanyList() {
 	  });
 }
 
-
-function convert2time(stime) {
-    var gapTime = document.getElementById("gmtGapTime").value;
-    return (new Date(stime).getTime() + (3600000 * (gapTime * 1)));
-}
-
-
-function convert2data(t) {
-    var date = new Date(t);
-    return date;
-}
-
-
-function getColorPerAlt3d(alt) {
-		if(alt < 0) alt = 0;
-
-    var icon_color = Math.floor(alt * 1.2);
-
-    var g = 40 + icon_color;
-    if (g > 255) g = 255;
-
-    return Cesium.Color.fromBytes(4, g, 4, 230);
-}
-
-function getColorPerAlt(alt) {
-		if(alt < 0) alt = 0;
-
-    var icon_color = Math.floor(alt * 1.2);
-
-    var g = 40 + icon_color;
-    if (g > 255) g = 255;
-
-    var pos_icon_color = "#04" + g.toString(16) + "04";
-    return pos_icon_color;
-}
-
 function addChartItem(i, item) {    
     g_array_flight_rec.push(item);
     g_array_altitude_data_for_chart.push({ x: i, y: item.alt });
 }
 
-function getYoutubeQueryVariable(query) {
-  var varfirst = query.split('?');
-  var vars = varfirst[1].split('&');
-  for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split('=');
-      if (decodeURIComponent(pair[0]) == "v") {
-          return decodeURIComponent(pair[1]);
-      }
-  }
-}
-
-function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1]);
-        }
-    }
-}
-
-function makeDateTimeFormat(d, isGMT) {
-		if(isGMT == false)
-			d.setHours(d.getHours() + 9);
-			
-  	var curr_day = d.getDate();
-		curr_day = curr_day < 10 ? "0" + curr_day : curr_day;
-		var curr_month = d.getMonth();
-		curr_month++;
-
-		curr_month = curr_month < 10 ? "0" + curr_month : curr_month;
-
-		var curr_year = d.getFullYear();
-		
-		
-		var curr_hour = d.getHours();
-		curr_hour = curr_hour < 10 ? "0" + curr_hour : curr_hour;
-
-		var curr_min = d.getMinutes();
-		curr_min = curr_min < 10 ? "0" + curr_min : curr_min;
-
-		var curr_sec = d.getSeconds();
-		curr_sec = curr_sec < 10 ? "0" + curr_sec : curr_sec;
-		
-		return curr_year + "-" + curr_month + "-" + curr_day + " " + curr_hour + ":" + curr_min + ":" + curr_sec;
-}
 
 function uploadCheckBeforeUploadFlightList() {
 
@@ -5750,22 +5673,4 @@ function requestAddress() {
 	  }, function(request,status,error) {
 	    hideLoader();
 	  });
-}
-
-function GET_STRING_CONTENT(table_index_str) {	
-		return LANG_JSON_DATA[g_str_cur_lang][table_index_str];
-}
-
-function GATAGM(label, category) {
-    gtag(
-        'event', label + "_" + g_str_cur_lang, {
-        'event_category': category,
-        'event_label': label
-    }
-    );
-
-    mixpanel.track(
-        label + "_" + g_str_cur_lang,
-        { "event_category": category, "event_label": label }
-    );
 }

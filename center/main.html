@@ -73,7 +73,7 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
           	<div class="topbar-divider d-none d-sm-block"></div>
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
-            		<a onclick="GATAGM('userinfo', 'MEMU');" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            	<a onclick="GATAGM('userinfo', 'MEMU');" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               		<img class="img-profile rounded-circle" width="60px" height="60px" id="profile_image">
                 	<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
               	</a>
@@ -94,7 +94,7 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
 	</nav>
 
   <!-- Page Wrapper -->
-  <div id="wrapper">
+  <div id="wrapper" class="toggled">
 
     <!-- Sidebar -->
     <ul class="navbar-nav bg-sidebar-pilot sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -140,10 +140,15 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
       	</a>
 				<a onclick="GATAGM('side_menu_public_flight_record_list', 'MEMU');" class="nav-link" href="main.html?page_action=publicrecordlist">
 					<i class="fas fa-globe"></i>
-				<span id="side_menu_flight_record_public_list">공개 기록 보기</span></a>
-	  	</li>
+					<span id="side_menu_flight_record_public_list">공개 기록 보기</span>
+				</a>
+				<a onclick="GATAGM('side_menu_compass_embed', 'MEMU');" class="nav-link" href="main.html?page_action=embedcompass">
+        	<i class="fas fa-video"></i>
+        	<span id="side_menu_compass_embed">영상에 나침반 삽입</span>
+        </a>
+			</li>
 
-	  <!-- Divider -->
+	  	<!-- Divider -->
       <hr class="sidebar-divider">
 
       <!-- Nav Item - Utilities Collapse Menu -->
@@ -254,7 +259,7 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
   <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
     
   <!-- Custom scripts for all pages-->
-  <script src="./js/sb-admin-2.min.js"></script>
+  <script src="./js/sb-admin-2.js"></script>
   <script src="./vendor/chart.js/Chart.min.js"></script>
  	<script src="./js/video.popup.js"></script>
   <script src="./js/ol.js"></script>
@@ -268,6 +273,7 @@ mixpanel.init("f8f962910053d9d571f05d09f8a44de8", {batch_requests: true})</scrip
   <script src="./js/upload_video.js"></script>
   <script src="./js/auth.js"></script>
   <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady&key=AIzaSyC-uQDFbSHy6c0pDsBIwNUUgR7UrrPz1K0" type="text/javascript"></script>
+  <script src="./js/util.js"></script>
   <script src="./js/center.js"></script>
 
 </body>
