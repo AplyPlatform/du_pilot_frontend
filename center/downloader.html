@@ -72,10 +72,7 @@ function loadEnd(e) {
   $("#screenDownloadProgress").hide();
 }
 
-function downloadFile(file_url) {
-	canvas = document.getElementById("canvas");
-	ctx = canvas.getContext("2d");
-
+function downloadFile(file_url) {	
 	let temp_file_name = file_url.substring(file_url.lastIndexOf("/") + 1).split("?")[0];
 	var xhrObj = new XMLHttpRequest();
 	xhrObj.addEventListener("loadend", loadEnd);
