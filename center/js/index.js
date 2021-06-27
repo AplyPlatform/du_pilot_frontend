@@ -272,7 +272,7 @@ function formSubmit(token, temp_name, temp_image, temp_email) {
             setCookie("image_url", temp_image, 1);
 
             let page_action = getCookie("last_action");
-    				if (page_action == "") page_action = "center";
+    				if (!isSet(page_action)) page_action = "center";
             else setCookie("last_action", "", -1);
 
             location.href = "/center/main.html?page_action=" + page_action;
@@ -324,7 +324,7 @@ function showAlert(msg) {
 function isSet(value) {
 		if ( typeof(value) === 'number' )
         return true;
-    if (value == "" || value == null || value == "undefined" || value == undefined)
+    if (value == "" || value == null || value == "undefined" || value == undefined || value == "null")
         return false;
     return true;
 }
