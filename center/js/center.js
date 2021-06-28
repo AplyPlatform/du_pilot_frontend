@@ -3778,7 +3778,7 @@ function appendFlightRecordTable(target, target_key, item) {
 			appendRow = appendRow + "<div class='col-md-10 text-right'>";
 			
 			
-		appendRow = appendRow + "<textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='4'>"
+		appendRow = appendRow + "<hr size='1' color='#eeeeee'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='4'>"
 
     if (isSet(memo)) {
         appendRow = appendRow + memo;
