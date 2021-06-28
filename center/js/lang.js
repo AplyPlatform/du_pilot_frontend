@@ -87,7 +87,7 @@ var LANG_JSON_DATA = {
         "btnStopMon": "모니터링 중지",
         "btnForFilter": "필터적용",
         "btnForFilter_rel": "필터해제",
-        "btnForAddressCheck": "주소확인",
+        "btnForAddressCheck": "우편번호 찾기",
         "center_about_title": "DUNI 파일럿 센터를 소개합니다.",
         "center_example_title": "사용예시",
         // 전화번호 인증
@@ -100,6 +100,13 @@ var LANG_JSON_DATA = {
         "msg_code_empty" : "인증번호를 입력해주세요.",
         "msg_phone_not_verified" : "전화번호인증은 필수입니다. 인증해주세요.",
         // 전화번호인증 end
+        // 이메일 중복확인
+        "msg_email_empty" : "이메일을 입력해주세요",
+        "msg_invalid_email" : "올바른 이메일 형식이 아닙니다. 다시 입력해주세요.",
+        "msg_email_already_exists" : "이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.",
+        "msg_email_valid" : "사용 가능한 이메일입니다.",
+        "msg_email_not_verified" : "이메일 중복확인은 필수입니다. 중복확인을 해주세요.",
+        // 이메일 중복확인 end
         "msg_pre_embed_compass_request_received" : "요청이 접수 되었습니다. 처리가 완료되면 가입시 등록한 이메일(",
         "msg_post_embed_compass_request_received" : ")로 영상파일의 다운로드 경로를 알려 드립니다.",
         "msg_select_one_video_one_record" : "드론영상 1개와 비행기록파일 1개만 업로드 할 수 있습니다.",
@@ -178,6 +185,7 @@ var LANG_JSON_DATA = {
         "label_select_files": "파일 선택",
         "tab_menu_upload_selector_dji": "비행기록 업로드",        
         "tab_menu_upload_selector_address": "촬영지 주소 입력",
+        "no_record_data_view_label" : "비행기록 파일이 없습니다.",
         "more_label": "더보기 ...",
         "latitude_label": "위도",
         "longitude_label": "경도",
@@ -393,6 +401,7 @@ var LANG_JSON_DATA = {
         "msg_video_upload_success": "Successfully uploaded !!",
         "msg_input_corrent_address" : "Please enter a valid address and click 'Check address'.", 
         "tab_menu_upload_selector_address" : "Enter the address of the location",
+        "no_record_data_view_label" : "Flight record file not found.",
         "badgeHelpContent": "Please copy and paste the code below into the home page, blog, or website posts where you can insert the 'html' code. You can prove your flight records naturally and beautifully.",
         "more_label": "More ...",
         "open_record_label": "Flight records",
