@@ -3765,7 +3765,7 @@ function appendFlightRecordTable(target, target_key, item) {
 
     appendRow = appendRow + "</div><div class='row'><div class='col-sm text-left'><span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span></div><div class='col-sm text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a></div></div>";
 
-		appendRow = appendRow + "<div class='row'><div class='col-md-10 text-right'><br><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='1'>"
+		appendRow = appendRow + "<div class='row'><div class='col-md-10 text-right'><br><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='4'>"
 
     if (isSet(memo)) {
         appendRow = appendRow + memo;
