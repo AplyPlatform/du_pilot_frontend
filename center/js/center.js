@@ -3211,7 +3211,7 @@ function makeShareFlightData(name, user_email) {
                     }
 
                     if (item.type == "user") {
-                        user_text += ("<div id='shareid_" + index + "'> " + premail + " : <a href='#' id='user_share_" + index + "'>" + GET_STRING_CONTENT('stop_share_label') + "</a><hr size=1 color=#eeeeee width=100%></div>");
+                        user_text += ("<div id='shareid_" + index + "'> " + premail + " : <a href='#' id='user_share_" + index + "'>" + GET_STRING_CONTENT('stop_share_label') + "</a><hr size=1 color=#efefef width=100%></div>");
                     }
                 });
 
@@ -3344,7 +3344,7 @@ function setFlightRecordToView(target, name, fdata) {
                 }
 
                 if (item.type == "user") {
-                    user_text += ("<div id='shareid_" + index + "'> " + premail + " : <a href='#' id='user_share_" + index + "'>" + GET_STRING_CONTENT('stop_share_label') + "</a><hr size=1 color=#eeeeee width=100%></div>");
+                    user_text += ("<div id='shareid_" + index + "'> " + premail + " : <a href='#' id='user_share_" + index + "'>" + GET_STRING_CONTENT('stop_share_label') + "</a><hr size=1 color=#efefef width=100%></div>");
                 }
             });
 
@@ -3768,7 +3768,7 @@ function appendFlightRecordTable(target, target_key, item) {
     if (target == "public")
     	appendRow = appendRow + " / <span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span><br>";
     
-    appendRow = appendRow + "<hr size='1' color='#eeeeee'></div></div>";
+    appendRow = appendRow + "<hr size='1' color='#efefef'></div></div>";
 
 		appendRow = appendRow + "<div class='row'>";
 		
