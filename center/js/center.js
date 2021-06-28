@@ -3828,16 +3828,16 @@ function appendFlightRecordTable(target, target_key, item) {
     }
 
     appendRow = appendRow + "</div></div>";
-    appendRow = appendRow + "<div class='row'>";
+    appendRow = appendRow + "<div class='row'><div class='col-md-12 text-left'>";
 
 
     if (isSet(item.starttime)) {
-    	appendRow = appendRow + "<div class='col-md-6 text-left'><span class='text-xs mb-1'>" + GET_STRING_CONTENT('flighttime_input_data_label') + "</span> <span class='text-xs mb-1'>"
+    	appendRow = appendRow + "<span class='text-xs mb-1'>" + GET_STRING_CONTENT('flighttime_input_data_label') + "</span> <span class='text-xs mb-1'>"
     							+ makeDateTimeFormat(new Date(item.starttime), true)
-    							+ "</span></div>";
+    							+ " / </span>";
     }
 
-    appendRow = appendRow + "<div class='col-md-6 text-right'><span class='text-xs mb-1'>" + GET_STRING_CONTENT('registered_datetime_label') + "</span> <span class='text-xs mb-1'>" + dtimestamp + "</span>";
+    appendRow = appendRow + "<span class='text-xs mb-1'>" + GET_STRING_CONTENT('registered_datetime_label') + "</span> <span class='text-xs mb-1'>" + dtimestamp + "</span>";
     appendRow = appendRow + "</div></div><div class='row'><div class='col-sm text-right'>"
         + "<h6><span class='badge badge-secondary' style='cursor: pointer' id='btnForRemoveFlightData_" + curIndex + "'>" + GET_STRING_CONTENT('msg_remove') + "</span></h6>"
 
