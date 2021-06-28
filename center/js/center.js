@@ -3768,7 +3768,7 @@ function appendFlightRecordTable(target, target_key, item) {
     if (target == "public")
     	appendRow = appendRow + " / <span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span><br>";
     
-    appendRow = appendRow + "</div></div>";
+    appendRow = appendRow + "<hr size='1' color='#eeeeee'></div></div>";
 
 		appendRow = appendRow + "<div class='row'>";
 		
@@ -3778,7 +3778,7 @@ function appendFlightRecordTable(target, target_key, item) {
 			appendRow = appendRow + "<div class='col-md-10 text-right'>";
 			
 			
-		appendRow = appendRow + "<hr size='1' color='#eeeeee'><textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='4'>"
+		appendRow = appendRow + "<textarea class='form-control' id='memoTextarea_" + curIndex + "' rows='4'>"
 
     if (isSet(memo)) {
         appendRow = appendRow + memo;
