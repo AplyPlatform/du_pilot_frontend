@@ -3755,15 +3755,20 @@ function appendFlightRecordTable(target, target_key, item) {
     appendRow = appendRow + "</div></div><div class='row'>";//row
 
     if(isSet(youtube_data_id)) {
-    		appendRow = appendRow + "<div class='col-md-6' id='youTubePlayer_" + curIndex + "'></div>";
+    		appendRow = appendRow + "<div class='col-sm' id='youTubePlayer_" + curIndex + "'></div>";
     }
 
     if (flat != -999) {
-        appendRow = appendRow + "<div class='col-md-6' id='map_" + curIndex + "' style='height:200px;'></div>";
+        appendRow = appendRow + "<div class='col-sm' id='map_" + curIndex + "' style='height:200px;'></div>";
     }
 
 
-    appendRow = appendRow + "</div><div class='row'><div class='col-md-12 text-left'><span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span> / <a href='#' class='text-xs' id='map_address_" + curIndex + "'></a><br></div></div>";
+    appendRow = appendRow + "</div><div class='row'><div class='col-md-12 text-right'><a href='#' class='text-xs' id='map_address_" + curIndex + "'></a>";
+    
+    if (target == "public")
+    	appendRow = appendRow + " / <span id='owner_email_" + curIndex + "' class='text-xs font-weight-bold mb-1'></span><br>";
+    
+    appendRow = appendRow + "</div></div>";
 
 		appendRow = appendRow + "<div class='row'>";
 		
