@@ -160,6 +160,7 @@ function setCurrentViewMode() {
 	if (from == "ios") {
 		$("#sideTopBar").hide();
 		$("#accordionSidebar").hide();
+		$("#footerArea").hide();
 	}
 }
 
