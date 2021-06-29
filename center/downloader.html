@@ -56,6 +56,11 @@
 	                <div class="card-body text-center">
 										<progress id="progressBarForDownload" value="0" max="100" style="width:100%;height:5px"></progress>
 									</div>
+									
+									<div class="card-body text-center">
+										자동으로 다운로드가 시작되지 않을 경우 아래 버튼을 클릭해 주세요. (If the download does not start automatically, please click the button below.)
+										<a href="#" onClick="startDownload();" class="d-sm-inline-block btn btn-sm btn-info shadow-sm">DOWNLOAD</a>
+									</div>
 								</div>
 								
 								<div class="card shadow py-2" id="screenDownloadProgress">
@@ -121,19 +126,23 @@ function getQueryVariable() {
     return "";
 }
 
+function startDownload() {
+		let file_url = getQueryVariable();
+		
+		$("#screenDownloadComplete").hide();
+		
+		if (file_url == "") {
+			alert("Invalid access");
+			location.href="/index.html";
+		}
+		else {
+			downloadFile(file_url);	
+		}
+}
+
 $(function () {
 
-	let file_url = getQueryVariable();
-	
-	$("#screenDownloadComplete").hide();
-	
-	if (file_url == "") {
-		alert("Invalid access");
-		location.href="/index.html";
-	}
-	else {
-		downloadFile(file_url);	
-	}
+	startDownload();
 
 });
 
