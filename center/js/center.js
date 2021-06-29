@@ -950,8 +950,7 @@ function embedCompassInit() {
 		$("#colorPicker").spectrum({
 		  type: "color",
 		  showInput: true,
-		  showInitial: true,
-		  showAlpha: false
+		  showInitial: true		  
 		});
 
     $("#file_upload_img").hide();
