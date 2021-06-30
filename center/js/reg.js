@@ -125,6 +125,16 @@ function startTimer(duration, display) {
 }
 
 // 전화번호 인증 혜지프로
+function validateNumber(event) {
+    var key = window.event ? event.keyCode : event.which;
+    if (event.keyCode === 8 || event.keyCode === 46) {
+        return true;
+    } else if ( key < 48 || key > 57 ) {
+        return false;
+    } else {
+        return true;
+    }
+}
 function verifyPhoneNo(){
     
     // check if phone number starts with 01 and is total of 11 digits
@@ -223,12 +233,22 @@ function verifyCode(){
 }
 
 // 이메일 인증 혜지프로
+function isEmail(email) {
+    var regex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
+    return regex.test(email);
+}
+
 function checkEmail(){
     let email = $('#droneplay_email').val();
     if(email == ""){
         showAlert(GET_STRING_CONTENT('msg_email_empty'));
         return;
-    } 
+    }
+    if(!isEmail(email) || email.length > 100){
+        console.log("here!");
+        showAlert(GET_STRING_CONTENT('msg_email_invalid'));
+        return;
+    }
     grecaptcha.ready(function() {
         grecaptcha.execute('6LfPn_UUAAAAAN-EHnm2kRY9dUT8aTvIcfrvxGy7', {action: 'action_name'}).then(function(token) {
             var jdata = {
