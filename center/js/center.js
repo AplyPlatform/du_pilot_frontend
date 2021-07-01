@@ -1066,13 +1066,13 @@ function requestUploadForCompass(base64Recordfile, tempExt, progressBar) {
     	if(r.result != "success") {
     		$('#btnForUploadFlightList').prop('disabled', false);
     		hideLoader();
-    		
-    		if (r.result_code == 2 && r.reason.indexOf("recordfile") >= 0) {
+    		    		
+				if (r.result_code == 2 && r.reason.indexOf("recordfile") >= 0) {
     			GATAGM('dji_file_upload_analyze_compass_failed', 'CONTENT');
         	showAlert(GET_STRING_CONTENT('msg_select_another_file'));
         }
-        else showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + r.reason);        	
-        	
+        else showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + r.reason); 
+    		
     		return;
     	}
 
@@ -1500,20 +1500,33 @@ function flightRecords2DMapInit() {
 				    var radius;
 				    size == 1 ? radius = 8 : radius = 10 + (size * 0.1);
 				    var style = styleCacheForCompany[size];
-				    if (!style) {
-				    		style = [new ol.style.Style({
-	                image: new ol.style.Circle({
-				            radius: radius,
-				            fill: new ol.style.Fill({ color: '#FFF' }),
-				            stroke: new ol.style.Stroke({ color: '#45cdba', width: 2 })
-		                }),
-		              text: new ol.style.Text({
-					                  text: size.toString(),
-					                  fill: new ol.style.Fill({ color: '#000' }),
-					                  scale: 1.5
-										})
-
-	              })];
+				    if (!style) {				    	
+				    		if (size == 1) {
+				    			style = [new ol.style.Style({
+		                image: new ol.style.Icon({										    										    
+										    src: '/images/company_pos.png',
+										    scale: 0.3,
+										    opacity : 0.7,										    
+										    fill: new ol.style.Fill({ color: '#FFF' }),
+										    stroke: new ol.style.Stroke({ color: '#45cdba', width: 2 }),
+										  })
+		              })];
+				    		}
+				    		else {				    							    		
+					    		style = [new ol.style.Style({
+		                image: new ol.style.Circle({
+					            radius: radius,
+					            opacity : 0.7,
+					            fill: new ol.style.Fill({ color: '#FFF' }),
+					            stroke: new ol.style.Stroke({ color: '#45cdba', width: 2 })
+			                }),
+			            	text: new ol.style.Text({
+						                  text: size.toString(),
+						                  fill: new ol.style.Fill({ color: '#000' }),
+						                  scale: 1.5
+											})	
+		              })];
+		            }
 
 	          		styleCacheForCompany[size] = style
 				    }
@@ -1545,20 +1558,34 @@ function flightRecords2DMapInit() {
 			    size == 1 ? radius = 8 : radius = 10 + (size * 0.1);
 			    var style = styleCache[size];
 			    if (!style) {
-			       style = [new ol.style.Style({
-                image: new ol.style.Circle({
-			            radius: radius,
-			            fill: new ol.style.Fill({ color: '#FFF' }),
-			            stroke: new ol.style.Stroke({ color: '#fb5b58', width: 2 })
-	                }),
-	              text: new ol.style.Text({
-				                  text: size.toString(),
-				                  fill: new ol.style.Fill({ color: '#000' }),
-				                  scale: 1.5
-								})
-              })];
+			       	if (size == 1) {
+			       		style = [new ol.style.Style({
+	                image: new ol.style.Icon({										    										    
+									    src: '/images/f_record_pos.png',
+									    scale: 0.3,
+									    opacity : 0.7,
+									    fill: new ol.style.Fill({ color: '#FFF' }),
+									    stroke: new ol.style.Stroke({ color: '#FB5B58', width: 2 }),
+									  })
+	              })];				    			
+			    		}
+			    		else {				    							    		
+				    		style = [new ol.style.Style({
+	                image: new ol.style.Circle({
+				            radius: radius,
+				            fill: new ol.style.Fill({ color: '#FFF' }),
+				            stroke: new ol.style.Stroke({ color: '#FB5B58', width: 2 }),
+				            opacity : 0.7,
+		                }),
+		            	text: new ol.style.Text({
+					                  text: size.toString(),
+					                  fill: new ol.style.Fill({ color: '#000' }),
+					                  scale: 1.5
+										})	
+	              })];
+	            }
 
-							styleCache[size] = style
+          		styleCache[size] = style
 			    }
 			    return style;
 			  },

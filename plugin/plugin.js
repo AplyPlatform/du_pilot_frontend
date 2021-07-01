@@ -138,9 +138,37 @@ function flightHistoryMapInit() {
       view: flightHistoryView
     });
         
-	  vMap.on('click', function(e) {
-				GATAGM("plugin_map_click_" + pluginid + "_" + parent_url, "PLUGIN", langset);
+  vMap.on('click', function(e) {    		    		
+        var feature = vMap.forEachFeatureAtPixel(e.pixel, function (feature) { return feature; });
+        
+        if (isCluster(feature)) {
+        	var features = feature.get('features');
+			    for(var i = 0; i < features.length; i++) {			      
+			      var tname = features[i].get('titlename');			      
+			      
+            if (isSet(tname)) {
+            	GATAGM("plugin_map_click_" + pluginid + "_" + parent_url + "_" +  encodeURIComponent(tname), "PLUGIN", langset);
+            	var addr = "https://pilot.duni.io/center/main.html?page_action=publicrecordlist_detail&record_name=" + encodeURIComponent(tname);
+            	if (window.parent)
+            		window.parent.location.href = addr;
+            	else
+            		location.href = addr;
+	          	return;
+	          }
+	          
+	          GATAGM("plugin_map_click_" + pluginid + "_" + parent_url, "PLUGIN", langset);
+          	return;
+			    }
+        }
 		});
+}
+
+function isCluster(feature) {
+  if (!feature || !feature.get('features')) { 
+        return false; 
+  }
+  
+  return feature.get('features').length >= 1;
 }
 
 function getQueryVariable(variable) {
