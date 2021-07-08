@@ -14,6 +14,8 @@ limitations under the License.
 
 
 var g_b_monitor_started;
+var g_b_phonenumber_verified = true;
+var g_b_interval_timer;
 
 var g_cur_2D_mainmap;
 var g_view_cur_2D_mainmap;
@@ -95,7 +97,6 @@ var g_params_for_upload_flight_rec = {};
 var g_array_str_waypointactions_DJI = ["STAY", "START_TAKE_PHOTO", "START_RECORD", "STOP_RECORD", "ROTATE_AIRCRAFT", "GIMBAL_PITCH", "NONE", "CAMERA_ZOOM", "CAMERA_FOCUS"];
 
 var g_array_cur_controller_for_viewmode = { "pilot" : "/center/main.html", "developer" : "/center/main_dev.html" };
-
 
 $(function () {
 		var lang = getCookie("language");
@@ -804,7 +805,13 @@ function flightrecordUploadInit() {
     $("#tab_menu_set_youtube_upload").text(GET_STRING_CONTENT('label_upload_movie'));
     $("#tab_menu_set_no_video").text(GET_STRING_CONTENT('label_set_no_video'));
 
-
+		$('#btnSelectMovieFiles').text(GET_STRING_CONTENT('label_select_files'));
+    $('#btnSelectDJIFiles').text(GET_STRING_CONTENT('label_select_files'));
+    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));
+    
+    $('#label_flightrec_file_drop_area').html(GET_STRING_CONTENT('msg_drop_flightrecord_file'));
+    
+    
     $("#flighttime_input_data_label").text(GET_STRING_CONTENT('flighttime_input_data_label'));
 
     $("#disclaimer").html(GET_STRING_CONTENT('youtubeTOS'));
@@ -827,6 +834,17 @@ function flightrecordUploadInit() {
         GATAGM('btnForAddressCheck', 'CONTENT');
         checkAddress($("#address_input_data").val());
     });
+    
+    
+    $('#btn_check_code').click(function () {
+        GATAGM('btn_check_code', 'CONTENT');
+        verifyCode();
+    });
+    
+    $('#btn_verify_code').click(function () {
+        GATAGM('btn_verify_code', 'CONTENT');
+        verifyPhoneNo();
+    });
 
     //판매국가는 우선 한국만!
     $("#priceinputarea").hide();
@@ -836,12 +854,42 @@ function flightrecordUploadInit() {
     }
 
     $("#salecheck").click(function(){
-			var checked = $("#salecheck").is(":checked");
-
-			if(checked)
-				$("#priceinputarea").show();
-			else
-				$("#priceinputarea").hide();
+						var checked = $("#salecheck").is(":checked");
+            var userid = getCookie("dev_user_id");
+			
+						if(checked){
+			                $("#priceinputarea").show();
+			                $("#validate_phonenumber_area").hide();
+			                // check if user has verfied phoen number
+			                var jdata = {
+			                    "action": "position",
+			                    "daction": "check_phonenumber_exists",
+			                    "clientid": userid
+			                };
+			                ajaxRequest(jdata, function(r){
+			                        if(r.result_code === 0){
+			                            $("#validate_phonenumber_area").show();
+			                            showAlert(GET_STRING_CONTENT('msg_phone_vid_not_verified'));
+			                            g_b_phonenumber_verified = false;
+			                            return;
+			                        }
+			                        if(r.result_code === 3){
+			                            $("#validate_phonenumber_area").hide();
+			                            return;
+			                        }
+			                        showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+			                        return
+			                    },
+			                    function (request, status, error) {
+			                        showAlert(GET_STRING_CONTENT("msg_error_sorry") + " : " + error);
+			                    }  
+			                );
+			
+			            }
+						else{
+			                $("#priceinputarea").hide();
+			                g_b_phonenumber_verified = true;
+			      }
 		});
 
     var input = document.querySelector('input[name=tagTextarea]');
@@ -914,7 +962,69 @@ function flightrecordUploadInit() {
 
   	$("#set_youtube_address_view").hide();
     $("#set_youtube_upload_view").show();
+            
+    let dropArea = $("#dropArea");
+		dropArea.on("dragenter", function(e) { //드래그 요소가 들어왔을떄
+			dropArea.css('background-color', '#E3F2FC');
+			$("#file_upload_img").show();
+		}).on("dragleave", function(e) { //드래그 요소가 나갔을때
+			dropArea.css('background-color', '#FFFFFF');
+			$("#file_upload_img").hide();
+		}).on("dragover", function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+		}).on('drop', function(e) {
+			e.preventDefault();
+			dropArea.css('background-color', '#FFFFFF');
+			$("#file_upload_img").hide();
+			
+			GATAGM('fileDropForFlightRecord', 'CONTENT');
+			let retSelected = fileDropCheckRecordUpload(e.originalEvent.dataTransfer.files);
+			if (retSelected) setUploadFileFields();
+		});
+
+		$("#input_direct_file").bind('change', function() {			
+			GATAGM('fileInputForFlightRecord', 'CONTENT');
+			let retSelected = fileDropCheckRecordUpload(this.files);
+			if (retSelected) setUploadFileFields();
+		});
+		
+		$("#movieFile").bind('change', function() {			
+			GATAGM('changeMovieFileInput', 'CONTENT');
+			videoFileForUploadFile = null;
+			let retSelected = fileDropCheckRecordUpload(this.files);			
+		});
+		
+		$("#flight_record_file").bind('change', function() {			
+			GATAGM('changeRecordFileInput', 'CONTENT');
+			recordFileForUploadFile = null;
+			let retSelected = fileDropCheckRecordUpload(this.files);
+		});
+
+		$("#input_direct_file").click(function() {			
+			$(this).attr("value", "");
+			$("#input_direct_file").val("");
+		});
+		
+		$("#movieFile").click(function() {			
+			$(this).attr("value", "");
+			$("#movieFile").val("");
+		});
+		
+		$("#flight_record_file").click(function() {			
+			$(this).attr("value", "");
+			$("#flight_record_file").val("");
+		});
+    
+    $("#dropArea").show();
+    $("#uploadfileform").hide();
+    $("#file_upload_img").hide();
     hideLoader();
+}
+
+function setUploadFileFields() {	
+		$('#dropArea').hide();
+		$('#uploadfileform').show();				
 }
 
 function embedCompassInit() {
@@ -928,8 +1038,8 @@ function embedCompassInit() {
 
     $('#label_compass_file_drop_area').text(GET_STRING_CONTENT('label_compass_file_drop_area'));
 
-    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));
-
+    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));    
+    
     $('#label_for_colorpicker').text(GET_STRING_CONTENT('label_for_colorpicker'));
 
     $("#dji_radio_label").text(GET_STRING_CONTENT('msg_dji_file_upload'));
@@ -969,7 +1079,11 @@ function embedCompassInit() {
 			$("#file_upload_img").hide();
 			
 			GATAGM('fileDropForCompassEmbed', 'CONTENT');
-			fileDropCheck(e.originalEvent.dataTransfer.files);
+			let retSelected = fileDropCheckForCompass(e.originalEvent.dataTransfer.files);
+			if (retSelected == true && (isSet(videoFileForUploadFile) && isSet(recordFileForUploadFile))) {
+				$('#selectFileArea').hide();
+				$('#btnForUploadFlightList').show();
+			}
 		});
 
 		$("#btnForUploadFlightList").on("click", function(e) {
@@ -979,7 +1093,11 @@ function embedCompassInit() {
 
 		$("#input_direct_file").bind('change', function() {			
 			GATAGM('fileInputForCompassEmbed', 'CONTENT');
-			fileDropCheck(this.files);
+			let retSelected = fileDropCheckForCompass(this.files);
+			if (retSelected == true && (isSet(videoFileForUploadFile) && isSet(recordFileForUploadFile))) {
+				$('#selectFileArea').hide();
+				$('#btnForUploadFlightList').show();
+			}
 		});
 
 		$("#input_direct_file").click(function() {			
@@ -1005,19 +1123,19 @@ function embedCompassInit() {
     hideLoader();
 }
 
-var recordFileForCompass = null;
-var videoFileForCompass = null;
+var recordFileForUploadFile = null;
+var videoFileForUploadFile = null;
 
-function fileDropCheck(files) {
+function fileDropCheckCompass(files) {
 	if (files.length > 2) {
 		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-		return;
+		return false;
 	}
 
 	if (files.length == 2) {
-		if (isSet(recordFileForCompass) || isSet(videoFileForCompass)) {
+		if (isSet(recordFileForUploadFile) || isSet(videoFileForUploadFile)) {
 			showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-			return;
+			return false;
 		}
 	}
 
@@ -1026,42 +1144,43 @@ function fileDropCheck(files) {
 		var file = files[i];
 
 		if (isRecordFile(file.name)) {
-			if (isSet(recordFileForCompass)) {
+			if (isSet(recordFileForUploadFile)) {
 				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-				return;
+				return false;
 			}
 			else {
 				console.log(file);
-				recordFileForCompass = file;
-				preview(file, "record");
+				recordFileForUploadFile = file;
+				previewForCompassFile(file, "record");
 				isAdded = true;
 			}
 		}
 
 		if (isMovieFile(file.name)) {
-			if (isSet(videoFileForCompass)) {
+			if (isSet(videoFileForUploadFile)) {
 				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-				return;
+				return false;
 			}
 			else {
 				console.log(file);
-				videoFileForCompass = file;
-				preview(file, "video");
+				videoFileForUploadFile = file;
+				previewForCompassFile(file, "video");
 				isAdded = true;
 			}
 		}
 	}
 
-	if (isAdded == false) showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-
-	if (isSet(videoFileForCompass) && isSet(recordFileForCompass)) {
-		$('#selectFileArea').hide();
-		$('#btnForUploadFlightList').show();
+	if (isAdded == false) {
+		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+		return false;
 	}
+	
+	return true;	
 }
 
+
 function uploadCheckBeforeCompassEmbed() {
-	if (!isSet(recordFileForCompass) || !isSet(videoFileForCompass)) {
+	if (!isSet(recordFileForUploadFile) || !isSet(videoFileForUploadFile)) {
 		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
 		return;
 	}
@@ -1069,9 +1188,9 @@ function uploadCheckBeforeCompassEmbed() {
 	showLoader();
 	$('#btnForUploadFlightList').prop('disabled', true);
 
-	var params = {file : recordFileForCompass};
+	var params = {file : recordFileForUploadFile};
 	getBase64(params, function(ret) {
-		requestUploadForCompass(ret.base64file, getFileExtension(videoFileForCompass.name), recordFileForCompass.target.find("progress"));
+		requestUploadForCompass(ret.base64file, getFileExtension(videoFileForUploadFile.name), recordFileForUploadFile.target.find("progress"));
 	});
 }
 
@@ -1107,7 +1226,7 @@ function requestUploadForCompass(base64Recordfile, tempExt, progressBar) {
     	}
 
     	runNextSequence( function () {
-					videoFileUpload(videoFileForCompass, r.filename, r.extension, r.signedurl);
+					videoFileUpload(videoFileForUploadFile, r.filename, r.extension, r.signedurl);
 			} );
     }, function (request, status, error) {
       $('#btnForUploadFlightList').prop('disabled', false);
@@ -1141,8 +1260,8 @@ function embedRequest(filename, tempExt) {
 
         	$("#file_thumb_video").remove();
         	$("#file_thumb_record").remove();
-					recordFileForCompass = null;
-					videoFileForCompass = null;
+					recordFileForUploadFile = null;
+					videoFileForUploadFile = null;
 
 					$('#selectFileArea').show();
 					$('#btnForUploadFlightList').hide();
@@ -1158,6 +1277,58 @@ function embedRequest(filename, tempExt) {
     });
 }
 
+
+function fileDropCheckRecordUpload(files) {
+	if (files.length > 2) {
+		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+		return false;
+	}
+
+	if (files.length == 2) {
+		if (isSet(recordFileForUploadFile) || isSet(videoFileForUploadFile)) {
+			showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+			return false;
+		}
+	}
+
+	var isAdded = false;
+	for(var i = 0; i < files.length; i++) {
+		var file = files[i];
+
+		if (isRecordFile(file.name)) {
+			if (isSet(recordFileForUploadFile)) {
+				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+				return false;
+			}
+			else {
+				console.log(file);
+				recordFileForUploadFile = file;
+				previewForRecordFile(file);
+				isAdded = true;
+			}
+		}
+
+		if (isMovieFile(file.name)) {
+			if (isSet(videoFileForUploadFile)) {
+				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+				return false;
+			}
+			else {
+				console.log(file);
+				videoFileForUploadFile = file;
+				previewForRecordFile(file);
+				isAdded = true;
+			}
+		}
+	}
+
+	if (isAdded == false) {
+		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
+		return false;
+	}
+	
+	return true;	
+}
 
 function videoFileUpload(videoFile, tempName, tempExt, tempUrl) {
 	var $selfProgress = videoFile.target.find("progress");
@@ -1193,25 +1364,61 @@ function setProgress(per) {
 		$progressBar.val(per);
 }
 
-function preview(file, idx) {
+function previewForRecordFile(file) {		
+	var iconArea;
+	var vDiv;
+	if(isMovieFile(file.name)) {
+		$("#selectMovieFileArea").css("display","none");
+		$("#videoFileName").empty();
+		iconArea = '<i class="fas fa-video"></i>';
+		vDiv = $('<div class="text-left">'
+			+ '<span style="cursor:pointer" id="file_data_remover_video"><b>X</b></span> '
+			+ iconArea + ' ' + file.name + '</div>');
+		$("#videoFileName").append(vDiv);
+						
+		$("#file_data_remover_video").on("click", function(e) {
+			$("#videoFileName").empty();
+			videoFileForUploadFile = null;
+			$("#selectMovieFileArea").show();
+		});		
+	}
+	else {		
+		$("#selectDJIFileArea").css("display","none");
+		$("#flightRecordFileName").empty();
+		iconArea = '<i class="fas fa-map-marker-alt"></i>';
+		vDiv = $('<div class="text-left">'
+			+ '<span style="cursor:pointer" id="file_data_remover_record"><b>X</b></span> '
+			+ iconArea + ' ' + file.name + '</div>');
+		$("#flightRecordFileName").append(vDiv);
+		
+		$("#file_data_remover_record").on("click", function(e) {
+			$("#flightRecordFileName").empty();
+			recordFileForUploadFile = null;
+			$("#selectDJIFileArea").show();
+		});		
+	}		
+}
+
+
+function previewForCompassFile(file, idx) {
 	var iconArea = '<i class="fas fa-map-marker-alt"></i>';
 	if(isMovieFile(file.name)) {
 		iconArea = '<i class="fas fa-video"></i>';
 	}
 
-	var $div = $('<div id="file_thumb_' + idx + '"><table border=0 cellpadding=0 cellspacing=3 width=100%><tr><td width="20px" class="text-left">'
-		+ '<span style="cursor:pointer" id="file_data_remover_' + idx + '"><b>X</b></span></td><td class="text-left">'
-		+ iconArea + ' ' + file.name + '<br><progress value="0" max="100" style="height:5px;"></progress></td></tr></table></div>');
+	var $div = $('<div id="file_thumb_' + idx + ' "class="text-left">'
+		+ '<span style="cursor:pointer" id="file_data_remover_' + idx + '"><b>X</b></span> '
+		+ iconArea + ' ' + file.name + '<br><progress value="0" max="100" style="height:5px;"></progress></div>');
 	$("#thumbnails").append($div);
 	file.target = $div;
-
+	
 	$("#file_data_remover_" + idx).on("click", function(e) {
 		$("#file_thumb_" + idx).remove();
 		if (isRecordFile(file.name)) {
-			recordFileForCompass = null;
+			recordFileForUploadFile = null;
 		}
 		else {
-			videoFileForCompass = null;
+			videoFileForUploadFile = null;
 		}
 
 		$('#selectFileArea').show();
@@ -1362,10 +1569,12 @@ function flightDetailInit(target) {
     };
 
 		g_component_upload_youtube_video.ready();
-    $('#uploadVideoToYoutubeButton').on("click", g_component_upload_youtube_video.handleUploadClicked.bind(g_component_upload_youtube_video));
+    $('#uploadVideoToYoutubeButton').click(function () {
+    	g_component_upload_youtube_video.handleUploadClicked(videoFileForUploadFile);    	
+    });
 
     let record_name = getQueryVariable("record_name");
-    let target_key = getQueryVariable("target_key");		
+    let target_key = getQueryVariable("target_key");
 		
     if (record_name != null && record_name != "") {
     		let rname = decodeURIComponent(unescape(record_name));
@@ -1380,17 +1589,17 @@ function flightDetailInit(target) {
 		            return;
 		        }
 		
-		        curVal = parseFloat(curVal);        		        
+		        curVal = parseFloat(curVal);
 		        updateFlightRecordDsec(target, curVal);
 		        
 		        showAlert(GET_STRING_CONTENT("msg_sync_adjusted") + " : " + curVal + GET_STRING_CONTENT("label_second"));
 		    });
 		    
 		    $('#flightRecDsecSaveBtn').click(function () {
-		        GATAGM('flightRecDsecSaveBtn', 'CONTENT');                		        
+		        GATAGM('flightRecDsecSaveBtn', 'CONTENT');
 		        updateFlightRecordDetail(rname);
 		    });
-    }        
+    }
 }
 
 
@@ -1577,9 +1786,9 @@ function flightRecords2DMapInit() {
 					            stroke: new ol.style.Stroke({ color: '#45cdba', width: 2 })
 			                }),
 			            	text: new ol.style.Text({
+			            						font: radius + 'px Roboto',
 						                  text: size.toString(),
-						                  fill: new ol.style.Fill({ color: '#000' }),
-						                  scale: 1.5
+						                  fill: new ol.style.Fill({ color: '#000' })						                  
 											})	
 		              })];
 		            }
@@ -1635,8 +1844,8 @@ function flightRecords2DMapInit() {
 		                }),
 		            	text: new ol.style.Text({
 					                  text: size.toString(),
-					                  fill: new ol.style.Fill({ color: '#000' }),
-					                  scale: 1.5
+					                  font: radius + 'px Roboto',
+					                  fill: new ol.style.Fill({ color: '#000' })					                  
 										})	
 	              })];
 	            }
@@ -1827,7 +2036,6 @@ function getCompanyInfo(title, cid) {
 }
 
 function showAlert(msg) {
-
     $('#modal-title').text(GET_STRING_CONTENT('modal_title'));
     $('#modal-confirm-btn').text(GET_STRING_CONTENT('modal_confirm_btn'));
 
@@ -4047,6 +4255,137 @@ function moveFlightHistoryMap(lat, lng) {
     g_view_2D_map_for_flight_rec.setCenter(npos);
 }
 
+function verifyPhoneNo(){
+    var userid = getCookie("dev_user_id");
+    // check if phone number starts with 01 and is total of 11 digits
+    let phone_number = $('#user_phonenumber').val();
+    if((phone_number.length != 11) || phone_number.substring(0,2) !== '01') {
+        showAlert(GET_STRING_CONTENT('msg_wrong_phone_format'));
+        return;
+    }
+    
+    // send phone verification
+    var jdata = {
+        "action": "position", 
+        "daction" : "validate_phonenumber", 
+        "phone_number" : phone_number,
+        "clientid" : userid
+    };
+        
+    ajaxRequest(jdata, 
+        function (data){
+            let result = data.result_code;
+            if(result === 0){ //정상응답
+                showAlert(GET_STRING_CONTENT('msg_verification_code_sent'));
+                g_b_phonenumber_verified = false;
+                // 인증하기 텍스트 -> 재전송
+                $('#btn_verify_code').text("재전송");
+                var duration = 60 * 3;
+                var display = $('#remaining_time');
+                startTimer(duration, display);
+                //$('#droneplay_phonenumber').prop( "disabled", true );
+                $("#code_verification_input").show();
+                return;
+            }
+            if (result === 2) {
+                showAlert(GET_STRING_CONTENT('msg_wrong_phone_format'));
+                return;
+            }
+            if (result === 3) {
+                showAlert(GET_STRING_CONTENT('msg_phone_already_exists'));
+                return;
+            }
+            showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+            return;
+        },
+        function (err, stat, error) {
+            showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+        }
+    );
+
+}
+
+function verifyCode(){
+    var userid = getCookie("dev_user_id");
+    let verification_code = $('#verification_code').val();
+		if(verification_code == ""){
+			showAlert(GET_STRING_CONTENT('msg_code_empty'));
+			return;
+		} 
+		
+		var jdata = {
+                "action" : "position", 
+                "daction" : "check_verifycode", 
+                "phone_number" : $('#user_phonenumber').val(), 
+                "verify_code" : verification_code,
+                "clientid" : userid
+            };
+		ajaxRequest(jdata,
+			function(data){
+				let result = data.result_code;
+				if(result === 0){
+                    $('#verification_code').val("");
+                    $('#validate_phonenumber_area').hide();		
+					showAlert(GET_STRING_CONTENT('msg_phone_verified'));
+					clearInterval(g_b_interval_timer);
+					// disable phone number input
+                    g_b_phonenumber_verified = true;
+                    $('#auth_code').val(data.auth_code);
+					// $('#droneplay_phonenumber').prop( "disabled", true );
+                    // $('btn_check_code').text("재인증");
+					return;
+				}
+				if(result === 2){
+					showAlert(GET_STRING_CONTENT('msg_wrong_verification_code'));
+					return;
+				}
+				if(result === 4){
+					showAlert(GET_STRING_CONTENT('msg_phone_verification_timeout'));
+					return;
+				}
+                    showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+			},
+			function (err, stat, error) {
+				showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+			}
+		);
+}
+
+
+
+// 전화번호 인증 혜지프로
+function validateNumber(event) {
+    var key = window.event ? event.keyCode : event.which;
+    if (event.keyCode === 8 || event.keyCode === 46) {
+        return true;
+    } else if ( key < 48 || key > 57 ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+    
+
+// 인증기간 타이머 혜지프로
+function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    g_b_interval_timer = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.text(minutes + ":" + seconds);
+
+        if (--timer < 0) {
+			clearInterval(g_b_interval_timer);
+            showAlert(GET_STRING_CONTENT('msg_phone_verification_timeout'));
+            $("#code_verification_input").hide();
+        }
+    }, 1000);
+}    
 
 function setYoutubeVideo(index, youtube_url) {
 		if (isSet(youtube_url) == false) {
@@ -5055,12 +5394,18 @@ function uploadFlightList(isUpdate) {
 
 		var tag_values = $("#tagTextarea").val();
 
-		var youtube_data = $("#youtube_url_data").val();
-    var files = document.getElementById('flight_record_file').files;
-
+		var youtube_data = $("#youtube_url_data").val();    
     var cVal = $(":input:radio[name='media_upload_kind']:checked").val();
 		if (cVal == "tab_menu_set_no_video") {
       youtube_data = "";
+    }
+    else if (cVal == "tab_menu_set_youtube_address") {
+    		youtube_data = massageYotubeUrl(youtube_data);
+    		if (youtube_data == "") {
+					showAlert(GET_STRING_CONTENT('msg_wrong_youtube_url_input'));
+					hideLoader();
+					return;
+				}
     }
 
     var params = {};
@@ -5088,20 +5433,20 @@ function uploadFlightList(isUpdate) {
     }
 
     if (g_b_fileupload_for_DJI == true) {
-    	if (files.length <= 0) {
+    	if (isSet(recordFileForUploadFile) == false) {
     		showAlert(GET_STRING_CONTENT('msg_select_file'));
     		return;
     	}
 
     	if (isSet(youtube_data)) {
-    		var params = {file: files[0], mname : mname, mmemo : mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate};
+    		var params = {file: recordFileForUploadFile, mname : mname, mmemo : mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate};
     		askIsSyncData(params, uploadDJIFlightListCallback);
     		return;
     	}
 
     	showLoader();
 
-    	params = {file : files[0], mname : mname, mmemo: mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate, isSyncData : false};
+    	params = {file : recordFileForUploadFile, mname : mname, mmemo: mmemo, price: price, tag_values : tag_values, youtube_data : youtube_data, isUpdate : isUpdate, isSyncData : false};
       getBase64(params, uploadDJIFlightListCallback);
       return;
     }
@@ -5714,6 +6059,11 @@ function uploadCheckBeforeUploadFlightList() {
 					showAlert("영상의 판매를 원하시면 판매 희망 가격을 입력해 주세요.");
 					return;
 				}
+				
+				if (g_b_phonenumber_verified == false) {
+					showAlert(GET_STRING_CONTENT('msg_phone_vid_not_verified'));
+					return;
+				}
 
 				price = t_p * 1;
 			}
@@ -5721,29 +6071,35 @@ function uploadCheckBeforeUploadFlightList() {
 
     var mmemo = $("#memoTextarea").val();
 		var tag_values = $("#tagTextarea").val();
-
-    var files = document.getElementById('flight_record_file').files;
+        
     if (g_b_fileupload_for_DJI == true) { //비행기록 업로드
-    	if (files.length <= 0) {
+    	if (isSet(recordFileForUploadFile) == false) {
     		showAlert(GET_STRING_CONTENT('msg_select_file'));
     		return;
     	}
 
     	showLoader();
 
-    	g_params_for_upload_flight_rec = {file : files[0], mname : mname, mmemo: mmemo, tag_values : tag_values, isUpdate : false, isSyncData : false, price : price};
-      g_component_upload_youtube_video.handleUploadClicked();
+    	g_params_for_upload_flight_rec = {file : recordFileForUploadFile, mname : mname, mmemo: mmemo, tag_values : tag_values, isUpdate : false, isSyncData : false, price : price};
+      g_component_upload_youtube_video.handleUploadClicked(videoFileForUploadFile);
       return;
     }
 
   	if (g_loc_address_flat == -999) {    	// 주소 기반
   			showAlert(GET_STRING_CONTENT('msg_input_corrent_address'));
   			return;
-  	}
+      }
+      
+    // 전화번호 인증여부 체크
+    if(!g_b_phonenumber_verified){
+        showAlert(GET_STRING_CONTENT('msg_phone_not_verified'));
+        return;
+    }
+
 
   	showLoader();
   	g_params_for_upload_flight_rec = {mname : mname, mmemo: mmemo, tag_values : tag_values, isUpdate : false, isSyncData : false, price : price, flat: g_loc_address_flat, flng : g_loc_address_flng};
-  	g_component_upload_youtube_video.handleUploadClicked();
+  	g_component_upload_youtube_video.handleUploadClicked(videoFileForUploadFile);
 }
 
 function setFlightRecordUploadMode(bWhich) {
