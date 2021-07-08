@@ -1370,7 +1370,7 @@ function previewForRecordFile(file) {
 	if(isMovieFile(file.name)) {
 		$("#selectMovieFileArea").css("display","none");
 		$("#videoFileName").empty();
-		iconArea = '<i class="fas fa-video"></i>';
+		iconArea = '<i class="fas fa-video" style="color:black"></i>';
 		vDiv = $('<div class="text-left">'
 			+ '<span style="cursor:pointer" id="file_data_remover_video"><b>X</b></span> '
 			+ iconArea + ' ' + file.name + '</div>');
@@ -1385,7 +1385,7 @@ function previewForRecordFile(file) {
 	else {		
 		$("#selectDJIFileArea").css("display","none");
 		$("#flightRecordFileName").empty();
-		iconArea = '<i class="fas fa-map-marker-alt"></i>';
+		iconArea = '<i class="fas fa-map-marker-alt" style="color:black"></i>';
 		vDiv = $('<div class="text-left">'
 			+ '<span style="cursor:pointer" id="file_data_remover_record"><b>X</b></span> '
 			+ iconArea + ' ' + file.name + '</div>');
