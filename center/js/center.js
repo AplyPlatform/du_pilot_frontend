@@ -964,29 +964,42 @@ function flightrecordUploadInit() {
     $("#set_youtube_upload_view").show();
             
     let dropArea = $("#dropArea");
-		dropArea.on("dragenter", function(e) { //드래그 요소가 들어왔을떄
-			dropArea.css('background-color', '#E3F2FC');
-			$("#file_upload_img").show();
-		}).on("dragleave", function(e) { //드래그 요소가 나갔을때
-			dropArea.css('background-color', '#FFFFFF');
-			$("#file_upload_img").hide();
-		}).on("dragover", function(e) {
+		dropArea.on("drag dragstart dragend dragover dragenter dragleave drop", function(e) {
 			e.stopPropagation();
 			e.preventDefault();
-		}).on('drop', function(e) {
-			e.preventDefault();
+		})
+		.on("dragover dragenter", function() {
+			dropArea.css('background-color', '#E3F2FC');
+			$("#file_upload_img").show();
+			$("#file_drop_img").hide();
+			$("#selectFileArea").hide();
+		})
+		.on('dragleave dragend drop', function() {			
 			dropArea.css('background-color', '#FFFFFF');
 			$("#file_upload_img").hide();
-			
+			$("#file_drop_img").show();
+			$("#selectFileArea").show();
+		})
+		.on('drop', function(e) {
 			GATAGM('fileDropForFlightRecord', 'CONTENT');
 			let retSelected = fileDropCheckRecordUpload(e.originalEvent.dataTransfer.files);
-			if (retSelected) setUploadFileFields();
+			if (retSelected == 2) setUploadFileFields();
+			else if (retSelected == 1) $("#nextStageBtnArea").show();
+			else $("#nextStageBtnArea").hide();
+		});
+	
+		$("#btnNextStage").click(function() {
+			GATAGM('btnNextStage', 'CONTENT');
+			$("#nextStageBtnArea").hide();
+			setUploadFileFields();
 		});
 
 		$("#input_direct_file").bind('change', function() {			
 			GATAGM('fileInputForFlightRecord', 'CONTENT');
 			let retSelected = fileDropCheckRecordUpload(this.files);
-			if (retSelected) setUploadFileFields();
+			if (retSelected == 2) setUploadFileFields();
+			else if (retSelected == 1) $("#nextStageBtnArea").show();
+			else $("#nextStageBtnArea").hide();
 		});
 		
 		$("#movieFile").bind('change', function() {			
@@ -1019,12 +1032,14 @@ function flightrecordUploadInit() {
     $("#dropArea").show();
     $("#uploadfileform").hide();
     $("#file_upload_img").hide();
+    $("#nextStageBtnArea").hide();
     hideLoader();
 }
 
 function setUploadFileFields() {	
 		$('#dropArea').hide();
-		$('#uploadfileform').show();				
+		$("#nextStageBtnArea").hide();
+		$('#uploadfileform').show();
 }
 
 function embedCompassInit() {
@@ -1063,28 +1078,32 @@ function embedCompassInit() {
     $('#compass_pos_sel_option_2').text(GET_STRING_CONTENT('compass_pos_sel_option_2_label'));
     $('#compass_pos_sel_option_3').text(GET_STRING_CONTENT('compass_pos_sel_option_3_label'));
 
+
 		let dropArea = $("#dropArea");
-		dropArea.on("dragenter", function(e) { //드래그 요소가 들어왔을떄
-			dropArea.css('background-color', '#E3F2FC');
-			$("#file_upload_img").show();
-		}).on("dragleave", function(e) { //드래그 요소가 나갔을때
-			dropArea.css('background-color', '#FFFFFF');
-			$("#file_upload_img").hide();
-		}).on("dragover", function(e) {
+		dropArea.on("drag dragstart dragend dragover dragenter dragleave drop", function(e) {
 			e.stopPropagation();
 			e.preventDefault();
-		}).on('drop', function(e) {
-			e.preventDefault();
+		})
+		.on("dragover dragenter", function() {
+			dropArea.css('background-color', '#E3F2FC');			
+			$("#file_upload_img").show();
+			$("#file_drop_img").hide();
+			$("#selectFileArea").hide();
+		})
+		.on('dragleave dragend drop', function() {			
 			dropArea.css('background-color', '#FFFFFF');
 			$("#file_upload_img").hide();
-			
+			$("#file_drop_img").show();
+			$("#selectFileArea").show();
+		})
+		.on('drop', function(e) {
 			GATAGM('fileDropForCompassEmbed', 'CONTENT');
 			let retSelected = fileDropCheckForCompass(e.originalEvent.dataTransfer.files);
 			if (retSelected == true && (isSet(videoFileForUploadFile) && isSet(recordFileForUploadFile))) {
-				$('#selectFileArea').hide();
-				$('#btnForUploadFlightList').show();
+				$("#selectFileArea").hide();
+				$('#btnForUploadFlightList').show();				
 			}
-		});
+		});		
 
 		$("#btnForUploadFlightList").on("click", function(e) {
 				GATAGM('btnCompassEmbed', 'CONTENT');
@@ -1281,13 +1300,13 @@ function embedRequest(filename, tempExt) {
 function fileDropCheckRecordUpload(files) {
 	if (files.length > 2) {
 		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-		return false;
+		return 0;
 	}
 
 	if (files.length == 2) {
 		if (isSet(recordFileForUploadFile) || isSet(videoFileForUploadFile)) {
 			showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-			return false;
+			return 0;
 		}
 	}
 
@@ -1298,10 +1317,9 @@ function fileDropCheckRecordUpload(files) {
 		if (isRecordFile(file.name)) {
 			if (isSet(recordFileForUploadFile)) {
 				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-				return false;
+				return 0;
 			}
-			else {
-				console.log(file);
+			else {				
 				recordFileForUploadFile = file;
 				previewForRecordFile(file);
 				isAdded = true;
@@ -1311,10 +1329,9 @@ function fileDropCheckRecordUpload(files) {
 		if (isMovieFile(file.name)) {
 			if (isSet(videoFileForUploadFile)) {
 				showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-				return false;
+				return 0;
 			}
-			else {
-				console.log(file);
+			else {				
 				videoFileForUploadFile = file;
 				previewForRecordFile(file);
 				isAdded = true;
@@ -1322,12 +1339,16 @@ function fileDropCheckRecordUpload(files) {
 		}
 	}
 
-	if (isAdded == false) {
+	if (isAdded == 0) {
 		showAlert(GET_STRING_CONTENT("msg_select_one_video_one_record"));
-		return false;
+		return 0;
 	}
 	
-	return true;	
+	if (isSet(recordFileForUploadFile) && isSet(videoFileForUploadFile)) {
+		return 2;		
+	}
+	
+	return 1;	
 }
 
 function videoFileUpload(videoFile, tempName, tempExt, tempUrl) {
@@ -1371,31 +1392,70 @@ function previewForRecordFile(file) {
 		$("#selectMovieFileArea").css("display","none");
 		$("#videoFileName").empty();
 		iconArea = '<i class="fas fa-video" style="color:black"></i>';
+		
 		vDiv = $('<div class="text-left">'
-			+ '<span style="cursor:pointer" id="file_data_remover_video"><b>X</b></span> '
+			+ '<span style="cursor:pointer" id="file_data_remover_video1"><b>X</b></span> '
 			+ iconArea + ' <span class="text-xs mb-1" style="color:black">' + file.name + '</span></div>');
 		$("#videoFileName").append(vDiv);
+		
+		vDiv = $('<div class="text-left" id="thumbnail_video">'
+			+ '<span style="cursor:pointer" id="file_data_remover_video2"><b>X</b></span> '
+			+ iconArea + ' <span class="text-xs mb-1" style="color:black">' + file.name + '</span></div>');			
+		$("#thumbnails").append(vDiv);
 						
-		$("#file_data_remover_video").on("click", function(e) {
+		$("#file_data_remover_video1").on("click", function(e) {
 			$("#videoFileName").empty();
+			$("#thumbnail_video").remove();
 			videoFileForUploadFile = null;
 			$("#selectMovieFileArea").show();
-		});		
+			$("#video_upload_kind_sel").show();
+		});
+		
+		$("#file_data_remover_video2").on("click", function(e) {
+			$("#videoFileName").empty();
+			$("#thumbnail_video").remove();
+			videoFileForUploadFile = null;
+			$("#selectMovieFileArea").show();
+			$("#video_upload_kind_sel").show();
+		});
+		
+		$("#video_upload_kind_sel").hide();
 	}
 	else {		
 		$("#selectDJIFileArea").css("display","none");
 		$("#flightRecordFileName").empty();
 		iconArea = '<i class="fas fa-map-marker-alt" style="color:black"></i>';
 		vDiv = $('<div class="text-left">'
-			+ '<span style="cursor:pointer" id="file_data_remover_record"><b>X</b></span> '
+			+ '<span style="cursor:pointer" id="file_data_remover_record1"><b>X</b></span> '
 			+ iconArea + ' <span class="text-xs mb-1" style="color:black">' + file.name + '</span></div>');
 		$("#flightRecordFileName").append(vDiv);
 		
-		$("#file_data_remover_record").on("click", function(e) {
+		
+		vDiv = $('<div class="text-left" id="thumbnail_record">'
+			+ '<span style="cursor:pointer" id="file_data_remover_record2"><b>X</b></span> '
+			+ iconArea + ' <span class="text-xs mb-1" style="color:black">' + file.name + '</span></div>');
+		$("#thumbnails").append(vDiv);
+		
+		$("#file_data_remover_record1").on("click", function(e) {
 			$("#flightRecordFileName").empty();
+			$("#thumbnail_record").remove();
 			recordFileForUploadFile = null;
 			$("#selectDJIFileArea").show();
-		});		
+			$("#dji_file_upload_sel").show();
+			$("#dji_file_get_howto").show();
+		});
+		
+		$("#file_data_remover_record2").on("click", function(e) {
+			$("#flightRecordFileName").empty();
+			$("#thumbnail_record").remove();
+			recordFileForUploadFile = null;
+			$("#selectDJIFileArea").show();
+			$("#dji_file_upload_sel").show();
+			$("#dji_file_get_howto").show();
+		});
+		
+		$("#dji_file_upload_sel").hide();
+		$("#dji_file_get_howto").hide();
 	}		
 }
 
