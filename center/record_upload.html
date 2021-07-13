@@ -25,7 +25,9 @@
 										<br>
 										<div class="text-center">											
 											<img src="./imgs/file_drop_upload.gif" border="0" id="file_upload_img">
-											<img src="./imgs/drop.png" border="0" width="80px" id="file_drop_img"><br><br><br><br>
+											<span class="text-xs text-default mb-1" id="label_explain_drag">이곳에 파일을 드래그 하세요.</span><br>
+											<img src="./imgs/drop.png" border="0" width="80px" id="file_drop_img"><br><br><br><br><br>
+											<span class="text-xs text-default mb-1" id="label_or_directly">또는, 직접 </span> 
 											<div class="upload-btn-wrapper text-center" id="selectFileArea">
 												<input type="file" id="input_direct_file" value="" multiple>
 												<button class="btn btn-secondary btn-sm" type="button" id="btnSelectFiles">파일선택</button>
@@ -72,7 +74,7 @@
 												        <select id="privacy-status" class="form-control">
 												          <option value="public" id="option_public_label">공개</option>
 												          <option value="unlisted" selected id="option_unlisted_label">일부공개(링크가 있는 사용자만 영상을 볼수 있음)</option>
-												          <option value="private" id="option_private_label">비공개</option>
+												          <!-- <option value="private" id="option_private_label">비공개</option> -->
 												        </select>
 										      </div>
 										    </div>

@@ -793,6 +793,8 @@ function flightrecordUploadInit() {
     $("#input_memo_label").text(GET_STRING_CONTENT('input_memo_label'));
 
     $("#input_tag_label").text(GET_STRING_CONTENT('input_tag_label'));
+    $('#label_explain_drag').text(GET_STRING_CONTENT('label_explain_drag'));
+    $('#label_or_directly').text(GET_STRING_CONTENT('label_or_directly'));
 
     $("#dji_radio_label").text(GET_STRING_CONTENT('msg_dji_file_upload'));
     $('#collapseRecordFileParams').html(GET_STRING_CONTENT('collapseRecordFileParams'));
@@ -808,11 +810,15 @@ function flightrecordUploadInit() {
 		$('#btnSelectMovieFiles').text(GET_STRING_CONTENT('label_select_files'));
     $('#btnSelectDJIFiles').text(GET_STRING_CONTENT('label_select_files'));
     $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));
+    $('#btnNextStage').text(GET_STRING_CONTENT('btnNextStage'));
+    
     
     $('#label_flightrec_file_drop_area').html(GET_STRING_CONTENT('msg_drop_flightrecord_file'));
     
     
     $("#flighttime_input_data_label").text(GET_STRING_CONTENT('flighttime_input_data_label'));
+    
+    
 
     $("#disclaimer").html(GET_STRING_CONTENT('youtubeTOS'));
 
@@ -984,8 +990,8 @@ function flightrecordUploadInit() {
 			GATAGM('fileDropForFlightRecord', 'CONTENT');
 			let retSelected = fileDropCheckRecordUpload(e.originalEvent.dataTransfer.files);
 			if (retSelected == 2) setUploadFileFields();
-			else if (retSelected == 1) $("#nextStageBtnArea").show();
-			else $("#nextStageBtnArea").hide();
+			else if (retSelected == 1) $("#btnNextStage").attr('disabled', false);
+			else $("#btnNextStage").attr('disabled', true);
 		});
 	
 		$("#btnNextStage").click(function() {
@@ -998,8 +1004,8 @@ function flightrecordUploadInit() {
 			GATAGM('fileInputForFlightRecord', 'CONTENT');
 			let retSelected = fileDropCheckRecordUpload(this.files);
 			if (retSelected == 2) setUploadFileFields();
-			else if (retSelected == 1) $("#nextStageBtnArea").show();
-			else $("#nextStageBtnArea").hide();
+			else if (retSelected == 1) $("#btnNextStage").attr('disabled', false);
+			else $("#btnNextStage").attr('disabled', true);
 		});
 		
 		$("#movieFile").bind('change', function() {			
@@ -1032,7 +1038,9 @@ function flightrecordUploadInit() {
     $("#dropArea").show();
     $("#uploadfileform").hide();
     $("#file_upload_img").hide();
-    $("#nextStageBtnArea").hide();
+    $("#nextStageBtnArea").show();
+    $("#btnNextStage").attr('disabled', true);
+    
     hideLoader();
 }
 
@@ -1053,7 +1061,10 @@ function embedCompassInit() {
 
     $('#label_compass_file_drop_area').text(GET_STRING_CONTENT('label_compass_file_drop_area'));
 
-    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));    
+    $('#btnSelectFiles').text(GET_STRING_CONTENT('label_select_files'));
+    
+    $('#label_explain_drag').text(GET_STRING_CONTENT('label_explain_drag'));
+    $('#label_or_directly').text(GET_STRING_CONTENT('label_or_directly'));
     
     $('#label_for_colorpicker').text(GET_STRING_CONTENT('label_for_colorpicker'));
 
@@ -1068,7 +1079,7 @@ function embedCompassInit() {
     
     $('#roll_label').text(GET_STRING_CONTENT('roll_label'));
     $('#pitch_label').text(GET_STRING_CONTENT('pitch_label'));
-    $('#yaw_label').text(GET_STRING_CONTENT('yaw_label'));
+    $('#yaw_label').text(GET_STRING_CONTENT('yaw_label'));        
     
     $("#altitude_label_top").text(GET_STRING_CONTENT('altitude_label'));
     
