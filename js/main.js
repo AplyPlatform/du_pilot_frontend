@@ -589,8 +589,8 @@
 			                }),
 			            	text: new ol.style.Text({
 						                  text: size.toString(),
-						                  fill: new ol.style.Fill({ color: '#000' }),
-						                  scale: 1.5
+						                  font: radius + 'px Roboto',
+						                  fill: new ol.style.Fill({ color: '#000' })						                  
 											})	
 		              })];
 		            }
@@ -645,8 +645,8 @@
 			                }),
 			            	text: new ol.style.Text({
 						                  text: size.toString(),
-						                  fill: new ol.style.Fill({ color: '#000' }),
-						                  scale: 1.5
+						                  font: radius + 'px Roboto',
+						                  fill: new ol.style.Fill({ color: '#000' })						                  
 											})	
 		              })];
 		            }
@@ -849,6 +849,7 @@
 			  	var vid = getYoutubeQueryVariable(r.data.youtube_data_id);			
 					$("#video-pop-view").attr("video-lang", langset);
 					$("#video-pop-view").attr("video-name", name);
+					$("#video-pop-view").attr("video-prod-url", r.data.prod_url);
 					$("#video-pop-view").attr("video-url", "https://www.youtube.com/watch?v=" + vid);
 					$("#video-pop-view").videoPopup();
 					$("#video-pop-view").click();
@@ -1281,13 +1282,11 @@
 						hideLoader();
 						
 						$("#searchListView").hide();
-						$("#defaultListView").show();
 		        return;
 		      }
 		      
 		      
 					$("#searchListView").show();
-					$("#defaultListView").hide();
 					
 		      if (r.morekey) {
               hasMore = r.morekey;

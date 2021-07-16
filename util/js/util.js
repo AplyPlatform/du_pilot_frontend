@@ -297,6 +297,7 @@ function onPlayerStateChange(event) {
 	var flightHistoryView;
 	var mainMap2DpointSource;
 	var mainMap2DCadaSource;
+	var mainMap2DAreaInfoSource;
 
 	var vVectorLayerForCompany;
 	var vVectorLayerForHistory;
@@ -451,6 +452,18 @@ function onPlayerStateChange(event) {
             })
         })
     });
+    
+    mainMap2DAreaInfoSource = new ol.source.Vector({});
+
+		var areaInfoLayer = new ol.layer.Vector({
+        source: mainMap2DAreaInfoSource,
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#0000dd',
+                width: 3
+            })
+        })
+    });
 
 	  var vMap = new ol.Map({
 	  		controls: ol.control.defaults().extend([
@@ -458,7 +471,7 @@ function onPlayerStateChange(event) {
         ]),
 	      target: 'historyMap',
 	      layers: [
-	          bingLayer, vVectorLayerForHistory, vVectorLayerForCompany, pointLayer, cadaLayer
+	          bingLayer, vVectorLayerForHistory, vVectorLayerForCompany, pointLayer, cadaLayer, areaInfoLayer
 	      ],
 				overlays: [overlayBox],
 	      // Improve user experience by loading tiles while animating. Will make
@@ -622,7 +635,7 @@ function onPlayerStateChange(event) {
 	  return feature.get('features').length >= 1;
 	}
 
-	function moveFlightHistoryMapAndCada(lat, lng, cada) { //todo
+	function moveFlightHistoryMapAndCada(lat, lng, cada) {
 		$("#historyMapArea").show();
 		var npos = ol.proj.fromLonLat([lng, lat]);
 		
@@ -705,15 +718,7 @@ function makeForFlightListMap(index, flat, flng, address, hasYoutube) {
     var bingLayer = new ol.layer.Tile({
 	    visible: true,
 	    preload: Infinity,
-	    source: new ol.source.BingMaps({
-	        // We need a key to get the layer from the provider.
-	        // Sign in with Bing Maps and you will get your key (for free)
-	        key: 'AgMfldbj_9tx3cd298eKeRqusvvGxw1EWq6eOgaVbDsoi7Uj9kvdkuuid-bbb6CK',
-	        imagerySet: 'AerialWithLabels', // or 'Road', 'AerialWithLabels', etc.
-	        // use maxZoom 19 to see stretched tiles instead of the Bing Maps
-	        // "no photos at this zoom level" tiles
-	        maxZoom: 19
-	    })
+	    source: new ol.source.OSM()
 		});
 
 	  var vMap = new ol.Map({
@@ -892,16 +897,14 @@ function requestAddress() {
 		oldLatVal = jdata["lat"];
 		oldLngVal = jdata["lng"];
 
-  	var npos = ol.proj.fromLonLat([oldLngVal, oldLatVal]);
-  	jdata["x"] = npos[0];
-  	jdata["y"] = npos[1];
-
 		GATAGM("public_address_by_gps", "SERVICE", oldLatVal + "," + oldLngVal, langset);
 
 		showLoader();
 		setCaptcha(jdata, function (r) {
 		    if(r.result == "success") {
 					$("#address").val(r.data.address);
+					
+					setAreaInfo(r.data.area_info);
 
 					oldAddressVal = r.data.address;
 
@@ -932,6 +935,23 @@ function requestAddress() {
 }
 
 
+function setAreaInfo(ainfo) {
+	let needApprove = ainfo.needApprove;
+	let area_infos = ainfo.area_infos;
+	let desc = ainfo.desc;
+	
+	var areaString = "";	
+	area_infos.forEach(function(ai) {
+		areaString = areaString + ai.name + " / ";
+		var areaVec = ai.arrayvec;
+		var _area_polyline = new ol.Feature({ geometry : new ol.geom.LineString(areaVec) });
+    mainMap2DAreaInfoSource.addFeature(_area_polyline);		
+	});		
+	
+	$("#area_info_text").html("<H4>이 지역은 " + desc + " / " + areaString + "</H4>");			
+  
+}
+
 function requestGPS(address) {
 
 		var jdata = {"action" : "public_gps_by_address", "daction" : "public_gps_by_address"};
@@ -956,11 +976,26 @@ function requestGPS(address) {
 			      	showAlert("주소를 " + LANG_JSON_DATA[langset]['msg_wrong_input']);
 			        return;
 			      }
-
-						$("#lat").val(r.data.lat);
-	  				$("#lng").val(r.data.lng);
-
-			     	requestAddress();
+									     	
+	     			$("#lat").val(r.data.lat);
+						$("#lng").val(r.data.lng);
+				
+						$("#address").val(r.data.address);
+						
+						setAreaInfo(r.data.area_info);
+	
+						oldAddressVal = r.data.address;
+	
+						if (isSet(r.data.data)) {									
+							flightRecArray = r.data.data;
+		      		setFlightlistHistory(r.data.lat + "," + r.data.lng);
+						}
+						else {									
+							moveFlightHistoryMapAndCada(r.data.lat, r.data.lng, r.data.cada);
+							showAlert(LANG_JSON_DATA[langset]['msg_address_checked']);
+						}
+						
+			    	hideLoader();					    					    					  
 	    	}
 	    	else {
 	    			hideLoader();
