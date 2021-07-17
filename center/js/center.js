@@ -1,4 +1,6 @@
-﻿/*
+﻿"use strict";
+
+/*
 Copyright 2021 APLY Inc. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10,8 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-
 
 var g_b_monitor_started;
 var g_b_phonenumber_verified = true;
@@ -1062,7 +1062,7 @@ function embedCompassInit() {
     $("#head_title").text(document.title);
 
     $('#page_about_title').text(GET_STRING_CONTENT('req_compass_embed_lable'));
-    $('#page_about_content').text(GET_STRING_CONTENT('req_compass_embed_lable'));
+    $('#page_about_content').text(GET_STRING_CONTENT('req_compass_embed_content'));
 
     $('#btnForUploadFlightList').text(GET_STRING_CONTENT('req_compass_embed_lable'));
 
@@ -1157,20 +1157,44 @@ function embedCompassInit() {
 		$("#colorPicker").spectrum({
 		  type: "color",
 		  showInput: true,
-		  showInitial: true		  
+		  showInitial: true,
+		  change: function(color) {
+		  		let rgb = color.toRgb();
+			    setCompassColor(rgb.r, rgb.g, rgb.b, rgb.a);
+			}		  
 		});
+		
+		$("#compass_pos_sel").change(function() {
+     $("#compass_pos_sel option:selected").each(function() {
+          setCompassPos($(this).val() * 1);
+     });
+		});
+		
+		$("#embed_text_sel").change(function() {
+     $("#embed_text_sel option:selected").each(function() {
+          setCompassText( ($(this).val() * 1) == 1 ? true : false );
+     });
+		});
+
 
     $("#file_upload_img").hide();
     $('#btnForUploadFlightList').hide();
     $('#selectFileArea').show();
     $("#label_or_directly").show();
     $("#mapArea").hide();
+    $("#youtube_example_area").show();
+    $("#video_example_area").hide();
     
     if (g_str_cur_lang != "KR") {
     	$("#ad_for_pilot").hide(); //드론 영상으로 수익 창출 광고 감추기 (국내만 대상으로 하기)
     }
     
-    hideLoader();
+    compass_video = document.getElementById("compass_video");
+		compass_canvas = document.getElementById('compass_output');
+}
+
+function onOpenCvReady() {
+		hideLoader();
 }
 
 var recordFileForUploadFile = null;
@@ -1200,7 +1224,7 @@ function fileDropCheckForCompass(files) {
 			}
 			else {
 				console.log(file);
-				recordFileForUploadFile = file;
+				recordFileForUploadFile = file;												
 				previewForCompassFile(file, "record");
 				isAdded = true;
 			}
@@ -1214,6 +1238,11 @@ function fileDropCheckForCompass(files) {
 			else {
 				console.log(file);
 				videoFileForUploadFile = file;
+				playCompassVideo(file);
+				
+				$("#video_example_area").show();
+				$("#youtube_example_area").hide();
+				
 				previewForCompassFile(file, "video");
 				isAdded = true;
 			}
@@ -1513,6 +1542,11 @@ function previewForCompassFile(file, idx) {
 		}
 		else {
 			videoFileForUploadFile = null;
+			
+			stopCompassVideo();
+			
+			$("#video_example_area").hide();
+			$("#youtube_example_area").show();
 		}
 
 		$('#selectFileArea').show();
@@ -5019,14 +5053,14 @@ function addObjectTo3DMapWithGPS(index, owner, kind, lat, lng, alt) {
         lng, lat, alt
     );
 
-    var glbUrl, gColor, gColor;
-    if (kind == "drone") {
-        glbUrl = "https://pilot.duni.io/center/imgs/drone.glb";
+    var glbUrl = "https://pilot.duni.io/center/imgs/drone.glb", 
+    		gColor, gColor, sColor;
+    		
+    if (kind == "drone") {        
         gColor = "YELLOW";
         sColor = "RED";
     }
-    else {
-    		glbUrl = "https://pilot.duni.io/center/imgs/drone.glb";
+    else {    		
     		gColor = "GREEN";
     		sColor = "CYAN";
     }
@@ -5146,7 +5180,6 @@ function map3DInit() {
     );
 
     v3DMapCate = new Cesium.Cartesian3();
-    controller = s3DMapScene.screenSpaceCameraController;
     planePrimitives = {};
 }
 
