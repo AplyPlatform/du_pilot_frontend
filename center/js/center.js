@@ -984,12 +984,14 @@ function flightrecordUploadInit() {
 			$("#file_upload_img").show();
 			$("#file_drop_img").hide();
 			$("#selectFileArea").hide();
+			$("#label_or_directly").hide();
 		})
 		.on('dragleave dragend drop', function() {			
 			dropArea.css('background-color', '#FFFFFF');
 			$("#file_upload_img").hide();
 			$("#file_drop_img").show();
 			$("#selectFileArea").show();
+			$("#label_or_directly").show();
 		})
 		.on('drop', function(e) {
 			GATAGM('fileDropForFlightRecord', 'CONTENT');
@@ -1095,6 +1097,10 @@ function embedCompassInit() {
     $('#compass_pos_sel_option_3').text(GET_STRING_CONTENT('compass_pos_sel_option_3_label'));
 
 
+		$('#compass_embed_text_sel_label').text(GET_STRING_CONTENT('compass_embed_text_sel_label'));
+    $('#embed_text_sel_show').text(GET_STRING_CONTENT('embed_text_sel_show_label'));
+    $('#embed_text_sel_hide').text(GET_STRING_CONTENT('embed_text_sel_hide_label'));
+
 		let dropArea = $("#dropArea");
 		dropArea.on("drag dragstart dragend dragover dragenter dragleave drop", function(e) {
 			e.stopPropagation();
@@ -1105,18 +1111,23 @@ function embedCompassInit() {
 			$("#file_upload_img").show();
 			$("#file_drop_img").hide();
 			$("#selectFileArea").hide();
+			$("#label_or_directly").hide();
 		})
 		.on('dragleave dragend drop', function() {			
 			dropArea.css('background-color', '#FFFFFF');
 			$("#file_upload_img").hide();
 			$("#file_drop_img").show();
 			$("#selectFileArea").show();
+			$("#label_or_directly").show();
 		})
 		.on('drop', function(e) {
 			GATAGM('fileDropForCompassEmbed', 'CONTENT');
 			let retSelected = fileDropCheckForCompass(e.originalEvent.dataTransfer.files);
 			if (retSelected == true && (isSet(videoFileForUploadFile) && isSet(recordFileForUploadFile))) {
 				$("#selectFileArea").hide();
+				$("#label_or_directly").hide();
+				$('#file_drop_img').hide();
+				$('#label_explain_drag').hide();
 				$('#btnForUploadFlightList').show();				
 			}
 		});		
@@ -1131,8 +1142,11 @@ function embedCompassInit() {
 			let retSelected = fileDropCheckForCompass(this.files);
 			if (retSelected == true && (isSet(videoFileForUploadFile) && isSet(recordFileForUploadFile))) {
 				$('#selectFileArea').hide();
+				$("#label_or_directly").hide();
 				$('#btnForUploadFlightList').show();
-			}
+				$('#file_drop_img').hide();
+				$('#label_explain_drag').hide();
+			}			
 		});
 
 		$("#input_direct_file").click(function() {			
@@ -1149,6 +1163,7 @@ function embedCompassInit() {
     $("#file_upload_img").hide();
     $('#btnForUploadFlightList').hide();
     $('#selectFileArea').show();
+    $("#label_or_directly").show();
     $("#mapArea").hide();
     
     if (g_str_cur_lang != "KR") {
@@ -1274,6 +1289,7 @@ function embedRequest(filename, tempExt) {
 
 		var color = $("#colorPicker").spectrum("get");
 		var compass_position = $("#compass_pos_sel").children("option:selected").val();
+		var embedText = $("#embed_text_sel").children("option:selected").val();		
 				
 		var userid = getCookie("dev_user_id");
     var jdata = {
@@ -1283,6 +1299,7 @@ function embedRequest(filename, tempExt) {
     	"extension" : tempExt,
     	"filename" : filename,
     	"color": color.toRgb(),
+    	"show_text": embedText,
     	"pos" : compass_position
     };
 
@@ -1299,6 +1316,7 @@ function embedRequest(filename, tempExt) {
 					videoFileForUploadFile = null;
 
 					$('#selectFileArea').show();
+					$("#label_or_directly").show();
 					$('#btnForUploadFlightList').hide();
         }
         else {
@@ -1498,7 +1516,10 @@ function previewForCompassFile(file, idx) {
 		}
 
 		$('#selectFileArea').show();
+		$("#label_or_directly").show();
 		$('#btnForUploadFlightList').hide();
+		$('#file_drop_img').show();
+		$('#label_explain_drag').show();
 	});
 }
 
