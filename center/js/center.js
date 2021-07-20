@@ -180,7 +180,9 @@ function setViewMode() {
 	if(g_str_cur_viewmode == "") g_str_cur_viewmode = "pilot";
 
 	if(g_str_cur_viewmode == "pilot") {
-		$('#view_mode_selector').click(function(){
+		$('#view_mode_selector').click(function(e){
+			e.preventDefault();
+			
 			setCookie("viewmode", "developer", 1);
 			GATAGM('view_mode_selector_developer', 'MEMU');
 			location.href = "/center/main_dev.html?page_action=center";
@@ -188,7 +190,9 @@ function setViewMode() {
 	}
 	else {
 
-		$('#view_mode_selector').click(function(){
+		$('#view_mode_selector').click(function(e){
+			e.preventDefault();
+			
 			setCookie("viewmode", "pilot", 1);
 			GATAGM('view_mode_selector_pilot', 'MEMU');
 			location.href = "/center/main.html?page_action=center";
@@ -250,14 +254,16 @@ function showAskDialog(atitle, acontent, oktitle, needInput, okhandler, cancelha
     }
 
     $('#askModalLabel').text(atitle);
-    $('#askModalContent').text(acontent);
+    $('#askModalContent').html(acontent);
     $('#askModalOKButton').text(oktitle);
 
 
     if (cancelhandler) {
       $('#askModalCancelButton').show();
       $('#askModalCancelButton').off('click');
-      $('#askModalCancelButton').click(function () {
+      $('#askModalCancelButton').click(function (e) {
+      		e.preventDefault();
+      		
           cancelhandler();
       });
     }
@@ -266,7 +272,9 @@ function showAskDialog(atitle, acontent, oktitle, needInput, okhandler, cancelha
     }
 
     $('#askModalOKButton').off('click');
-    $('#askModalOKButton').click(function () {
+    $('#askModalOKButton').click(function (e) {
+    		e.preventDefault();
+    		
         $('#askModal').modal('hide');
         if (needInput == true) {
             var ret = $('#askModalInput').val();
@@ -288,7 +296,9 @@ function showAskDialog(atitle, acontent, oktitle, needInput, okhandler, cancelha
 }
 
 function setLogoutBtn() {
-    $('#btnLogout').click(function () {
+    $('#btnLogout').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnLogout', 'MEMU');
 
         showAskDialog(
@@ -451,7 +461,9 @@ function centerInit() {
         $("#show_token").text(GET_STRING_CONTENT('msg_show_token'));
         $("#droneplaytoken_view_section").val(getCookie("dev_token"));
         $("#droneplaytoken_view_section").hide();
-        $("#show_token").click(function(){
+        $("#show_token").click(function(e){
+        	e.preventDefault();
+        	
         	if (g_b_is_token_visible) {
         		GATAGM('show_token', 'CONTENT');
 
@@ -491,7 +503,9 @@ function centerInit() {
     $("#more_label").text(GET_STRING_CONTENT("more_label"));
 
     $("#dev_token_title").text(GET_STRING_CONTENT("dev_token_title"));
-
+		
+		$("#label_duni_service_request_list").text(GET_STRING_CONTENT("label_duni_service_request_list"));
+		$("#label_duni_service_request_list_content").text(GET_STRING_CONTENT("label_duni_service_request_list_content"));
 
     $("#open_company_label").text(GET_STRING_CONTENT("title_for_company_flightlist"));
     $("#title_history_chkbox").text(GET_STRING_CONTENT("title_history_chkbox"));
@@ -510,11 +524,7 @@ function centerInit() {
 	  });
 
     getCompanyList();
-}
-
-
-function drawFlightArea() { 
-		setAddressAndCada("#map_address", fdata.address, fdata.cada, g_vector_2D_mainmap_for_cada);
+    getDUNIServiceRequest();
 }
 
 
@@ -597,25 +607,33 @@ function designInit() {
 
 
     $('#saveItemBtn').off('click');
-    $('#saveItemBtn').click(function () {
+    $('#saveItemBtn').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('saveItemBtn', 'CONTENT');
         saveDesignData(0);
     });
 
     $('#btnForRegistMission').off('click');
-    $('#btnForRegistMission').click(function () {
+    $('#btnForRegistMission').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForRegistMission', 'CONTENT');
         askMissionNameForDesignRegister();
     });
 
     $('#btnForClearMission').off('click');
-    $('#btnForClearMission').click(function () {
+    $('#btnForClearMission').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForClearMission', 'CONTENT');
         askClearCurrentDesign();
     });
 
     $('#btnForSearchAddress').off('click');
-    $('#btnForSearchAddress').click(function () {
+    $('#btnForSearchAddress').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSearchAddress', 'CONTENT');
         searchCurrentBrowserAddress();
     });
@@ -631,20 +649,26 @@ function missionGenInit() {
 
 		g_array_design_data = [];
 
-		$('#btnForGenMissionByAddress').click(function () {
+		$('#btnForGenMissionByAddress').click(function (e) {
+				e.preventDefault();
+				
         GATAGM('btnForGenMissionByAddress', 'CONTENT');
 
         genPlanByAddress($('#gen_address').val());
     });
 
-    $('#btnForGenMissionByGPS').click(function () {
+    $('#btnForGenMissionByGPS').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForGenMissionByGPS', 'CONTENT');
 
         genPlanByGPS($('#lat').val() * 1, $('#lng').val() * 1);
     });
 
     $('#btnForRegistMission').off('click');
-    $('#btnForRegistMission').click(function () {
+    $('#btnForRegistMission').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForRegistMission', 'CONTENT');
         askMissionNameForDesignRegister();
     });
@@ -652,127 +676,6 @@ function missionGenInit() {
     hideLoader();
 }
 
-function genPlanByAddress(address) {
-		if (isSet(address) == false) {
-    		showAlert(GET_STRING_CONTENT('msg_wrong_input'));
-        return;
-    }
-
-    if (g_str_address_temp_val == address) return;
-
-    g_str_address_temp_val = address;
-
-    var userid = getCookie("dev_user_id");
-    var jdata = {"clientid" : userid, "action" : "util", "daction": "gps_by_address", "address" : encodeURI(address)};
-
-		showLoader();
-		ajaxRequest(jdata, function (r) {
-	    	if(r.result == "success") {
-		      if (r.data == null) {
-		      	hideLoader();
-		      	showAlert(GET_STRING_CONTENT('msg_wrong_input'));
-		        return;
-		      }
-
-					$('#lat').val(r.data.lat);
-					$('#lng').val(r.data.lng);
-
-		     	genPlan(r.data.lat * 1, r.data.lng * 1);
-	    	}
-	    	else {
-	    		hideLoader();
-	    		showAlert(GET_STRING_CONTENT('msg_input_corrent_address'));
-	    	}
-	  	},
-	  	function(request,status,error) {
-	  		hideLoader();
-	  		showAlert(GET_STRING_CONTENT('msg_error_sorry'));
-	  });
-}
-
-function genPlanByGPS(lat, lng) {
-		if (isSet(lat) == false || isSet(lng) == false) {
-			showAlert(GET_STRING_CONTENT('msg_wrong_input'));
-			return;
-		}
-
-		if (g_loc_address_flat == lat && g_loc_address_flng == lng) return;
-
-		g_loc_address_flat = lat;
-		g_loc_address_flng = lng;
-
-		var userid = getCookie("dev_user_id");
-    var jdata = {"clientid" : userid, "action" : "util", "daction": "address_by_gps", "lat" : lat, "lng" : lng};
-
-    showLoader();
-  	ajaxRequest(jdata, function (r) {
-	    if(r.result == "success") {
-
-				$("#gen_address").val(r.address);
-
-				genPlan(lat, lng);
-	    }
-	    else {
-	    	showAlert(GET_STRING_CONTENT('msg_wrong_input'));
-				hideLoader();
-	    }
-	  }, function(request,status,error) {
-	    hideLoader();
-	  });
-}
-
-
-function genPlan(lat, lng) {
-		var data =
-			[
-				{"alt" : 10, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 2m 고도, 1.5 m/s 속도로 타겟 지점으로 이동
-				{"alt" : 10, "speed" : 1.2, "act" : 5, "actparam" : "-89", "lat" : lat, "lng" : lng}, // gimbal_pitch, 직각아래
-				{"alt" : 10, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
-				{"alt" : 10, "speed" : 1.2, "act" : 2, "actparam" : "0", "lat" : lat, "lng" : lng}, // //start_record
-				{"alt" : 40, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // //stay // 고도 40m까지 업
-				{"alt" : 40, "speed" : 1.2, "act" : 5, "actparam" : "-45", "lat" : lat, "lng" : lng}, // gimbal_pitch, 정면
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "15", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "30", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "45", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "60", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "75", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "90", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "105", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "120", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "135", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "150", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "165", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "180", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-15", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-30", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-45", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-60", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-75", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-90", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-105", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-120", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-135", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-150", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-165", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
-				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-180", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180				
-				{"alt" : 41, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
-				{"alt" : 10, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 10m 고도
-				{"alt" : 10, "speed" : 1.2, "act" : 3, "actparam" : "0", "lat" : lat, "lng" : lng} // stop_record, 촬영 정지
-			];
-
-		g_array_design_data = data;
-
-		g_array_design_data.forEach(function(item,index,d) {
-			var dt = {"lat" : lat, "lng" : lng, "alt" : item.alt + 500, "dsec" : index};
-			g_array_flight_rec.push(dt);
-		});
-
-    moveToPositionOnMap("private", 0, lat, lng, 600, 0, 0, 0);
-
-    var dpoint = ol.proj.fromLonLat([lng, lat]);
-    drawCadastral(null, null, dpoint[0], dpoint[1], g_vector_2D_mainmap_for_cada);
-
-}
 
 function flightrecordUploadInit() {
 
@@ -828,7 +731,9 @@ function flightrecordUploadInit() {
 
     $("#disclaimer").html(GET_STRING_CONTENT('youtubeTOS'));
 
-    $('#btnForUploadFlightList').click(function () {
+    $('#btnForUploadFlightList').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForUploadFlightList', 'CONTENT');
 
         uploadCheckBeforeUploadFlightList();
@@ -842,18 +747,24 @@ function flightrecordUploadInit() {
         }
     });
 
-    $('#btnForAddressCheck').click(function () {
+    $('#btnForAddressCheck').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForAddressCheck', 'CONTENT');
         checkAddress($("#address_input_data").val());
     });
     
     
-    $('#btn_check_code').click(function () {
+    $('#btn_check_code').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btn_check_code', 'CONTENT');
         verifyCode();
     });
     
-    $('#btn_verify_code').click(function () {
+    $('#btn_verify_code').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btn_verify_code', 'CONTENT');
         verifyPhoneNo();
     });
@@ -865,7 +776,9 @@ function flightrecordUploadInit() {
     	$("#sale_select").hide();
     }
 
-    $("#salecheck").click(function(){
+    $("#salecheck").click(function(e){
+    				e.preventDefault();
+    				
 						var checked = $("#salecheck").is(":checked");
             var userid = getCookie("dev_user_id");
 			
@@ -1002,7 +915,9 @@ function flightrecordUploadInit() {
 			else $("#btnNextStage").attr('disabled', true);
 		});
 	
-		$("#btnNextStage").click(function() {
+		$("#btnNextStage").click(function(e) {
+			e.preventDefault();
+			
 			GATAGM('btnNextStage', 'CONTENT');
 			$("#nextStageBtnArea").hide();
 			setUploadFileFields();
@@ -1028,17 +943,23 @@ function flightrecordUploadInit() {
 			let retSelected = fileDropCheckRecordUpload(this.files);
 		});
 
-		$("#input_direct_file").click(function() {			
+		$("#input_direct_file").click(function(e) {
+			e.preventDefault();
+			
 			$(this).attr("value", "");
 			$("#input_direct_file").val("");
 		});
 		
-		$("#movieFile").click(function() {			
+		$("#movieFile").click(function(e) {			
+			e.preventDefault();
+			
 			$(this).attr("value", "");
 			$("#movieFile").val("");
 		});
 		
-		$("#flight_record_file").click(function() {			
+		$("#flight_record_file").click(function(e) {
+			e.preventDefault();
+			
 			$(this).attr("value", "");
 			$("#flight_record_file").val("");
 		});
@@ -1052,11 +973,6 @@ function flightrecordUploadInit() {
     hideLoader();
 }
 
-function setUploadFileFields() {	
-		$('#dropArea').hide();
-		$("#nextStageBtnArea").hide();
-		$('#uploadfileform').show();
-}
 
 function embedCompassInit() {
 		document.title = GET_STRING_CONTENT('side_menu_flight_record_embed_compass');
@@ -1150,7 +1066,9 @@ function embedCompassInit() {
 			}			
 		});
 
-		$("#input_direct_file").click(function() {			
+		$("#input_direct_file").click(function(e) {
+			e.preventDefault();
+			
 			$(this).attr("value", "");
 			$("#input_direct_file").val("");
 		});
@@ -1590,18 +1508,24 @@ function monitorInit() {
 
     $("#btnForFilter").hide();
     $("#btnForFilter").text(GET_STRING_CONTENT('btnForFilter'));
-    $("#btnForFilter").click(function () {
+    $("#btnForFilter").click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForFilter', 'CONTENT');
         setMonFilter();
     });
 
     $("#btnStartMon").text(GET_STRING_CONTENT('btnStartMon'));
-    $("#btnStartMon").click(function () {
+    $("#btnStartMon").click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnStartMon', 'CONTENT');
         startMon();
     });
 
-    $('#btnForSetYoutubeID').click(function () {
+    $('#btnForSetYoutubeID').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSetYoutubeID', 'CONTENT');
         setYoutubeID();
     });
@@ -1676,17 +1600,23 @@ function flightDetailInit(target) {
     $("#btnForLink").hide();
     $("#btnForSharing").hide();
 
-    $('#btnForFilter').click(function () {
+    $('#btnForFilter').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForFilter', 'CONTENT');
         setFilter();
     });
 
-    $('#btnForSetYoutubeID').click(function () {
+    $('#btnForSetYoutubeID').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSetYoutubeID', 'CONTENT');
         setYoutubeID();
     });
 
-    $('#btnForUploadFlightList').click(function () {
+    $('#btnForUploadFlightList').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForUploadFlightList', 'CONTENT');
         uploadFlightList(true);
     });
@@ -1701,7 +1631,9 @@ function flightDetailInit(target) {
     };
 
 		g_component_upload_youtube_video.ready();
-    $('#uploadVideoToYoutubeButton').click(function () {
+    $('#uploadVideoToYoutubeButton').click(function (e) {
+    	e.preventDefault();
+    	
     	g_component_upload_youtube_video.handleUploadClicked(videoFileForUploadFile);    	
     });
 
@@ -1712,7 +1644,9 @@ function flightDetailInit(target) {
     		let rname = decodeURIComponent(unescape(record_name));
         showDataWithName(target, target_key, rname);
         
-        $('#flightRecDsecApplyBtn').click(function () {
+        $('#flightRecDsecApplyBtn').click(function (e) {
+        		e.preventDefault();
+        		
 		        GATAGM('flightRecDsecApplyBtn', 'CONTENT');
 						
 						let curVal = $('#goFlightRecItemIndex').val();
@@ -1727,7 +1661,9 @@ function flightDetailInit(target) {
 		        showAlert(GET_STRING_CONTENT("msg_sync_adjusted") + " : " + curVal + GET_STRING_CONTENT("label_second"));
 		    });
 		    
-		    $('#flightRecDsecSaveBtn').click(function () {
+		    $('#flightRecDsecSaveBtn').click(function (e) {
+		    		e.preventDefault();
+		    		
 		        GATAGM('flightRecDsecSaveBtn', 'CONTENT');
 		        updateFlightRecordDetail(rname);
 		    });
@@ -1765,12 +1701,16 @@ function flightrecordListInit(target) {
         }
     });
 
-    $("#btnForSearchFlightRecord").click(function () {
+    $("#btnForSearchFlightRecord").click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSearchFlightRecord', 'CONTENT');
         searchFlightRecord(target, $("#search_key").val());
     });
 
-    $('#btnForLoadFlightList').click(function () {
+    $('#btnForLoadFlightList').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForLoadFlightList', 'CONTENT');
         getFlightRecords(target);
     });
@@ -1798,12 +1738,16 @@ function flightrecordsListSummaryInit(target) {
 
     $("#search_key").attr("placeholder", GET_STRING_CONTENT('msg_record_search_key'));
 
-    $("#btnForSearchFlightRecord").click(function () {
+    $("#btnForSearchFlightRecord").click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSearchFlightRecord', 'CONTENT');
         searchFlightRecord(target, $("#search_key").val());
     });
 
-    $('#btnForLoadFlightList').click(function () {
+    $('#btnForLoadFlightList').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForLoadFlightList', 'CONTENT');
         getFlightRecords(target);
     });
@@ -1835,12 +1779,16 @@ function missionListInit() {
     $("#btnForGetMissionList").text(GET_STRING_CONTENT('btnForGetMissionList'));
     $("#search_key").attr("placeholder", GET_STRING_CONTENT('msg_mission_search_key'));
 
-    $('#btnForSearchMission').click(function () {
+    $('#btnForSearchMission').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForSearchMission', 'CONTENT');
         searchMission($("#search_key").val());
     });
 
-    $('#btnForGetMissionList').click(function () {
+    $('#btnForGetMissionList').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('btnForGetMissionList', 'CONTENT');
         getMissionList();
     });
@@ -1848,6 +1796,253 @@ function missionListInit() {
     $('#btnForGetMissionList').hide();
     getMissionList();
 }
+
+function askParnterRequestExt() {
+	showAskDialog(
+          GET_STRING_CONTENT('modal_title'),
+          GET_STRING_CONTENT('msg_you_are_not_partner'),
+          GET_STRING_CONTENT('modal_yes_btn'),
+          false,
+          function () { 
+          	 window.open("https://duni.io/index.php?page=partner");
+          	 return;
+          },
+          function () {}
+      );
+}
+
+function requestDUNIServiceRequest(r_id, index) {
+		GATAGM("DUNIServiceRequest_" + r_id, "CONTENT");
+		
+		var userid = getCookie("dev_user_id");
+    var jdata = { "action": "util", "daction": "duni_service_bet", "clientid": userid, "r_id" : (r_id * 1) };
+    
+		showLoader();
+
+  	ajaxRequest(jdata, function (r) {
+  		hideLoader();
+  		
+	    if(r.result == "success") {	    	
+				showAlert(GET_STRING_CONTENT('msg_request_is_accepted'));
+				
+				$("#request_duni_" + index).empty();
+				$("#request_duni_" + index).text(GET_STRING_CONTENT('msg_accepted'));
+	    }
+	    else {
+	    	if(r.result_code == 6) {
+	    		setTimeout("askParnterRequestExt()", 300);
+          return;
+	    	}
+	    	
+	    	showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+	    }
+	  },
+	  	function(request,status,error) {
+	  		hideLoader();
+	  		showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+	  });
+}
+
+function getDUNIServiceRequest() {				
+		var userid = getCookie("dev_user_id");
+    var jdata = { "action": "util", "daction": "duni_service_request_list", "clientid": userid };
+    
+		showLoader();
+
+  	ajaxRequest(jdata, function (r) {
+	    if(r.result == "success") {
+	    	hideLoader();
+
+	      if (r.data == null || r.data.length == 0) {
+	      	$("#duni_service_request_list").html("No request");
+	        return;
+	      }
+	      	      	      
+	      $("#duni_service_request_list").append("<table class='table' id='service_request_list_table'><thead><tr><th scope='col'>#</th><th scope='col'>" + GET_STRING_CONTENT('label_service') + "</th><th scope='col'>" + GET_STRING_CONTENT('label_location') + "</th><th scope='col'>" + GET_STRING_CONTENT('label_status') + "</th></tr></thead><tbody></tbody></table>");
+	      	      				
+				let retData = r.data;
+												
+				retData.forEach(function(d, index, arr) {
+					
+					let htmlString = "<tr><th scope='row'>" + (index + 1) + "</th><td>" + d.kind + "</td><td>" + d.title + "</td><td><div id='request_duni_" + index + "'>";
+					
+					if (d.status == "P") {
+						if (d.requested == true) {
+							htmlString += GET_STRING_CONTENT('msg_accepted');							
+							htmlString += ( "(" + makeDateTimeFormat(new Date(d.requested_time), true) + ")" );
+						}
+						else {
+							htmlString += "<button class='btn btn-info text-xs btn-sm' type='button' id='partnerServiceRequest_" + index + "'>";
+	            htmlString += (GET_STRING_CONTENT('btnRequest') + "</button>");
+	          }
+					}
+					else if (d.status == "C") {
+						htmlString += GET_STRING_CONTENT('msg_closed');	
+					}
+					else if (d.status == "R") {
+						htmlString += GET_STRING_CONTENT('msg_on_ready');
+					}
+					
+					
+					htmlString += "</div></td></tr>";
+					$("#service_request_list_table").append(htmlString);
+										
+					$("#partnerServiceRequest_" + index).click(function(e) {
+							e.preventDefault();
+							
+							showAskDialog(
+                GET_STRING_CONTENT('modal_title'),
+                GET_STRING_CONTENT('msg_are_you_sure'),
+                GET_STRING_CONTENT('modal_confirm_btn'),
+                false,
+                function () {                 	 
+                		setTimeout("requestDUNIServiceRequest(" + d.r_id + ", " + index + ")", 300);
+                	},
+                function () {}
+            	);
+					});										
+				});								
+	    }
+	  },
+	  	function(request,status,error) {
+	  		$("#duni_service_request_list").html("No request");
+	  		hideLoader();
+	  });
+}
+
+function drawFlightArea() { 
+		setAddressAndCada("#map_address", fdata.address, fdata.cada, g_vector_2D_mainmap_for_cada);
+}
+
+function genPlanByAddress(address) {
+		if (isSet(address) == false) {
+    		showAlert(GET_STRING_CONTENT('msg_wrong_input'));
+        return;
+    }
+
+    if (g_str_address_temp_val == address) return;
+
+    g_str_address_temp_val = address;
+
+    var userid = getCookie("dev_user_id");
+    var jdata = {"clientid" : userid, "action" : "util", "daction": "gps_by_address", "address" : encodeURI(address)};
+
+		showLoader();
+		ajaxRequest(jdata, function (r) {
+	    	if(r.result == "success") {
+		      if (r.data == null) {
+		      	hideLoader();
+		      	showAlert(GET_STRING_CONTENT('msg_wrong_input'));
+		        return;
+		      }
+
+					$('#lat').val(r.data.lat);
+					$('#lng').val(r.data.lng);
+
+		     	genPlan(r.data.lat * 1, r.data.lng * 1);
+	    	}
+	    	else {
+	    		hideLoader();
+	    		showAlert(GET_STRING_CONTENT('msg_input_corrent_address'));
+	    	}
+	  	},
+	  	function(request,status,error) {
+	  		hideLoader();
+	  		showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+	  });
+}
+
+function genPlanByGPS(lat, lng) {
+		if (isSet(lat) == false || isSet(lng) == false) {
+			showAlert(GET_STRING_CONTENT('msg_wrong_input'));
+			return;
+		}
+
+		if (g_loc_address_flat == lat && g_loc_address_flng == lng) return;
+
+		g_loc_address_flat = lat;
+		g_loc_address_flng = lng;
+
+		var userid = getCookie("dev_user_id");
+    var jdata = {"clientid" : userid, "action" : "util", "daction": "address_by_gps", "lat" : lat, "lng" : lng};
+
+    showLoader();
+  	ajaxRequest(jdata, function (r) {
+	    if(r.result == "success") {
+
+				$("#gen_address").val(r.address);
+
+				genPlan(lat, lng);
+	    }
+	    else {
+	    	showAlert(GET_STRING_CONTENT('msg_wrong_input'));
+				hideLoader();
+	    }
+	  }, function(request,status,error) {
+	    hideLoader();
+	  });
+}
+
+
+function genPlan(lat, lng) {
+		var data =
+			[
+				{"alt" : 10, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 2m 고도, 1.5 m/s 속도로 타겟 지점으로 이동
+				{"alt" : 10, "speed" : 1.2, "act" : 5, "actparam" : "-89", "lat" : lat, "lng" : lng}, // gimbal_pitch, 직각아래
+				{"alt" : 10, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
+				{"alt" : 10, "speed" : 1.2, "act" : 2, "actparam" : "0", "lat" : lat, "lng" : lng}, // //start_record
+				{"alt" : 40, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // //stay // 고도 40m까지 업
+				{"alt" : 40, "speed" : 1.2, "act" : 5, "actparam" : "-45", "lat" : lat, "lng" : lng}, // gimbal_pitch, 정면
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "15", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "30", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "45", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "60", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "75", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "90", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "105", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "120", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "135", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "150", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "165", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "180", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-15", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-30", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-45", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-60", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-75", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-90", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-105", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-120", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-135", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-150", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-165", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180
+				{"alt" : 40, "speed" : 1.2, "act" : 4, "actparam" : "-180", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 180				
+				{"alt" : 41, "speed" : 1.2, "act" : 4, "actparam" : "0", "lat" : lat, "lng" : lng}, // ROTATE_AIRCRAFT, 정북
+				{"alt" : 10, "speed" : 1.2, "act" : 0, "actparam" : "0", "lat" : lat, "lng" : lng}, // 10m 고도
+				{"alt" : 10, "speed" : 1.2, "act" : 3, "actparam" : "0", "lat" : lat, "lng" : lng} // stop_record, 촬영 정지
+			];
+
+		g_array_design_data = data;
+
+		g_array_design_data.forEach(function(item,index,d) {
+			var dt = {"lat" : lat, "lng" : lng, "alt" : item.alt + 500, "dsec" : index};
+			g_array_flight_rec.push(dt);
+		});
+
+    moveToPositionOnMap("private", 0, lat, lng, 600, 0, 0, 0);
+
+    var dpoint = ol.proj.fromLonLat([lng, lat]);
+    drawCadastral(null, null, dpoint[0], dpoint[1], g_vector_2D_mainmap_for_cada);
+
+}
+
+function setUploadFileFields() {	
+		$('#dropArea').hide();
+		$("#nextStageBtnArea").hide();
+		$('#uploadfileform').show();
+}
+
+
 
 function flightRecords2DMapInit() {
     var dpoint = ol.proj.fromLonLat([126.5203904, 33.3616837]);
@@ -2209,7 +2404,9 @@ function setBadgeView(fdata) {
         $('#badge_code').text("<iframe id=\"badge_frame\" src=\"javascript:void(0)\" scrolling=\"no\" frameborder=\"0\" style=\"border:0;\" allowfullscreen=\"\"  aria-hidden=\"false\" tabindex=\"0\" width=\"100%\" height=\"500\"></iframe><script type=\"text/javascript\">document.getElementById(\"badge_frame\").src = \"https://pilot.duni.io/plugin/code.html?code=" + pluginid + "&parent_url=\" + encodeURIComponent(window.location.href) + \"&lang=" + g_str_cur_lang + "\";</script>");
 
         $('#btnForBadge').off('click');
-        $("#btnForBadge").click(function () {
+        $("#btnForBadge").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForBadge_delete', 'CONTENT');
             showAskDialog(
                 GET_STRING_CONTENT('modal_title'),
@@ -2226,7 +2423,9 @@ function setBadgeView(fdata) {
         $("#badge_view").hide();
 
         $('#btnForBadge').off('click');
-        $("#btnForBadge").click(function () {
+        $("#btnForBadge").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForBadge_make', 'CONTENT');
 
             var callsign = $("#badge_nickname").val();
@@ -2713,7 +2912,8 @@ function initSliderForDesign(i) {
         }
     });
 
-    $('#goItemBtn').click(function () {
+    $('#goItemBtn').click(function (e) {
+    		e.preventDefault();
 
         GATAGM('goItemBtn', 'CONTENT');
 
@@ -3230,14 +3430,18 @@ function setDataToDesignView(index) {
     $('#actionparam_index').val(actparam);
 
     $('#removeItemBtn').off('click');
-    $('#removeItemBtn').click(function () {
+    $('#removeItemBtn').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('removeItemBtn', 'CONTENT');
         removeMissionData(index);
         removeIconOn2DMap(index);
     });
 
     $('#saveItemBtn').off('click');
-    $('#saveItemBtn').click(function () {
+    $('#saveItemBtn').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('saveItemBtn', 'CONTENT');
         saveDesignData(index);
     });
@@ -3332,7 +3536,8 @@ function appendMissionList(data) {
             + GET_STRING_CONTENT('msg_remove') + "</button></div></div></div></div>";
         $('#dataTable-missions').append(appendRow);
 
-        $('#missionListBtnForRemove_' + index).click(function () {
+        $('#missionListBtnForRemove_' + index).click(function (e) {
+        		e.preventDefault();
             GATAGM('missionListBtnForRemove_' + index, 'CONTENT');
             askRemoveMissionItem(item['name'], "mission_row_" + index);
         });
@@ -3724,7 +3929,9 @@ function makeShareFlightData(name, user_email) {
                         $("#btnForPublic").hide();
                     }
 
-                    $("#user_share_" + index).click(function () {
+                    $("#user_share_" + index).click(function (e) {
+                    		e.preventDefault();
+                    		
                         showAskDialog(
                             GET_STRING_CONTENT('modal_title'),
                             premail + " : " + GET_STRING_CONTENT('msg_are_you_sure'),
@@ -3857,7 +4064,9 @@ function setFlightRecordToView(target, name, fdata) {
                     premail = GET_STRING_CONTENT('all_member_msg');
                 }
 
-                $("#user_share_" + index).click(function () {
+                $("#user_share_" + index).click(function (e) {
+                		e.preventDefault();
+                		
                     showAskDialog(
                         GET_STRING_CONTENT('modal_title'),
                         premail + " : " + GET_STRING_CONTENT('msg_are_you_sure'),
@@ -3870,7 +4079,9 @@ function setFlightRecordToView(target, name, fdata) {
             });
         }
 
-        $("#btnForUpdateTitle").click(function () {
+        $("#btnForUpdateTitle").click(function (e) {
+        		e.preventDefault();
+        		
         		GATAGM('btnForUpdateTitle', 'CONTENT');
 
         		if ("sharedList" in fdata && isSet(fdata.sharedList) && fdata.sharedList.length > 0) {
@@ -3881,7 +4092,9 @@ function setFlightRecordToView(target, name, fdata) {
 				    setFlightRecordTitleName();
 		    });
 
-        $("#btnForDelete").click(function () {
+        $("#btnForDelete").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForPublic', 'CONTENT');
 
             if ("sharedList" in fdata && isSet(fdata.sharedList) && fdata.sharedList.length > 0) {
@@ -3899,7 +4112,9 @@ function setFlightRecordToView(target, name, fdata) {
 				    );
         });
 
-        $("#btnForPublic").click(function () {
+        $("#btnForPublic").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForPublic', 'CONTENT');
             showAskDialog(
                 GET_STRING_CONTENT('modal_title'),
@@ -3913,7 +4128,9 @@ function setFlightRecordToView(target, name, fdata) {
             );
         });
 
-        $("#btnForSharing").click(function () {
+        $("#btnForSharing").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForSharing', 'CONTENT');
             showAskDialog(
                 GET_STRING_CONTENT('modal_title'),
@@ -3927,14 +4144,18 @@ function setFlightRecordToView(target, name, fdata) {
             );
         });
 
-        $("#flightMemoBtn").click(function () {
+        $("#flightMemoBtn").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('flightMemoBtn', 'CONTENT');
             updateFlightMemoWithValue(name, $("#memoTextarea").val());
         });
 
 
 
-        $("#flightTagBtn").click(function () {
+        $("#flightTagBtn").click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('flightTagBtn', 'CONTENT');
             updateFlightTagWithValue(name, $("#tagTextarea").val());
         });
@@ -4339,7 +4560,9 @@ function appendFlightRecordTable(target, target_key, item) {
         $("#memoTextarea_" + curIndex).prop('disabled', true);        
     }
     else {
-        $('#btnForRemoveFlightData_' + curIndex).click(function () {
+        $('#btnForRemoveFlightData_' + curIndex).click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForRemoveFlightData_' + curIndex, 'CONTENT');
             if (isSet(sharedList) && sharedList.length > 0) {
                 showAlert(GET_STRING_CONTENT('msg_stop_share_before_remove'));
@@ -4347,13 +4570,17 @@ function appendFlightRecordTable(target, target_key, item) {
             else askDeleteFlightData(name, curIndex);
         });
 
-        $('#btnForUpdateMemo_' + curIndex).click(function () {
+        $('#btnForUpdateMemo_' + curIndex).click(function (e) {
+        		e.preventDefault();
+        		
             GATAGM('btnForUpdateMemo_' + curIndex, 'CONTENT');
             updateFlightMemo(curIndex);
         });
     }
 
-    $('#map_address_' + curIndex).click(function () {
+    $('#map_address_' + curIndex).click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('map_address_' + curIndex, 'CONTENT');
         moveFlightHistoryMap(flat, flng);
     });
@@ -5855,7 +6082,9 @@ function hideMovieDataSet() {
     $('#modifyBtnForMovieData').text(GET_STRING_CONTENT('msg_modify_youtube_data'));
 
     $('#modifyBtnForMovieData').off('click');
-    $('#modifyBtnForMovieData').click(function () {
+    $('#modifyBtnForMovieData').click(function (e) {
+    		e.preventDefault();
+    		
         GATAGM('modifyBtnForMovieData_show', 'CONTENT');
         showMovieDataSet();
     });
@@ -5867,7 +6096,9 @@ function showMovieDataSet() {
     $('#modifyBtnForMovieData').text(GET_STRING_CONTENT('msg_close_youtube_data'));
 
     $('#modifyBtnForMovieData').off('click');
-    $('#modifyBtnForMovieData').click(function () {
+    $('#modifyBtnForMovieData').click(function (e) {
+    		e.preventDefault();
+    		
 				GATAGM('modifyBtnForMovieData_hide', 'CONTENT');
         hideMovieDataSet();
     });
