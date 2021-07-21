@@ -110,7 +110,11 @@ $(function () {
           GET_STRING_CONTENT('msg_do_login'),
           GET_STRING_CONTENT('modal_confirm_btn'),
           false,
-          function () { goIndex(""); },
+          function () { 
+          	setTimeout(function () { 
+					        		goIndex("");
+					        	}, 500);	
+          },
           null
       );
       return;
@@ -4155,7 +4159,9 @@ function setFlightRecordToView(target, name, fdata) {
 				        fdata.name + " : " + GET_STRING_CONTENT('msg_are_you_sure'),
 				        GET_STRING_CONTENT('msg_remove'),
 				        false,
-				        function () { deleteFlightData(name, -1); },
+				        function () {				        	
+				        	deleteFlightData(name, -1); 
+				        },
                 function () {}
 				    );
         });
@@ -4901,7 +4907,9 @@ function askDeleteFlightData(name, index) {
         name + " : " + GET_STRING_CONTENT('msg_are_you_sure'),
         GET_STRING_CONTENT('msg_remove'),
         false,
-        function () { deleteFlightData(name, index); },
+        function () {         	 
+        	setTimeout(function () { deleteFlightData(name, index); }, 1000);
+        },
         function () {}
     );
 }
@@ -4921,8 +4929,18 @@ function deleteFlightData(name, index) {
         		if (index >= 0)
             	removeTableRow("flight-list-" + index);
             else {
-            	alert(GET_STRING_CONTENT('msg_success'));
-            	location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=recordlist";
+            	showAskDialog(
+					        GET_STRING_CONTENT('modal_title'),
+					        GET_STRING_CONTENT('msg_success'),
+					        GET_STRING_CONTENT('modal_confirm_btn'),
+					        false,
+					        function () { 					        	
+					        	setTimeout(function () { 
+					        		location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=recordlist";
+					        	}, 800);
+					        },
+					        null					        
+					    );            	            	            	
             }
         }
     }, function (request, status, error) {
@@ -4938,7 +4956,9 @@ function askRemoveMissionItem(name, trname) {
         name + " : " + GET_STRING_CONTENT('msg_are_you_sure'),
         GET_STRING_CONTENT('msg_remove'),
         false,
-        function () { removeMissionItem(name, trname); },
+        function () {         	
+        	setTimeout(function () { removeMissionItem(name, trname); }, 1000);
+        },
         function () {}
     );
 }
@@ -4983,9 +5003,8 @@ function askSpeedForDesignRegister(mname) {
             if (parseFloat(mspeed) <= 0.0) {
                 showAlert(GET_STRING_CONTENT('msg_wrong_input'));
                 return;
-            }
-
-            registMission(mname, mspeed);
+            }            
+            setTimeout(function () { registMission(mname, mspeed); }, 1000);
         },
         function () {}
     );
@@ -5029,9 +5048,20 @@ function registMission(mname, mspeed) {
     var jdata = { "action": "mission", "mname": encodeURI(mname), "daction": "set", "missionspeed": mspeed, "missiondata": nPositions, "clientid": userid };
 
     ajaxRequest(jdata, function (r) {
-        if (r.result == "success") {
-				    alert(mname + " (" + mspeed + "m/s) : " + GET_STRING_CONTENT('msg_success'));
-				    location.href = g_array_cur_controller_for_viewmode["developer"] + "?page_action=missionlist";
+        if (r.result == "success") {				    				    				    
+				    showAskDialog(
+					        GET_STRING_CONTENT('modal_title'),
+					        mname + " (" + mspeed + "m/s) : " + GET_STRING_CONTENT('msg_success'),
+					        GET_STRING_CONTENT('modal_confirm_btn'),
+					        false,
+					        function () {					        	
+					        	setTimeout(function () { 
+					        		location.href = g_array_cur_controller_for_viewmode["developer"] + "?page_action=missionlist";
+					        	}, 800);
+					        },
+					        null
+					   );
+				    
         }
         else {
             showAlert(GET_STRING_CONTENT('msg_error_sorry'));
@@ -5920,8 +5950,20 @@ function uploadDJIFlightListCallback(params) {
             $('#btnForUploadFlightList').hide(1500);
             $('#uploadFileform').hide(1500);
             GATAGM('dji_file_upload_success', 'CONTENT');
-            alert(GET_STRING_CONTENT('msg_success'));
-            location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=recordlist";
+                                    
+            showAskDialog(
+					        GET_STRING_CONTENT('modal_title'),
+					        GET_STRING_CONTENT('msg_success'),
+					        GET_STRING_CONTENT('modal_confirm_btn'),
+					        false,
+					        function () { 					        	
+					        	setTimeout(function () { 
+					        		location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=recordlist";
+					        	}, 1000);
+					        },
+					        null
+					   );
+            
         }
         else {
             if (r.result_code == 3) {
