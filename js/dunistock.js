@@ -2,6 +2,8 @@
 
 	'use strict';
 
+(function($) {
+	
 	var tableCount = 0;	
 	var duni_logo = 'https://pilot.duni.io/duni_logo.png';
 
@@ -1047,3 +1049,5 @@
 			getFlightList();
 			initSearchForm();
   }
+  
+}(jQuery2_1_4));
