@@ -1,15 +1,4 @@
-﻿/*
-Copyright 2020 APLY Inc. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+﻿/* Copyright 2021 APLY Inc. All rights reserved. */
 
 var langset = "KR";
 
@@ -309,9 +298,11 @@ function formSubmit(token, temp_name, temp_image, temp_email) {
     ajaxRequest(jdata, function (r) {
         if (r.result == "success") {
             setCookie("dev_user_id", r.emailid, 1);
+            setCookie("dev_sns_token", token, 1);
             setCookie("user_token", r.token, 1);
             setCookie("user_email", r.socialid, 1);
             setCookie("dev_token", r.dev_token, 1);
+            setCookie("user_kind", r.user_kind, 1);
             setCookie("image_url", temp_image, 1);
 
             let page_action = getCookie("last_action");

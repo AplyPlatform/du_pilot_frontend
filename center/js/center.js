@@ -3,8 +3,8 @@
 "use strict";
 
 var g_b_monitor_started;
-var g_b_phonenumber_verified = true;
-var g_b_interval_timer;
+var g_b_phonenumber_verified = false;
+var g_b_interval_timer = -1;
 
 var g_cur_2D_mainmap;
 var g_view_cur_2D_mainmap;
@@ -354,6 +354,26 @@ function initPilotCenter() {
             monitorInit();
         });
     }
+    else if (g_str_page_action == "partner_register") {
+    		if (getCookie("user_kind") == "partner") {
+    			showAskDialog(
+			          GET_STRING_CONTENT('modal_title'),
+			          "이미 파트너 신청을 완료 하셨습니다.",
+			          GET_STRING_CONTENT('modal_confirm_btn'),
+			          false,
+			          function () { 
+			          	 history.back();
+			          	 return;
+			          },
+			          null
+			      );
+    			return;	
+    		}
+    		
+        $("#main_contents").load("partner_register.html", function () {
+            partnerRegisterInit();
+        });
+    }
     else if (g_str_page_action == "recordupload") {
         $("#main_contents").load("record_upload.html", function () {
             flightrecordUploadInit();
@@ -422,6 +442,14 @@ function initPilotCenter() {
     else {
     		showAlert(GET_STRING_CONTENT('msg_error'));
     		centerPageInit();
+    }
+    
+    //한국, 파트너 아닌 대상만 파트너 가입
+    if (getCookie("user_kind") != "partner" && g_str_cur_lang == "KR"){
+    	$("#partner_register_top_menu").show();
+    }
+    else {
+    	$("#partner_register_top_menu").hide();
     }
 }
 
@@ -520,6 +548,11 @@ function centerInit() {
     getDUNIServiceRequest();
 }
 
+
+function partnerRegisterInit() {
+	
+	
+}
 
 function designInit() {
 		map2DInit();
@@ -752,14 +785,15 @@ function flightrecordUploadInit() {
     		e.preventDefault();
     		
         GATAGM('btn_check_code', 'CONTENT');
-        verifyCode();
+        verifyCode($('#verification_code').val());
     });
     
     $('#btn_verify_code').click(function (e) {
     		e.preventDefault();
     		
         GATAGM('btn_verify_code', 'CONTENT');
-        verifyPhoneNo();
+                
+        verifyPhoneNo($('#user_phonenumber').val());
     });
 
     //판매국가는 우선 한국만!
@@ -769,9 +803,7 @@ function flightrecordUploadInit() {
     	$("#sale_select").hide();
     }
 
-    $("#salecheck").click(function(e){
-    				e.preventDefault();
-    				
+    $("#salecheck").click(function(e){    				    				
 						var checked = $("#salecheck").is(":checked");
             var userid = getCookie("dev_user_id");
 			
@@ -1829,7 +1861,7 @@ function askParnterRequestExt() {
           GET_STRING_CONTENT('modal_yes_btn'),
           false,
           function () { 
-          	 window.open("https://duni.io/index.php?page=partner");
+          	 location.href = g_array_cur_controller_for_viewmode["pilot"] + "?page_action=partner_register";
           	 return;
           },
           function () {}
@@ -2339,7 +2371,9 @@ function getFlightRecordInfo(name) {
 
 		  	var vid = getYoutubeQueryVariable(r.data.youtube_data_id);
 				$("#video-pop-view").attr("video-lang", g_str_cur_lang);
-				$("#video-pop-view").attr("video-name", name);
+				$("#video-pop-view").attr("video-prod-url", r.data.prod_url);
+				$("#video-pop-view").attr("video-name", name);				
+				$("#video-pop-view").attr("video-owner", r.data.owner_email);
 				$("#video-pop-view").attr("video-outer", r.data.outer);
 				$("#video-pop-view").attr("video-ispublic", g_str_current_target);
 				$("#video-pop-view").attr("video-address", r.data.address);
@@ -2412,7 +2446,7 @@ function showAlert(msg) {
     $('#modal-title').text(GET_STRING_CONTENT('modal_title'));
     $('#modal-confirm-btn').text(GET_STRING_CONTENT('modal_confirm_btn'));
 
-    $('#errorModalLabel').text(msg);
+    $('#errorModalLabel').html(msg);
     $('#errorModal').modal('show');
 }
 
@@ -4666,10 +4700,9 @@ function moveFlightHistoryMap(lat, lng) {
     g_view_2D_map_for_flight_rec.setCenter(npos);
 }
 
-function verifyPhoneNo(){
+function verifyPhoneNo(phone_number){
     var userid = getCookie("dev_user_id");
-    // check if phone number starts with 01 and is total of 11 digits
-    let phone_number = $('#user_phonenumber').val();
+    // check if phone number starts with 01 and is total of 11 digits    
     if((phone_number.length != 11) || phone_number.substring(0,2) !== '01') {
         showAlert(GET_STRING_CONTENT('msg_wrong_phone_format'));
         return;
@@ -4716,9 +4749,8 @@ function verifyPhoneNo(){
 
 }
 
-function verifyCode(){
-    var userid = getCookie("dev_user_id");
-    let verification_code = $('#verification_code').val();
+function verifyCode(verification_code){
+    var userid = getCookie("dev_user_id");    
 		if(verification_code == ""){
 			showAlert(GET_STRING_CONTENT('msg_code_empty'));
 			return;
@@ -4734,27 +4766,29 @@ function verifyCode(){
 		ajaxRequest(jdata,
 			function(data){
 				let result = data.result_code;
+				
 				if(result === 0){
-                    $('#verification_code').val("");
-                    $('#validate_phonenumber_area').hide();		
+					g_b_phonenumber_verified = true;
+          $('#verification_code').val("");
+          $('#validate_phonenumber_area').hide();
+          $("#code_verification_input").hide();
 					showAlert(GET_STRING_CONTENT('msg_phone_verified'));
-					clearInterval(g_b_interval_timer);
-					// disable phone number input
-                    g_b_phonenumber_verified = true;
-                    $('#auth_code').val(data.auth_code);
-					// $('#droneplay_phonenumber').prop( "disabled", true );
-                    // $('btn_check_code').text("재인증");
-					return;
+					if (g_b_interval_timer >= 0)
+						clearInterval(g_b_interval_timer);
+          $('#auth_code').val(data.auth_code);										
 				}
-				if(result === 2){
-					showAlert(GET_STRING_CONTENT('msg_wrong_verification_code'));
-					return;
+				else if(result === 2){
+					showAlert(GET_STRING_CONTENT('msg_wrong_verification_code'));					
 				}
-				if(result === 4){
+				else if(result === 4){
 					showAlert(GET_STRING_CONTENT('msg_phone_verification_timeout'));
-					return;
+					if (g_b_interval_timer >= 0)
+						clearInterval(g_b_interval_timer);
 				}
-                    showAlert(GET_STRING_CONTENT('msg_error_sorry'));
+				else {
+					showAlert(GET_STRING_CONTENT('msg_error_sorry'));					
+				}
+				
 			},
 			function (err, stat, error) {
 				showAlert(GET_STRING_CONTENT('msg_error_sorry'));
@@ -4791,7 +4825,8 @@ function startTimer(duration, display) {
         display.text(minutes + ":" + seconds);
 
         if (--timer < 0) {
-			clearInterval(g_b_interval_timer);
+						clearInterval(g_b_interval_timer);
+						g_b_interval_timer = -1;
             showAlert(GET_STRING_CONTENT('msg_phone_verification_timeout'));
             $("#code_verification_input").hide();
         }
@@ -5222,50 +5257,6 @@ var oldScatterpointIndex = -1;
 
 var oldLinedatasetIndex = -1;
 var oldLinepointIndex = -1;
-
-function logOut() {
-		var userid = getCookie("dev_user_id");
-    var jdata = {
-    	"action": "member",
-    	"daction": "logout",
-    	"clientid": userid
-    };
-
-    ajaxRequest(jdata, function (r) {
-        //if (r.result == "success") {}
-        setCookie("dev_user_id", "", -1);
-		    setCookie("user_token", "", -1);
-		    setCookie("dev_token", "", -1);
-		    setCookie("device_kind", "", -1);
-		    setCookie("device_id", "", -1);
-        setCookie("user_email", "", -1);
-        setCookie("image_url", "", -1);
-        setCookie("temp_sns_token", "", -1);
-        setCookie("temp_image_url", "", -1);
-        setCookie("temp_email", "", -1);
-        setCookie("temp_name", "", -1);
-        setCookie("user_from", "", -1);
-        setCookie("user_google_auth_token", "", -1);
-
-        goIndex("logout");
-    }, function (request, status, error) {
-        setCookie("dev_user_id", "", -1);
-        setCookie("user_token", "", -1);
-        setCookie("dev_token", "", -1);
-        setCookie("device_kind", "", -1);
-        setCookie("device_id", "", -1);
-        setCookie("user_email", "", -1);
-        setCookie("image_url", "", -1);
-        setCookie("temp_sns_token", "", -1);
-        setCookie("temp_image_url", "", -1);
-        setCookie("temp_email", "", -1);
-        setCookie("temp_name", "", -1);
-        setCookie("user_from", "", -1);
-        setCookie("user_google_auth_token", "", -1);
-
-    		goIndex("logout");
-    });
-}
 
 
 function computeCirclularFlight(start) {
